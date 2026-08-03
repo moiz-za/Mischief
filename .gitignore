@@ -1,6 +1,9 @@
 # Never publish the master specification
 Main Docs/
 
+# Local records (not part of the public repo)
+SUPPORT.md
+
 # OS
 .DS_Store
 Thumbs.db
