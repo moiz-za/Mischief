@@ -25,7 +25,7 @@ jobs:
         run: npm run build
 
       - name: Package (DMG + zip, universal)
-        run: npx electron-builder --mac --universal
+        run: npx electron-builder --mac --universal --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
@@ -55,7 +55,7 @@ jobs:
         run: npm run build
 
       - name: Package (NSIS + portable)
-        run: npx electron-builder --win
+        run: npx electron-builder --win --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
@@ -85,7 +85,7 @@ jobs:
         run: npm run build
 
       - name: Package (AppImage)
-        run: npx electron-builder --linux
+        run: npx electron-builder --linux --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
