@@ -53,13 +53,6 @@
           <rect x="44" y="40" width="8"  height="8"  rx="4" fill="#1e293b"/>
           <rect x="32" y="54" width="16" height="4"  rx="2" fill="#1e293b"/>
         </svg>`;
-
-      document.addEventListener("mousemove", (event) => {
-        const x = event.clientX - 40;
-        const y = event.clientY - 40;
-        creature.style.left = `${Math.max(0, Math.min(16, x))}px`;
-        creature.style.top = `${Math.max(0, Math.min(16, y))}px`;
-      });
     </script>
   </body>
 </html>
