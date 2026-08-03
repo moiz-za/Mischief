@@ -38,6 +38,7 @@
 - [Installation](#-installation)
 - [Building Experiences](#-building-experiences)
 - [Security & Privacy](#-security--privacy)
+- [Transparency](#-transparency)
 - [Repository Structure](#-repository-structure)
 - [FAQ](#-faq)
 - [Changelog](#-changelog)
@@ -174,10 +175,43 @@ New to the project? Browse the [`good first issue`](https://github.com/moiz-za/M
 Security is a core design principle, not an afterthought:
 
 - **Secret scanning** — gitleaks blocks secrets in the pre-commit hook and in CI; the full history is scanned
-- **Dependency audit** — `npm audit` runs in CI on every push
-- **Pinned, maintained Electron** — upgraded and kept current
+- **Dependency audit** — `npm audit` runs in CI on every push and gates every release
+- **Pinned, maintained Electron** — upgraded and kept current; 0 known vulnerabilities at every release
 - **Zero telemetry** — Mischief makes no network calls by default; nothing leaves your machine
 - **Private vulnerability reporting** — report via the repository's Security tab (see [`SECURITY.md`](SECURITY.md))
+
+See [Transparency](#-transparency) for exactly what Mischief does with your machine.
+
+---
+
+## 🔍 Transparency
+
+Mischief is a desktop app that lives on your screen, so you deserve to know exactly what it can and cannot do. This is the whole truth — nothing hidden, nothing "in beta."
+
+### What Mischief does
+
+| Behavior                                         | Details                                                                                                                                                                             |
+| :----------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Reads your cursor position**                   | Moves the companion to follow or wander near it. Position data never leaves your machine                                                                                            |
+| **Reads system idle time**                       | To know when you've stepped away (so the companion can nap). It does **not** log what you were doing                                                                                |
+| **Draws a small overlay on top of your windows** | A 96×96px transparent, always-on-top companion window. It's decorative; it can't read or modify other apps                                                                          |
+| **Captures the screen — only when you ask**      | "Capture moment" grabs ~1.2s or a single frame **only when you click the menu item**, and saves it to `~/Pictures/Mischief/`. There is **no background or automatic capture**, ever |
+| **Writes two local files**                       | `settings.json` (your preferences, mode 0600) and your saved moments in `~/Pictures/Mischief/`                                                                                      |
+
+### What Mischief never does
+
+- ❌ **No network calls** — Mischief runs 100% offline; it cannot phone home, fetch content, or update itself silently
+- ❌ **No accounts, no telemetry, no analytics, no advertising SDKs**
+- ❌ **No keylogging** — it reads cursor position and idle time only
+- ❌ **No file access** — it reads nothing outside its own install, `settings.json`, and the moments folder
+- ❌ **No destructive effects** — every effect is reversible, optional, and off by default
+- ❌ **No third-party code runs** — community packs are strict-validated data; the plugin host ships disabled
+
+### Verifying authenticity
+
+- **Source-first** — the app is MIT-licensed and fully auditable at [`github.com/moiz-za/Mischief`](https://github.com/moiz-za/Mischief). Build it yourself with `npm run dist:mac` (or `dist:win` / `dist:linux`)
+- **Checksums** — every release attaches a `SHA256SUMS` manifest; verify the installer before running it (`shasum -a 256 -c SHA256SUMS`)
+- **Signed builds** — as of now, release builds are **unsigned**, so macOS Gatekeeper and Windows SmartScreen will warn on first launch. That warning is the OS being cautious about any new unsigned app, not a sign Mischief is dangerous. Code signing is planned (see [Security & Privacy](#-security--privacy)); until then, the source + checksums above are your ground truth
 
 ---
 

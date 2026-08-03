@@ -58,6 +58,10 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
+      - name: Generate checksums
+        shell: bash
+        run: shasum -a 256 release/* > release/SHA256SUMS
+
       - name: Attach to release
         uses: softprops/action-gh-release@v2
         with:
@@ -65,6 +69,7 @@ jobs:
             release/*.dmg
             release/*.zip
             release/*.blockmap
+            release/SHA256SUMS
 
   windows:
     name: Windows
@@ -89,6 +94,10 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
+      - name: Generate checksums
+        shell: bash
+        run: shasum -a 256 release/* > release/SHA256SUMS
+
       - name: Attach to release
         uses: softprops/action-gh-release@v2
         with:
@@ -96,6 +105,7 @@ jobs:
             release/*.exe
             release/*.zip
             release/*.blockmap
+            release/SHA256SUMS
 
   linux:
     name: Linux
@@ -120,6 +130,10 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
+      - name: Generate checksums
+        shell: bash
+        run: shasum -a 256 release/* > release/SHA256SUMS
+
       - name: Attach to release
         uses: softprops/action-gh-release@v2
         with:
@@ -127,3 +141,4 @@ jobs:
             release/*.AppImage
             release/*.tar.gz
             release/*.blockmap
+            release/SHA256SUMS
