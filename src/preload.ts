@@ -5,8 +5,15 @@ export interface BehaviorMessage {
   mood: string;
 }
 
+export interface AppConfig {
+  intensity: "silent" | "calm" | "normal" | "playful" | "chaos";
+  personality: "friendly" | "curious" | "lazy" | "energetic" | "mischievous";
+  interactive: boolean;
+  followCursor: boolean;
+}
+
 contextBridge.exposeInMainWorld("mischief", {
-  version: process.env.npm_package_version ?? "0.1.2",
+  version: process.env.npm_package_version ?? "0.2.0",
   onBehavior(callback: (behavior: BehaviorMessage) => void): () => void {
     const listener = (_event: Electron.IpcRendererEvent, behavior: BehaviorMessage): void => {
       callback(behavior);
@@ -27,5 +34,11 @@ contextBridge.exposeInMainWorld("mischief", {
     return () => {
       ipcRenderer.removeListener("mischief:interactive", listener);
     };
+  },
+  getSettings(): Promise<AppConfig> {
+    return ipcRenderer.invoke("mischief:settings:get");
+  },
+  saveSettings(partial: Partial<AppConfig>): Promise<AppConfig> {
+    return ipcRenderer.invoke("mischief:settings:set", partial);
   },
 });

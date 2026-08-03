@@ -12,14 +12,16 @@ import {
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import {
-  BehaviorEngine,
-  type BehaviorDef,
-  type Intensity,
-  type Personality,
-  type ContextSignals,
-} from "./domain/behavior";
+import { BehaviorEngine, type BehaviorDef, type ContextSignals } from "./domain/behavior";
 import { EventBus } from "./domain/events";
+import { encodeGif, type RawFrame } from "./domain/gif";
+import {
+  DEFAULT_CONFIG,
+  parseConfig,
+  sanitizeConfig,
+  serializeConfig,
+  type AppConfig,
+} from "./domain/config";
 import type { CharacterManifest } from "./domain/manifest";
 import { followPosition } from "./domain/overlay";
 import { loadExperiencePack, type PackReader } from "./domain/pack";
@@ -27,6 +29,7 @@ import { createTicker, type Ticker } from "./domain/scheduler";
 
 let overlay: BrowserWindow | null = null;
 let tray: Tray | null = null;
+let settingsWindow: BrowserWindow | null = null;
 let followEnabled = true;
 let followPausedByBehavior = false;
 let followInterval: NodeJS.Timeout | null = null;
@@ -38,6 +41,7 @@ let lastPetAt: number | null = null;
 let currentBehavior: BehaviorDef | null = null;
 let wanderTimer: NodeJS.Timeout | null = null;
 let wandering = false;
+let config: AppConfig = { ...DEFAULT_CONFIG };
 
 const events = new EventBus();
 
@@ -88,24 +92,6 @@ function loadCompanion(): LoadedCompanion | null {
     };
   }
   return null;
-}
-
-function toPersonality(value: string | undefined): Personality {
-  switch (value) {
-    case "friendly":
-      return "friendly";
-    case "lazy":
-      return "lazy";
-    case "mischievous":
-      return "mischievous";
-    case "hyper":
-    case "playful":
-    case "energetic":
-      return "energetic";
-    case "curious":
-    default:
-      return "curious";
-  }
 }
 
 function createOverlay(): void {
@@ -294,15 +280,98 @@ function parkInCorner(): void {
 
 // --- Moment capture ---------------------------------------------------------
 
-async function captureMoment(): Promise<void> {
+const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function captureGif(): Promise<void> {
+  if (!overlay || overlay.isDestroyed()) return;
+  const frames: RawFrame[] = [];
+  let frameWidth = OVERLAY_SIZE;
+  let frameHeight = OVERLAY_SIZE;
+  const frameCount = 12;
+  for (let i = 0; i < frameCount; i++) {
+    if (!overlay || overlay.isDestroyed()) break;
+    const image = await overlay.webContents.capturePage();
+    const { width, height } = image.getSize();
+    const bgra = image.toBitmap();
+    if (bgra.length === width * height * 4) {
+      frameWidth = width;
+      frameHeight = height;
+      frames.push({ bgra });
+    }
+    if (i < frameCount - 1) await sleep(110);
+  }
+  if (frames.length < 2) return;
+  const gif = encodeGif(frames, { width: frameWidth, height: frameHeight, delayCs: 11, loop: 0 });
+  await writeMomentFile(gif, "gif");
+}
+
+async function captureSnapshot(): Promise<void> {
   if (!overlay || overlay.isDestroyed()) return;
   const image = await overlay.webContents.capturePage();
+  await writeMomentFile(image.toPNG(), "png");
+}
+
+async function writeMomentFile(data: Buffer, ext: "gif" | "png"): Promise<string> {
   const dir = path.join(os.homedir(), "Pictures", "Mischief");
   fs.mkdirSync(dir, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const file = path.join(dir, `mischief-${stamp}.png`);
-  fs.writeFileSync(file, image.toPNG());
+  const file = path.join(dir, `mischief-${stamp}.${ext}`);
+  fs.writeFileSync(file, data);
   shell.showItemInFolder(file);
+  return file;
+}
+
+// --- Configuration ----------------------------------------------------------
+
+function settingsPath(): string {
+  return path.join(app.getPath("userData"), "settings.json");
+}
+
+function loadConfig(): void {
+  try {
+    config = parseConfig(fs.readFileSync(settingsPath(), "utf8"));
+  } catch {
+    config = { ...DEFAULT_CONFIG };
+  }
+}
+
+function persistConfig(): void {
+  try {
+    fs.mkdirSync(path.dirname(settingsPath()), { recursive: true });
+    fs.writeFileSync(settingsPath(), serializeConfig(config), "utf8");
+  } catch (error) {
+    console.warn("[Mischief] Could not persist settings:", error);
+  }
+}
+
+function applyConfig(next: AppConfig): void {
+  config = next;
+  behaviorEngine?.setIntensity(next.intensity);
+  behaviorEngine?.setPersonality(next.personality);
+  if (interactive !== next.interactive) setInteractive(next.interactive);
+  if (followEnabled !== next.followCursor) setFollowEnabled(next.followCursor);
+}
+
+function openSettings(): void {
+  if (settingsWindow && !settingsWindow.isDestroyed()) {
+    settingsWindow.focus();
+    return;
+  }
+  settingsWindow = new BrowserWindow({
+    width: 400,
+    height: 500,
+    resizable: false,
+    title: "Mischief Settings",
+    backgroundColor: "#0f172a",
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+    },
+  });
+  settingsWindow.setMenuBarVisibility(false);
+  settingsWindow.loadFile(path.join(__dirname, "renderer", "settings.html"));
+  settingsWindow.on("closed", () => {
+    settingsWindow = null;
+  });
 }
 
 // --- Tray & menus -----------------------------------------------------------
@@ -338,10 +407,21 @@ function createTray(): void {
       },
       { type: "separator" },
       {
-        label: "Capture moment",
+        label: "Capture moment (GIF)",
         click: () => {
-          void captureMoment();
+          void captureGif();
         },
+      },
+      {
+        label: "Capture snapshot (PNG)",
+        click: () => {
+          void captureSnapshot();
+        },
+      },
+      { type: "separator" },
+      {
+        label: "Settings...",
+        click: () => openSettings(),
       },
       { type: "separator" },
       { label: "Quit Mischief", click: () => app.quit() },
@@ -405,9 +485,22 @@ ipcMain.on("mischief:pet", (_event, payload: { x: number; y: number } | undefine
   }
 });
 
+ipcMain.handle("mischief:settings:get", () => config);
+
+ipcMain.handle("mischief:settings:set", (_event, partial: unknown) => {
+  const merged =
+    typeof partial === "object" && partial !== null
+      ? { ...config, ...(partial as Record<string, unknown>) }
+      : config;
+  applyConfig(sanitizeConfig(merged));
+  persistConfig();
+  return config;
+});
+
 app.setName("Mischief");
 
 app.whenReady().then(() => {
+  loadConfig();
   companion = loadCompanion();
   if (companion) {
     console.log(`[Mischief] Loaded companion "${companion.displayName}" (${companion.packId})`);
@@ -417,8 +510,8 @@ app.whenReady().then(() => {
 
   behaviorEngine = new BehaviorEngine({
     character: companion?.character ?? null,
-    personality: companion ? toPersonality(companion.character.personality) : "curious",
-    intensity: "normal" as Intensity,
+    personality: config.personality,
+    intensity: config.intensity,
   });
 
   events.emit("RuntimeStarted", { version: app.getVersion() });
@@ -426,7 +519,7 @@ app.whenReady().then(() => {
   createApplicationMenu();
   createTray();
   createOverlay();
-  applyFollow();
+  applyConfig(config);
 
   behaviorTicker = createTicker(behaviorTick, 1000);
   behaviorTicker.start();

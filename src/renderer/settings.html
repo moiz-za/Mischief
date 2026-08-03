@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'"
+    />
+    <title>Mischief Settings</title>
+    <style>
+      :root {
+        --background: #0f172a;
+        --foreground: #f8fafc;
+        --accent: #4ade80;
+        --surface: #1e293b;
+        --border: #334155;
+        --muted: #94a3b8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--background);
+        color: var(--foreground);
+        user-select: none;
+      }
+
+      body {
+        padding: 20px 24px;
+      }
+
+      h1 {
+        font-size: 16px;
+        margin: 0 0 4px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 12px;
+        margin: 0 0 18px;
+      }
+
+      .field {
+        margin-bottom: 16px;
+      }
+
+      label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      select {
+        width: 100%;
+        padding: 8px 10px;
+        font-size: 13px;
+        color: var(--foreground);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+      }
+
+      .checks {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 4px;
+      }
+
+      .check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+      }
+
+      .check input {
+        accent-color: var(--accent);
+      }
+
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 7px 14px;
+        font-size: 13px;
+        border-radius: 6px;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--foreground);
+      }
+
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #052e16;
+        font-weight: 600;
+      }
+
+      .hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Mischief Settings</h1>
+    <p class="subtitle">The companion's personality and desktop behavior.</p>
+
+    <div class="field">
+      <label for="intensity">Personality intensity</label>
+      <select id="intensity">
+        <option value="silent">Silent — only manual interactions, nothing automatic</option>
+        <option value="calm">Calm — rare events, long idle, office-friendly</option>
+        <option value="normal">Normal — balanced (recommended)</option>
+        <option value="playful">Playful — frequent surprises</option>
+        <option value="chaos">Chaos — maximum mischief, still safe</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="personality">Personality</label>
+      <select id="personality">
+        <option value="friendly">Friendly — gentle and encouraging</option>
+        <option value="curious">Curious — explores and watches you</option>
+        <option value="lazy">Lazy — sleeps often, rare interactions</option>
+        <option value="energetic">Energetic — fast and frequent</option>
+        <option value="mischievous">Mischievous — unexpected, never harmful</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Desktop behavior</label>
+      <div class="checks">
+        <span class="check"
+          ><input type="checkbox" id="interactive" /> Interactive mode — click the companion to pet
+          it</span
+        >
+        <span class="check"
+          ><input type="checkbox" id="followCursor" /> Follow cursor when idle</span
+        >
+      </div>
+      <p class="hint">
+        Interactive mode lets the overlay receive clicks over that small area; it is off by default.
+      </p>
+    </div>
+
+    <div class="actions">
+      <button id="cancel">Cancel</button>
+      <button id="save" class="primary">Save</button>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      async function load() {
+        const config = await window.mischief.getSettings();
+        $("intensity").value = config.intensity;
+        $("personality").value = config.personality;
+        $("interactive").checked = config.interactive;
+        $("followCursor").checked = config.followCursor;
+      }
+
+      $("save").addEventListener("click", async () => {
+        await window.mischief.saveSettings({
+          intensity: $("intensity").value,
+          personality: $("personality").value,
+          interactive: $("interactive").checked,
+          followCursor: $("followCursor").checked,
+        });
+        window.close();
+      });
+
+      $("cancel").addEventListener("click", () => window.close());
+
+      load();
+    </script>
+  </body>
+</html>

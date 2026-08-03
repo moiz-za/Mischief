@@ -2,6 +2,15 @@
 
 All notable changes to Mischief are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-08-04
+
+### Added
+
+- **Settings** — a settings window (tray menu → "Settings...") with an intensity selector (Silent → Chaos), a personality selector (Friendly/Curious/Lazy/Energetic/Mischievous), and toggles for interactive mode and cursor-following. Changes apply live and persist to `settings.json` under the app's user-data directory
+- **Config manager** (`src/domain/config.ts`) — schema-validated config with `sanitizeConfig`/`parseConfig`/`serializeConfig`; corrupted or missing settings fall back to defaults instead of crashing
+- **GIF moment capture** (`src/domain/gif.ts`) — "Capture moment (GIF)" records ~1.2s of the mascot and exports a looping GIF to `~/Pictures/Mischief/` (share-loop v2). Pure-JS encoder (omggif): palette from unique colors with transparency preserved, and even lossless for our few-color sprites
+- Moment capture split into two menu actions: **GIF** and **PNG snapshot**
+
 ## [0.1.3] - 2026-08-03
 
 ### Added
