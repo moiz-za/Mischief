@@ -23,9 +23,8 @@
   <b>Mischief</b> brings personality, delight, and humor back to everyday computing — harmless desktop creatures, playful window antics, cursor surprises, seasonal effects, and ambient companions, all as optional, configurable experiences.
 </p>
 
-<!-- Add a demo GIF here: assets/demo/demo.gif -->
 <p align="center">
-  <i>Demo coming soon.</i>
+  <img src="assets/demo/demo.gif" alt="Mischief demo — the companion wanders your desktop, bobbing as it goes" width="640" />
 </p>
 
 ---
