@@ -17,6 +17,10 @@ out/
 release/
 build/
 *.tsbuildinfo
+*.blockmap
+*.dmg
+*.exe
+*.AppImage
 
 # Logs
 logs/

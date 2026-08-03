@@ -1,0 +1,21 @@
+{
+  "id": "sample-creature",
+  "name": "Sample Creature",
+  "version": "0.1.0",
+  "category": "Animals",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A minimal example Experience Pack demonstrating the pack structure.",
+  "tags": ["companion", "sample", "example"],
+  "minimumRuntimeVersion": "0.1.0",
+  "assets": ["images/creature.png", "audio/boop.wav"],
+  "characters": ["characters/bloop.json"],
+  "animations": [],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 30000
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

@@ -1,0 +1,15 @@
+# Code owners
+
+These files require review by the listed owners.
+
+* @moiz-za
+
+# CI and repository config
+/.github/ @moiz-za
+
+# Core source
+/src/ @moiz-za
+
+# Documentation
+/docs/ @moiz-za
+/README.md @moiz-za

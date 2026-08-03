@@ -1,0 +1,18 @@
+{
+  "id": "bloop",
+  "species": "blob",
+  "displayName": "Bloop",
+  "author": "Mischief Contributors",
+  "animations": {
+    "idle": { "fps": 8, "duration": 1000, "loop": true },
+    "walk": { "fps": 10, "duration": 500, "loop": true }
+  },
+  "behavior": {
+    "weightedDecision": true,
+    "idleWeight": 0.7,
+    "walkWeight": 0.3
+  },
+  "personality": "friendly",
+  "voice": { "enabled": false },
+  "sounds": []
+}

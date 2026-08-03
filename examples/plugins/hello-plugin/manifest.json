@@ -1,0 +1,17 @@
+{
+  "id": "hello-plugin",
+  "name": "Hello Plugin",
+  "version": "0.1.0",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "Minimal plugin skeleton demonstrating the SDK contract.",
+  "sdkVersion": "0.1.0",
+  "runtimeVersion": "0.1.0",
+  "permissions": ["notifications"],
+  "dependencies": [],
+  "optionalDependencies": [],
+  "entrypoint": "src/index.js",
+  "icon": "icon.png",
+  "homepage": "https://github.com/moiz-za/Mischief",
+  "tags": ["example", "sample"]
+}
