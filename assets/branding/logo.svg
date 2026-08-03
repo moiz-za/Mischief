@@ -1,9 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
-  <rect width="180" height="180" rx="36" fill="#0f172a"/>
-  <rect x="52" y="52" width="76" height="64" rx="16" fill="#4ade80"/>
-  <rect x="38" y="60" width="24" height="26" rx="12" fill="#4ade80"/>
-  <rect x="118" y="60" width="24" height="26" rx="12" fill="#4ade80"/>
-  <rect x="70" y="76" width="12" height="12" rx="6" fill="#0f172a"/>
-  <rect x="98" y="76" width="12" height="12" rx="6" fill="#0f172a"/>
-  <rect x="76" y="98" width="28" height="6" rx="3" fill="#0f172a"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#0b0f19"/>
+    </linearGradient>
+
+    <!-- Mascot Mint Green Gradient -->
+    <linearGradient id="mint-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7"/>
+      <stop offset="50%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+
+    <!-- Subtle Glow Filter -->
+    <filter id="subtle-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Soft Drop Shadow -->
+    <filter id="soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background Squircle Container -->
+  <rect x="32" y="32" width="448" height="448" rx="96" fill="url(#bg-grad)" stroke="#1e293b" stroke-width="4" filter="url(#soft-shadow)"/>
+  <rect x="32" y="32" width="448" height="448" rx="96" fill="none" stroke="#4ade80" stroke-opacity="0.25" stroke-width="2"/>
+
+  <!-- Mischief Canonical Mascot Character -->
+  <g filter="url(#subtle-glow)">
+    <!-- Left Ear / Side Antenna -->
+    <rect x="51.2" y="179.2" width="102.4" height="115.2" rx="51.2" fill="url(#mint-grad)"/>
+
+    <!-- Right Ear / Side Antenna -->
+    <rect x="358.4" y="179.2" width="102.4" height="115.2" rx="51.2" fill="url(#mint-grad)"/>
+
+    <!-- Main Head Body -->
+    <rect x="102.4" y="153.6" width="307.2" height="256" rx="64" fill="url(#mint-grad)"/>
+
+    <!-- Left Eye -->
+    <rect x="179.2" y="256" width="51.2" height="51.2" rx="25.6" fill="#0f172a"/>
+
+    <!-- Right Eye -->
+    <rect x="281.6" y="256" width="51.2" height="51.2" rx="25.6" fill="#0f172a"/>
+
+    <!-- Mouth -->
+    <rect x="204.8" y="345.6" width="102.4" height="25.6" rx="12.8" fill="#0f172a"/>
+  </g>
 </svg>
