@@ -1,0 +1,19 @@
+{
+  "id": "invalid-bad-version-string",
+  "name": "Bad Version Pack",
+  "version": "v1.0-alpha-beta-invalid",
+  "category": "animals",
+  "author": "Mischief Test Suite",
+  "license": "MIT",
+  "description": "Invalid manifest containing a non-semver version string.",
+  "tags": ["invalid"],
+  "minimumRuntimeVersion": "0.1.0",
+  "assets": [],
+  "characters": [],
+  "animations": [],
+  "audio": [],
+  "configuration": {},
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

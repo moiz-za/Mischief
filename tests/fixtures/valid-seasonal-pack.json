@@ -1,0 +1,21 @@
+{
+  "id": "valid-seasonal-pack",
+  "name": "Valid Seasonal Pack",
+  "version": "0.2.0",
+  "category": "seasonal",
+  "author": "Mischief Test Suite",
+  "license": "MIT",
+  "description": "A valid seasonal pack fixture for schema testing.",
+  "tags": ["seasonal", "winter"],
+  "minimumRuntimeVersion": "0.1.0",
+  "assets": ["images/snow.png"],
+  "characters": [],
+  "animations": ["animations/snowfall.json"],
+  "audio": [],
+  "configuration": {
+    "season": "winter"
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

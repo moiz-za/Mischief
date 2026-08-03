@@ -1,0 +1,20 @@
+{
+  "id": "invalid-unknown-extra-field",
+  "name": "Unknown Field Pack",
+  "version": "1.0.0",
+  "category": "animals",
+  "author": "Mischief Test Suite",
+  "license": "MIT",
+  "description": "Invalid manifest containing an unapproved extra field 'illegalField'.",
+  "illegalField": "should cause validation failure",
+  "tags": ["invalid"],
+  "minimumRuntimeVersion": "0.1.0",
+  "assets": [],
+  "characters": [],
+  "animations": [],
+  "audio": [],
+  "configuration": {},
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

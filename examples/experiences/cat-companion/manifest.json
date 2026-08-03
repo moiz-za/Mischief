@@ -1,0 +1,21 @@
+{
+  "id": "cat-companion",
+  "name": "Curious Cat Companion",
+  "version": "0.1.0",
+  "category": "animals",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A curious desktop cat companion that sneaks, wanders, and pounces.",
+  "tags": ["cat", "companion", "curious", "pet"],
+  "minimumRuntimeVersion": "0.1.0",
+  "assets": ["images/whiskers.svg"],
+  "characters": ["characters/whiskers.json"],
+  "animations": [],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 25000
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "app": {
+    "name": "Mischief",
+    "tagline": "Die Open-Source-Plattform für Desktop-Unterhaltung."
+  },
+  "tray": {
+    "show": "Mischief anzeigen",
+    "settings": "Einstellungen...",
+    "quit": "Mischief beenden"
+  },
+  "settings": {
+    "title": "Mischief Einstellungen",
+    "intensity": "Persönlichkeitsintensität",
+    "theme": "App-Design",
+    "language": "Sprache",
+    "save": "Einstellungen speichern"
+  },
+  "creature": {
+    "label": "Mischief-Begleiter",
+    "statusIdle": "Ruht sich aus...",
+    "statusWandering": "Wandert umher..."
+  }
+}

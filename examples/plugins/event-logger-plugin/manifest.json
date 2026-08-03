@@ -1,17 +1,17 @@
 {
-  "id": "hello-plugin",
-  "name": "Hello Plugin",
+  "id": "event-logger-plugin",
+  "name": "Event Logger Plugin",
   "version": "0.1.0",
   "author": "Mischief Contributors",
   "license": "MIT",
-  "description": "Minimal plugin skeleton demonstrating the SDK contract.",
+  "description": "A sample plugin that subscribes to runtime events and logs event metrics.",
   "sdkVersion": "0.1.0",
   "runtimeVersion": "0.1.0",
-  "permissions": ["notifications"],
+  "permissions": ["events:read"],
   "dependencies": [],
   "entrypoint": "src/index.js",
   "icon": "icon.png",
   "homepage": "https://github.com/moiz-za/Mischief",
   "repository": "https://github.com/moiz-za/Mischief",
-  "tags": ["example", "sample"]
+  "tags": ["example", "sample", "events"]
 }

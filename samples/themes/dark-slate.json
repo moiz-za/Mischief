@@ -1,0 +1,14 @@
+{
+  "id": "dark-slate",
+  "name": "Dark Slate",
+  "author": "Mischief Contributors",
+  "tokens": {
+    "background": "#0f172a",
+    "foreground": "#f8fafc",
+    "accent": "#4ade80",
+    "accentSoft": "rgba(74, 222, 128, 0.15)",
+    "surface": "#1e293b",
+    "border": "#334155",
+    "muted": "#94a3b8"
+  }
+}

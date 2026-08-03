@@ -1,14 +1,61 @@
 import { app, BrowserWindow, Menu, screen, Tray, nativeImage } from "electron";
+import * as fs from "fs";
 import * as path from "path";
 import { followPosition } from "./domain/overlay";
+import { loadExperiencePack, type PackReader } from "./domain/pack";
 
 let overlay: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let followCursor = true;
 let followInterval: NodeJS.Timeout | null = null;
+let companion: LoadedCompanion | null = null;
 
 const OVERLAY_SIZE = 96;
 const CURSOR_GAP = 10;
+const EXPERIENCE_DIR = path.join(__dirname, "renderer", "experiences");
+const PACK_ORDER = ["cat-companion", "ghost-companion", "robot-companion"];
+
+interface LoadedCompanion {
+  packId: string;
+  displayName: string;
+  species: string;
+  sprite: string;
+}
+
+function createDirReader(baseDir: string): PackReader {
+  return {
+    exists(relative) {
+      return fs.existsSync(path.join(baseDir, relative));
+    },
+    readText(relative) {
+      try {
+        return fs.readFileSync(path.join(baseDir, relative), "utf8");
+      } catch {
+        return null;
+      }
+    },
+  };
+}
+
+function loadCompanion(): LoadedCompanion | null {
+  for (const packId of PACK_ORDER) {
+    const dir = path.join(EXPERIENCE_DIR, packId);
+    if (!fs.existsSync(dir)) continue;
+    const result = loadExperiencePack(createDirReader(dir));
+    if (!result.pack) continue;
+    const character = result.pack.characters[0];
+    if (!character) continue;
+    const sprite = result.pack.manifest.assets.find((asset) => asset.endsWith(".svg"));
+    if (!sprite) continue;
+    return {
+      packId,
+      displayName: character.character.displayName,
+      species: character.character.species,
+      sprite: `experiences/${packId}/${sprite}`,
+    };
+  }
+  return null;
+}
 
 function createOverlay(): void {
   const { workArea } = screen.getPrimaryDisplay();
@@ -30,7 +77,9 @@ function createOverlay(): void {
     },
   });
 
-  overlay.loadFile(path.join(__dirname, "renderer", "overlay.html"));
+  overlay.loadFile(path.join(__dirname, "renderer", "overlay.html"), {
+    query: companion && companion.sprite ? { sprite: companion.sprite } : {},
+  });
   overlay.setAlwaysOnTop(true, "screen-saver");
   overlay.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   // The overlay is decorative: it must never intercept clicks or hover.
@@ -66,7 +115,9 @@ function setFollowCursor(enabled: boolean): void {
 function createTray(): void {
   const icon = nativeImage.createFromPath(path.join(__dirname, "assets", "tray", "icon.png"));
   tray = new Tray(icon);
-  tray.setToolTip("Mischief");
+  tray.setToolTip(
+    companion ? `${companion.displayName} (${companion.species}) - Mischief` : "Mischief"
+  );
   tray.setContextMenu(
     Menu.buildFromTemplate([
       {
@@ -123,6 +174,12 @@ function createApplicationMenu(): void {
 app.setName("Mischief");
 
 app.whenReady().then(() => {
+  companion = loadCompanion();
+  if (companion) {
+    console.log(`[Mischief] Loaded companion "${companion.displayName}" (${companion.packId})`);
+  } else {
+    console.warn("[Mischief] No example experience pack loaded; using built-in creature");
+  }
   createApplicationMenu();
   createTray();
   createOverlay();

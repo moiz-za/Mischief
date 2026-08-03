@@ -1,0 +1,19 @@
+{
+  "id": "valid-character-pack",
+  "name": "Valid Character Pack",
+  "version": "1.0.0",
+  "category": "animals",
+  "author": "Mischief Test Suite",
+  "license": "MIT",
+  "description": "A valid character pack fixture for schema testing.",
+  "tags": ["test", "valid"],
+  "minimumRuntimeVersion": "0.1.0",
+  "assets": ["images/test.png"],
+  "characters": ["characters/test.json"],
+  "animations": [],
+  "audio": [],
+  "configuration": {},
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "sparky",
+  "species": "robot",
+  "displayName": "Sparky",
+  "author": "Mischief Contributors",
+  "animations": {
+    "idle": { "fps": 12, "duration": 800, "loop": true },
+    "scan": { "fps": 15, "duration": 600, "loop": true },
+    "beep": { "fps": 10, "duration": 400, "loop": false }
+  },
+  "behavior": {
+    "weightedDecision": true,
+    "idleWeight": 0.4,
+    "scanWeight": 0.4,
+    "beepWeight": 0.2
+  },
+  "personality": "hyper",
+  "voice": { "enabled": false },
+  "sounds": []
+}

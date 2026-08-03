@@ -1,0 +1,21 @@
+{
+  "id": "robot-companion",
+  "name": "Hyper Robot Companion",
+  "version": "0.1.0",
+  "category": "robots",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A hyperactive robot companion that scans the screen and does micro-glitch bobbing.",
+  "tags": ["robot", "companion", "tech", "hyper"],
+  "minimumRuntimeVersion": "0.1.0",
+  "assets": ["images/sparky.svg"],
+  "characters": ["characters/sparky.json"],
+  "animations": [],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 15000
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

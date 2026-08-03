@@ -1,0 +1,21 @@
+{
+  "id": "whiskers",
+  "species": "cat",
+  "displayName": "Whiskers",
+  "author": "Mischief Contributors",
+  "animations": {
+    "idle": { "fps": 6, "duration": 1200, "loop": true },
+    "walk": { "fps": 10, "duration": 600, "loop": true },
+    "sneak": { "fps": 8, "duration": 800, "loop": true },
+    "pounce": { "fps": 12, "duration": 400, "loop": false }
+  },
+  "behavior": {
+    "weightedDecision": true,
+    "idleWeight": 0.5,
+    "walkWeight": 0.3,
+    "sneakWeight": 0.2
+  },
+  "personality": "curious",
+  "voice": { "enabled": false },
+  "sounds": []
+}

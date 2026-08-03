@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'"
+      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self'"
     />
     <title>Mischief</title>
     <style>
@@ -28,6 +28,12 @@
         animation: bob 2s ease-in-out infinite;
       }
 
+      #creature img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
       @keyframes bob {
         0%,
         100% {
@@ -43,8 +49,13 @@
     <div id="creature" aria-label="Mischief companion"></div>
     <script>
       const creature = document.getElementById("creature");
+      const params = new URLSearchParams(location.search);
+      const sprite = params.get("sprite");
 
-      creature.innerHTML = `
+      if (sprite) {
+        creature.innerHTML = `<img src="${sprite}" alt="Mischief companion" />`;
+      } else {
+        creature.innerHTML = `
         <svg viewBox="0 0 80 80" width="80" height="80" aria-hidden="true">
           <rect x="16" y="24" width="48" height="40" rx="10" fill="#4ade80"/>
           <rect x="8"  y="28" width="16" height="18" rx="8" fill="#4ade80"/>
@@ -53,6 +64,7 @@
           <rect x="44" y="40" width="8"  height="8"  rx="4" fill="#1e293b"/>
           <rect x="32" y="54" width="16" height="4"  rx="2" fill="#1e293b"/>
         </svg>`;
+      }
     </script>
   </body>
 </html>

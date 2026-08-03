@@ -1,0 +1,14 @@
+{
+  "id": "vibrant-neon",
+  "name": "Vibrant Neon",
+  "author": "Mischief Contributors",
+  "tokens": {
+    "background": "#0b0f19",
+    "foreground": "#ffffff",
+    "accent": "#00ff9d",
+    "accentSoft": "rgba(0, 255, 157, 0.2)",
+    "surface": "#131c2e",
+    "border": "#1e293b",
+    "muted": "#64748b"
+  }
+}

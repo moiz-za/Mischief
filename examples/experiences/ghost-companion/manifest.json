@@ -1,0 +1,21 @@
+{
+  "id": "ghost-companion",
+  "name": "Playful Ghostling Companion",
+  "version": "0.1.0",
+  "category": "supernatural",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A playful translucent ghostling companion that floats around desktop windows.",
+  "tags": ["ghost", "companion", "translucent", "playful"],
+  "minimumRuntimeVersion": "0.1.0",
+  "assets": ["images/spectra.svg"],
+  "characters": ["characters/spectra.json"],
+  "animations": [],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 20000
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}
