@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'"
+    />
+    <title>Mischief</title>
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: transparent;
+        user-select: none;
+        cursor: default;
+      }
+
+      #creature {
+        position: absolute;
+        left: 8px;
+        top: 8px;
+        width: 80px;
+        height: 80px;
+        animation: bob 2s ease-in-out infinite;
+      }
+
+      @keyframes bob {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="creature" aria-label="Mischief companion"></div>
+    <script>
+      const creature = document.getElementById("creature");
+
+      creature.innerHTML = `
+        <svg viewBox="0 0 80 80" width="80" height="80" aria-hidden="true">
+          <rect x="16" y="24" width="48" height="40" rx="10" fill="#4ade80"/>
+          <rect x="8"  y="28" width="16" height="18" rx="8" fill="#4ade80"/>
+          <rect x="56" y="28" width="16" height="18" rx="8" fill="#4ade80"/>
+          <rect x="28" y="40" width="8"  height="8"  rx="4" fill="#1e293b"/>
+          <rect x="44" y="40" width="8"  height="8"  rx="4" fill="#1e293b"/>
+          <rect x="32" y="54" width="16" height="4"  rx="2" fill="#1e293b"/>
+        </svg>`;
+
+      document.addEventListener("mousemove", (event) => {
+        const x = event.clientX - 40;
+        const y = event.clientY - 40;
+        creature.style.left = `${Math.max(0, Math.min(16, x))}px`;
+        creature.style.top = `${Math.max(0, Math.min(16, y))}px`;
+      });
+    </script>
+  </body>
+</html>

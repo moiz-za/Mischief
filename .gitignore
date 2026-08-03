@@ -1,0 +1,28 @@
+# Never publish the master specification
+Main Docs/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+out/
+release/
+build/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Env
+.env
+.env.local

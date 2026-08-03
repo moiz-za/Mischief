@@ -1,0 +1,17 @@
+{
+  "name": "mischief",
+  "version": "0.1.0",
+  "description": "Offline-first, privacy-first desktop entertainment platform",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc && node scripts/copy-assets.js",
+    "start": "npm run build && electron .",
+    "dev": "npm run build && electron .",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "typescript": "^5.6.0"
+  }
+}
