@@ -59,8 +59,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
       - name: Generate checksums
-        shell: bash
-        run: shasum -a 256 release/* > release/SHA256SUMS
+        run: node scripts/generate-checksums.js
 
       - name: Attach to release
         uses: softprops/action-gh-release@v2
@@ -95,8 +94,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
       - name: Generate checksums
-        shell: bash
-        run: shasum -a 256 release/* > release/SHA256SUMS
+        run: node scripts/generate-checksums.js
 
       - name: Attach to release
         uses: softprops/action-gh-release@v2
@@ -131,8 +129,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
       - name: Generate checksums
-        shell: bash
-        run: shasum -a 256 release/* > release/SHA256SUMS
+        run: node scripts/generate-checksums.js
 
       - name: Attach to release
         uses: softprops/action-gh-release@v2
