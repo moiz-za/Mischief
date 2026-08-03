@@ -15,3 +15,4 @@ function copyDir(src, dest) {
 }
 
 copyDir(join(__dirname, "..", "src", "renderer"), join(__dirname, "..", "dist", "renderer"));
+copyDir(join(__dirname, "..", "src", "assets"), join(__dirname, "..", "dist", "assets"));
