@@ -16,7 +16,10 @@
         overflow: hidden;
         background: transparent;
         user-select: none;
-        cursor: default;
+      }
+
+      body.interactive {
+        cursor: pointer;
       }
 
       #creature {
@@ -25,13 +28,49 @@
         top: 8px;
         width: 80px;
         height: 80px;
-        animation: bob 2s ease-in-out infinite;
+        transform-origin: 50% 90%;
       }
 
       #creature img {
         width: 100%;
         height: 100%;
         object-fit: contain;
+      }
+
+      #zzz {
+        position: absolute;
+        top: 2px;
+        right: 4px;
+        font-size: 14px;
+        font-weight: 700;
+        color: rgba(30, 41, 59, 0.6);
+        opacity: 0;
+      }
+
+      /* Behavior animations */
+      .anim-idle {
+        animation: bob 2s ease-in-out infinite;
+      }
+
+      .anim-move {
+        animation: sway 0.9s ease-in-out infinite;
+      }
+
+      .anim-sleep {
+        animation: sleep-bob 3s ease-in-out infinite;
+      }
+
+      .anim-sleep #zzz {
+        animation: zzz 2.4s ease-in-out infinite;
+        opacity: 1;
+      }
+
+      .anim-yawn {
+        animation: yawn 2.2s ease;
+      }
+
+      .anim-happy {
+        animation: happy 0.7s ease-in-out 5;
       }
 
       @keyframes bob {
@@ -43,27 +82,143 @@
           transform: translateY(-6px);
         }
       }
+
+      @keyframes sway {
+        0%,
+        100% {
+          transform: translateY(-2px) rotate(-4deg);
+        }
+        50% {
+          transform: translateY(-6px) rotate(4deg);
+        }
+      }
+
+      @keyframes sleep-bob {
+        0%,
+        100% {
+          transform: translateY(2px) scale(0.96);
+        }
+        50% {
+          transform: translateY(0) scale(0.96);
+        }
+      }
+
+      @keyframes zzz {
+        0% {
+          transform: translate(0, 0);
+          opacity: 0;
+        }
+        30% {
+          opacity: 1;
+        }
+        100% {
+          transform: translate(8px, -14px);
+          opacity: 0;
+        }
+      }
+
+      @keyframes yawn {
+        0% {
+          transform: scale(1, 1);
+        }
+        40% {
+          transform: scale(1.08, 0.92) translateY(2px);
+        }
+        70% {
+          transform: scale(0.96, 1.04);
+        }
+        100% {
+          transform: scale(1, 1);
+        }
+      }
+
+      @keyframes happy {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        25% {
+          transform: translateY(-10px) rotate(-6deg);
+        }
+        75% {
+          transform: translateY(-10px) rotate(6deg);
+        }
+      }
     </style>
   </head>
   <body>
-    <div id="creature" aria-label="Mischief companion"></div>
+    <div id="creature" aria-label="Mischief companion"><span id="zzz">z</span></div>
     <script>
       const creature = document.getElementById("creature");
       const params = new URLSearchParams(location.search);
       const sprite = params.get("sprite");
 
       if (sprite) {
-        creature.innerHTML = `<img src="${sprite}" alt="Mischief companion" />`;
+        creature.innerHTML =
+          `<img src="${sprite}" alt="Mischief companion" />` + creature.innerHTML;
       } else {
-        creature.innerHTML = `
-        <svg viewBox="0 0 80 80" width="80" height="80" aria-hidden="true">
-          <rect x="16" y="24" width="48" height="40" rx="10" fill="#4ade80"/>
-          <rect x="8"  y="28" width="16" height="18" rx="8" fill="#4ade80"/>
-          <rect x="56" y="28" width="16" height="18" rx="8" fill="#4ade80"/>
-          <rect x="28" y="40" width="8"  height="8"  rx="4" fill="#1e293b"/>
-          <rect x="44" y="40" width="8"  height="8"  rx="4" fill="#1e293b"/>
-          <rect x="32" y="54" width="16" height="4"  rx="2" fill="#1e293b"/>
-        </svg>`;
+        creature.innerHTML =
+          `
+          <svg viewBox="0 0 80 80" width="80" height="80" aria-hidden="true">
+            <rect x="16" y="24" width="48" height="40" rx="10" fill="#4ade80"/>
+            <rect x="8"  y="28" width="16" height="18" rx="8" fill="#4ade80"/>
+            <rect x="56" y="28" width="16" height="18" rx="8" fill="#4ade80"/>
+            <rect x="28" y="40" width="8"  height="8"  rx="4" fill="#1e293b"/>
+            <rect x="44" y="40" width="8"  height="8"  rx="4" fill="#1e293b"/>
+            <rect x="32" y="54" width="16" height="4"  rx="2" fill="#1e293b"/>
+          </svg>` + creature.innerHTML;
+      }
+
+      const ANIM_CLASSES = {
+        idle: "anim-idle",
+        walk: "anim-move",
+        waddle: "anim-move",
+        stroll: "anim-move",
+        float: "anim-move",
+        glide: "anim-move",
+        fly: "anim-move",
+        sneak: "anim-move",
+        run: "anim-move",
+        pounce: "anim-move",
+        jump: "anim-move",
+        sleep: "anim-sleep",
+        yawn: "anim-yawn",
+        happy: "anim-happy",
+      };
+      const ONE_SHOT = new Set(["anim-yawn", "anim-happy"]);
+
+      function applyAnim(anim) {
+        const cls = ANIM_CLASSES[anim] || "anim-idle";
+        creature.className = cls;
+        if (ONE_SHOT.has(cls)) {
+          creature.addEventListener(
+            "animationend",
+            () => {
+              creature.className = "anim-idle";
+            },
+            { once: true }
+          );
+        }
+      }
+
+      applyAnim("idle");
+
+      if (window.mischief && window.mischief.onBehavior) {
+        window.mischief.onBehavior((behavior) => {
+          applyAnim(behavior.anim);
+        });
+      }
+
+      creature.addEventListener("click", (event) => {
+        if (window.mischief && window.mischief.pet) {
+          window.mischief.pet(event.clientX, event.clientY);
+        }
+      });
+
+      if (window.mischief && window.mischief.onInteractive) {
+        window.mischief.onInteractive((enabled) => {
+          document.body.classList.toggle("interactive", enabled);
+        });
       }
     </script>
   </body>

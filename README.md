@@ -8,7 +8,7 @@
 
 ### by [Moiz Solutions](https://tools.moiz.solutions)
 
-[![Version](https://img.shields.io/badge/version-0.1.2-blue?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.3-blue?style=flat-square)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/moiz-za/Mischief?style=flat-square&label=stars)](https://github.com/moiz-za/Mischief)
 [![Last Commit](https://img.shields.io/github/last-commit/moiz-za/Mischief?style=flat-square)](https://github.com/moiz-za/Mischief/commits/main)
@@ -58,6 +58,8 @@
 
 - Events carry **priority, conditions, and cooldowns** — the companion never spams you
 - **Intensity levels** from _Silent_ to _Chaos_ — you decide how much mischief you want
+- The companion **reacts to your real work**: sleeps after inactivity, yawns when you return, wanders the desktop, perks up when you click it
+- **Interactive mode** — click your companion and watch it react (off by default; click-through preserved)
 
 ### 🛡️ Safe by design
 
@@ -232,6 +234,7 @@ A: They're single-app pets. Mischief is a **platform**: a small runtime that loa
 
 | Version    | Date    | Summary                                                                                                                                                                                             |
 | ---------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v0.1.3** | 2026-08 | Personality engine: event bus, intensity levels (Silent→Chaos), weighted behaviors with cooldowns, sleeps/yawns/wanders, interactive pet mode, PNG moment capture                                   |
 | **v0.1.2** | 2026-08 | Strict manifest validation (security boundary), Experience Pack loader, typed localization (`en-US`/`es`/`de`/`fr`), themes, runtime loads the Whiskers companion pack, 4 example packs + 2 plugins |
 | **v0.1.0** | 2026-08 | Initial foundation — Electron + TypeScript skeleton, overlay companion + tray, pure tested domain layer, CI (typecheck/lint/build/test/audit), gitleaks secret scanning, packaging config           |
 

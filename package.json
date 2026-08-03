@@ -1,6 +1,6 @@
 {
   "name": "mischief",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Offline-first, privacy-first desktop entertainment platform",
   "main": "dist/main.js",
   "scripts": {

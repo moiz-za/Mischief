@@ -2,6 +2,20 @@
 
 All notable changes to Mischief are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/).
 
+## [0.1.3] - 2026-08-03
+
+### Added
+
+- **Personality engine** (spec §24–27, §60) — the mascot now reacts to what you do:
+  - Typed **event bus** with the spec §206 event catalog (`CharacterSpawned`, `CharacterClicked`, `CharacterSleeping`, `CharacterMoved`, …)
+  - **Behavior engine** with intensity levels (Silent → Chaos) and personalities (Friendly/Curious/Lazy/Energetic/Mischievous) that shape timing and which behaviors get favored
+  - **Weighted free-choice behaviors** with cooldowns, plus contextual triggers: sleeps in the corner after inactivity, yawns when you return, reacts excited when petted
+  - **Context signals**: system idle time, time-of-day, user activity
+  - **Wandering** — the mascot strolls across the desktop when curious/energetic (reversible: it returns to following the cursor)
+- **Interactive mode** — a tray toggle ("Interactive (pet me)") that lets you click the mascot; clicking emits `CharacterClicked` and triggers a happy reaction. Off by default (click-through preserved)
+- **Moment capture** — saves a PNG of the mascot to `~/Pictures/Mischief/` and reveals it in your file manager (share-loop v1; GIF export is a follow-up)
+- **Behavior → animation mapping** in the renderer: bob, sway, sleep (with Zzz), yawn, happy bounce
+
 ## [0.1.2] - 2026-08-03
 
 ### Added
