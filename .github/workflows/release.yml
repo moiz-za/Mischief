@@ -10,9 +10,35 @@ permissions:
   contents: write
 
 jobs:
+  security:
+    name: Security gate (audit + secrets)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Dependency audit
+        run: npm audit --omit=dev
+
+      - name: Secret scan (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+
   mac:
     name: macOS (universal)
     runs-on: macos-latest
+    needs: security
     steps:
       - uses: actions/checkout@v4
 
@@ -43,6 +69,7 @@ jobs:
   windows:
     name: Windows
     runs-on: windows-latest
+    needs: security
     steps:
       - uses: actions/checkout@v4
 
@@ -73,6 +100,7 @@ jobs:
   linux:
     name: Linux
     runs-on: ubuntu-latest
+    needs: security
     steps:
       - uses: actions/checkout@v4
 

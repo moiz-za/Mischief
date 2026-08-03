@@ -154,8 +154,10 @@
       const sprite = params.get("sprite");
 
       if (sprite) {
-        creature.innerHTML =
-          `<img src="${sprite}" alt="Mischief companion" />` + creature.innerHTML;
+        const img = document.createElement("img");
+        img.src = sprite;
+        img.alt = "Mischief companion";
+        creature.prepend(img);
       } else {
         creature.innerHTML =
           `

@@ -33,3 +33,13 @@ npm-debug.log*
 # Env
 .env
 .env.local
+
+# Secrets (belt-and-braces alongside gitleaks)
+*.key
+*.pem
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+.npmrc
+.htpasswd

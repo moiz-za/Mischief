@@ -81,7 +81,13 @@ function loadCompanion(): LoadedCompanion | null {
     if (!result.pack) continue;
     const character = result.pack.characters[0];
     if (!character) continue;
-    const sprite = result.pack.manifest.assets.find((asset) => asset.endsWith(".svg"));
+    const sprite = result.pack.manifest.assets.find(
+      (asset) =>
+        asset.endsWith(".svg") &&
+        !asset.includes("..") &&
+        !asset.startsWith("/") &&
+        /^[a-zA-Z0-9._/-]+$/.test(asset)
+    );
     if (!sprite) continue;
     return {
       packId,
@@ -92,6 +98,11 @@ function loadCompanion(): LoadedCompanion | null {
     };
   }
   return null;
+}
+
+function hardenWebContents(win: BrowserWindow): void {
+  win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  win.webContents.on("will-navigate", (event) => event.preventDefault());
 }
 
 function createOverlay(): void {
@@ -111,9 +122,13 @@ function createOverlay(): void {
     skipTaskbar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
     },
   });
 
+  hardenWebContents(overlay);
   overlay.loadFile(path.join(__dirname, "renderer", "overlay.html"), {
     query: companion && companion.sprite ? { sprite: companion.sprite } : {},
   });
@@ -338,7 +353,7 @@ function loadConfig(): void {
 function persistConfig(): void {
   try {
     fs.mkdirSync(path.dirname(settingsPath()), { recursive: true });
-    fs.writeFileSync(settingsPath(), serializeConfig(config), "utf8");
+    fs.writeFileSync(settingsPath(), serializeConfig(config), { mode: 0o600 });
   } catch (error) {
     console.warn("[Mischief] Could not persist settings:", error);
   }
@@ -365,9 +380,13 @@ function openSettings(): void {
     backgroundColor: "#0f172a",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
     },
   });
   settingsWindow.setMenuBarVisibility(false);
+  hardenWebContents(settingsWindow);
   settingsWindow.loadFile(path.join(__dirname, "renderer", "settings.html"));
   settingsWindow.on("closed", () => {
     settingsWindow = null;
