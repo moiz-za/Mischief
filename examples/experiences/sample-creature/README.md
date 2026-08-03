@@ -22,5 +22,10 @@ sample-creature/
 
 ## Validating
 
-A pack validator will be provided in `tools/`. Until then, keep the manifest
-schema-compliant (see `docs/experiences/`).
+```bash
+npm run validate:packs
+```
+
+Packs are validated with the same strict loader the runtime uses. See
+[`docs/experiences/`](../../docs/experiences/) for the full manifest reference
+and a walkthrough.

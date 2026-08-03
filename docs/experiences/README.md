@@ -1,4 +1,4 @@
-# Experiences
+# Experience Packs
 
 Experience Packs are the content of Mischief — declarative, data-only, and safe.
 
@@ -9,3 +9,179 @@ Experience Packs are the content of Mischief — declarative, data-only, and saf
 - Submission guidelines
 
 Experience Packs contain no executable code and cannot access the filesystem or network.
+
+---
+
+## Quick start (≈10 minutes)
+
+1. Copy the starter pack:
+
+   ```bash
+   cp -r examples/experiences/sample-creature examples/experiences/my-companion
+   ```
+
+2. Edit `manifest.json` and `characters/*.json` (see the references below).
+3. Drop in a sprite at `images/…` and reference it from `assets`.
+4. Validate against the same strict loader the runtime uses:
+
+   ```bash
+   npm run validate:packs
+   ```
+
+   All packs under `examples/experiences/` are checked — `[OK]` means yours will load.
+
+---
+
+## Anatomy of a pack
+
+```
+my-companion/
+├── manifest.json          # pack metadata (required, strictly validated)
+├── characters/
+│   └── my-creature.json   # character definition (referenced by manifest)
+├── images/                # sprite assets (must exist; one .svg becomes the overlay sprite)
+├── audio/                 # sound assets (optional)
+├── animations/            # reserved for future animation packs
+└── README.md              # describe your pack for humans
+```
+
+Every path in the manifest is **relative to the pack root**, and every referenced
+file must **exist on disk** — the loader verifies this at load time.
+
+---
+
+## `manifest.json` reference
+
+Fields are validated strictly: **unknown fields are rejected**, ids must be
+kebab-case, and versions must be semantic version strings.
+
+| Field                   | Type     | Rule                                                                                       |
+| :---------------------- | :------- | :----------------------------------------------------------------------------------------- |
+| `id`                    | string   | Required, kebab-case (`my-companion`)                                                      |
+| `name`                  | string   | Required, non-empty                                                                        |
+| `version`               | string   | Required, semver (`0.1.0`)                                                                 |
+| `category`              | string   | Required, non-empty (e.g. `animals`, `fantasy`, `tech`)                                    |
+| `author`                | string   | Required, non-empty                                                                        |
+| `license`               | string   | Required, non-empty (e.g. `MIT`)                                                           |
+| `description`           | string   | Required, non-empty                                                                        |
+| `tags`                  | string[] | Required (may be empty)                                                                    |
+| `minimumRuntimeVersion` | string   | Required, semver                                                                           |
+| `assets`                | string[] | Required. Paths must exist; the first `.svg` is used as the overlay sprite                 |
+| `characters`            | string[] | Required. Paths must exist and contain valid character manifests                           |
+| `animations`            | string[] | Required (may be empty)                                                                    |
+| `audio`                 | string[] | Required (may be empty)                                                                    |
+| `configuration`         | object   | Required. Free-form per-pack settings (e.g. `idleTimeoutMs`)                               |
+| `compatibility`         | object   | Required. `{ "platforms": ["windows","macos","linux"] }` — non-empty subset of those three |
+
+### Minimal example
+
+```json
+{
+  "id": "my-companion",
+  "name": "My Companion",
+  "version": "0.1.0",
+  "category": "animals",
+  "author": "You",
+  "license": "MIT",
+  "description": "A friendly blob that follows your cursor.",
+  "tags": ["companion"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/creature.svg"],
+  "characters": ["characters/blob.json"],
+  "animations": [],
+  "audio": [],
+  "configuration": { "idleTimeoutMs": 30000 },
+  "compatibility": { "platforms": ["windows", "macos", "linux"] }
+}
+```
+
+---
+
+## Character manifest reference
+
+Each file listed in `characters` describes one character:
+
+| Field         | Type     | Rule                                                                      |
+| :------------ | :------- | :------------------------------------------------------------------------ |
+| `id`          | string   | Required, kebab-case                                                      |
+| `species`     | string   | Required, non-empty                                                       |
+| `displayName` | string   | Required, non-empty (shown in the tray tooltip)                           |
+| `author`      | string   | Required, non-empty                                                       |
+| `personality` | string   | Required. `friendly`, `curious`, `lazy`, `energetic`, or `mischievous`    |
+| `animations`  | object   | Required. Map of animation name → `{ fps ≥ 1, duration ≥ 1, loop: bool }` |
+| `behavior`    | object   | Required. `{ "weightedDecision": bool, "<anim>Weight": number ≥ 0 }`      |
+| `voice`       | object   | Required. `{ "enabled": bool }`                                           |
+| `sounds`      | string[] | Required (may be empty)                                                   |
+
+### How animations and weights drive behavior
+
+- The behavior engine builds one **behavior per animation** in `animations`.
+- Its likelihood is `behavior.<anim>Weight` (default `0.1` when absent); higher
+  weight = chosen more often.
+- **Movement animations** (`walk`, `waddle`, `stroll`, `float`, `glide`, `fly`,
+  `sneak`, `run`, `pounce`, `jump`) make the companion **wander the desktop**.
+- **High-energy animations** (`pounce`, `jump`, `run`, `spin`, `bounce`, `dance`,
+  `zoom`, `sneak`) are only selected at **Playful** intensity or above.
+- The renderer maps animation names to motion: `idle` bobs; movement anims sway;
+  `sleep` sleeps with "z"; `yawn` and `happy` play as one-shots. Unknown anim
+  names fall back to a gentle idle bob.
+
+### Example character
+
+```json
+{
+  "id": "blob",
+  "species": "blob",
+  "displayName": "Bloop",
+  "author": "You",
+  "animations": {
+    "idle": { "fps": 8, "duration": 1000, "loop": true },
+    "walk": { "fps": 10, "duration": 500, "loop": true },
+    "yawn": { "fps": 6, "duration": 2200, "loop": false }
+  },
+  "behavior": {
+    "weightedDecision": true,
+    "idleWeight": 0.6,
+    "walkWeight": 0.3,
+    "yawnWeight": 0.1
+  },
+  "personality": "curious",
+  "voice": { "enabled": false },
+  "sounds": []
+}
+```
+
+---
+
+## Validating your pack
+
+```bash
+npm run validate:packs
+```
+
+This runs every pack under `examples/experiences/` through the **same loader the
+runtime uses** — the strict manifest checks, character resolution, and
+asset-existence checks. A pack only ships if it prints `[OK]`.
+
+---
+
+## Loading your pack
+
+Today the runtime loads the first valid pack from the bundled examples directory
+(see `PACK_ORDER` in `src/main.ts`). To make your pack the companion:
+
+1. Put it at `examples/experiences/<your-pack-id>/`.
+2. Add `<your-pack-id>` to the front of `PACK_ORDER`.
+3. `npm run dev` — the companion appears at your screen corner.
+
+A user-facing "install pack from a folder" flow ships in a future release.
+
+---
+
+## Submission guidelines
+
+- Packs are **data only** — no executable code, ever.
+- Everything a pack references must exist in the pack.
+- Keep manifests schema-compliant; `npm run validate:packs` must pass.
+- Be kind: reversible, non-destructive behavior only. Mischief is a mischievous
+  friend, never malware.
