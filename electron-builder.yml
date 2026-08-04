@@ -6,11 +6,13 @@ files:
   - dist/**/*
   - package.json
 mac:
+  icon: assets/icons/icon.icns
   target:
     - dmg
     - zip
   category: public.app-category.entertainment
 win:
+  icon: assets/icons/icon.ico
   target:
     - target: nsis
       arch: [x64, arm64]
@@ -20,6 +22,7 @@ nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
 linux:
+  icon: assets/icons/icon.png
   target:
     - AppImage
   category: Game
