@@ -48,17 +48,19 @@ import {
   type Stroke,
 } from "./domain/segmentation";
 import { sanitizeCompanionMeta, type CompanionMeta, type FaceAnchor } from "./domain/procedural";
+import { pickReaction, type Signal } from "./domain/reactions";
 import { createTicker, type Ticker } from "./domain/scheduler";
 import { isSafeSpritePath, pickSprite } from "./domain/sprite";
 
 protocol.registerSchemesAsPrivileged([
   {
     scheme: "mischief-asset",
-    privileges: { standard: true, secure: true, corsEnabled: false },
+    privileges: { standard: true, secure: true, corsEnabled: false, supportFetchAPI: true },
   },
 ]);
 
 let overlay: BrowserWindow | null = null;
+let bubbleWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let settingsWindow: BrowserWindow | null = null;
 let followEnabled = true;
@@ -68,6 +70,12 @@ let companion: LoadedCompanion | null = null;
 let behaviorEngine: BehaviorEngine;
 let behaviorTicker: Ticker | null = null;
 let interactive = false;
+/** Tracks whether the overlay window currently captures mouse events (pixel-aware hit test). */
+let overlayHitActive = false;
+/** Activity-burst detection: consecutive polls where idle < 1 s. */
+let consecutiveLowIdle = 0;
+let lastActivityBurstAt: number | null = null;
+let activityPollInterval: NodeJS.Timeout | null = null;
 let lastPetAt: number | null = null;
 let currentBehavior: BehaviorDef | null = null;
 let wanderTimer: NodeJS.Timeout | null = null;
@@ -87,6 +95,13 @@ const PACK_ORDER = [
   "pippin-companion",
   "pocus-companion",
   "byte-companion",
+  "nami-companion",
+  "pixel-rex-companion",
+  "lumina-companion",
+  "mochi-companion",
+  "voxel-companion",
+  "bramble-companion",
+  "sola-companion",
   "cat-companion",
   "ghost-companion",
   "robot-companion",
@@ -504,14 +519,88 @@ function createOverlay(): void {
   });
   overlay.setAlwaysOnTop(true, "screen-saver");
   overlay.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-  // Default: decorative click-through. Interactive mode (tray) flips this.
-  overlay.setIgnoreMouseEvents(!interactive);
+  // Always click-through, but forward mouse-move events so the overlay can
+  // pixel-hit-test the cursor and only capture input over the character body.
+  overlay.setIgnoreMouseEvents(true, { forward: true });
 
   overlay.on("closed", () => {
     overlay = null;
   });
 
-  events.emit("CharacterSpawned", { characterId: companion?.packId ?? "builtin" });
+   events.emit("CharacterSpawned", { characterId: companion?.packId ?? "builtin" });
+}
+
+// --- Reaction bubbles -------------------------------------------------------
+
+function createBubbleWindow(): void {
+  if (bubbleWindow && !bubbleWindow.isDestroyed()) return;
+  bubbleWindow = new BrowserWindow({
+    width: 220,
+    height: 80,
+    frame: false,
+    transparent: true,
+    resizable: false,
+    hasShadow: false,
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
+  });
+  hardenWebContents(bubbleWindow);
+  bubbleWindow.loadFile(path.join(__dirname, "renderer", "bubble.html"));
+  bubbleWindow.setIgnoreMouseEvents(true);
+  bubbleWindow.setAlwaysOnTop(true, "screen-saver");
+  bubbleWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+  bubbleWindow.on("closed", () => {
+    bubbleWindow = null;
+  });
+}
+
+function positionBubble(): void {
+  if (!bubbleWindow || bubbleWindow.isDestroyed() || !overlay || overlay.isDestroyed()) return;
+  const [bx, by] = overlay.getPosition();
+  const [bw, bh] = overlay.getSize();
+  const bubbleW = 220;
+  const bubbleH = 80;
+  const x = bx + Math.round((bw - bubbleW) / 2);
+  const y = by - bubbleH - 10;
+  bubbleWindow.setPosition(Math.max(0, x), Math.max(0, y));
+}
+
+function showBubble(text: string, durationMs: number): void {
+  createBubbleWindow();
+  if (bubbleWindow && !bubbleWindow.isDestroyed()) {
+    positionBubble();
+    bubbleWindow.show();
+    bubbleWindow.webContents.send("mischief:bubble", { text, durationMs });
+  }
+}
+
+function emitReaction(signal: Signal): void {
+  if (!interactive) return;
+  const reaction = pickReaction(signal);
+  if (!reaction.text) return;
+  showBubble(reaction.text, reaction.durationMs);
+}
+
+function detectActivityBurst(): void {
+  const idleSeconds = powerMonitor.getSystemIdleTime();
+  if (idleSeconds < 1) {
+    consecutiveLowIdle++;
+    if (consecutiveLowIdle >= 3) {
+      const now = Date.now();
+      if (lastActivityBurstAt === null || now - lastActivityBurstAt > 8000) {
+        lastActivityBurstAt = now;
+        emitReaction({ kind: "activity-burst" });
+      }
+    }
+  } else {
+    consecutiveLowIdle = 0;
+  }
 }
 
 function followCursorTick(): void {
@@ -523,6 +612,9 @@ function followCursorTick(): void {
     cursorGap: CURSOR_GAP,
   });
   overlay.setPosition(position.x, position.y);
+  if (bubbleWindow && !bubbleWindow.isDestroyed()) {
+    positionBubble();
+  }
 }
 
 function applyFollow(): void {
@@ -757,11 +849,11 @@ function openSettings(): void {
     return;
   }
   settingsWindow = new BrowserWindow({
-    width: 400,
-    height: 560,
+    width: 500,
+    height: 700,
     resizable: false,
     title: "Mischief Settings",
-    backgroundColor: "#0f172a",
+    backgroundColor: "#0B0F19",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -834,8 +926,11 @@ function createTray(): void {
 
 function setInteractive(enabled: boolean): void {
   interactive = enabled;
+  overlayHitActive = false;
   if (overlay && !overlay.isDestroyed()) {
-    overlay.setIgnoreMouseEvents(!interactive);
+    // Always click-through first; the pixel hit test drives capture in
+    // interactive mode. Decorative mode stays fully click-through.
+    overlay.setIgnoreMouseEvents(true, { forward: true });
     overlay.webContents.send("mischief:interactive", interactive);
   }
 }
@@ -873,19 +968,30 @@ function createApplicationMenu(): void {
 // --- IPC --------------------------------------------------------------------
 
 ipcMain.on("mischief:pet", (_event, payload: { x: number; y: number } | undefined) => {
-  lastPetAt = Date.now();
-  events.emit("CharacterClicked", {
-    characterId: companion?.packId ?? "builtin",
-    x: payload?.x ?? 0,
-    y: payload?.y ?? 0,
-  });
-  if (!interactive) return;
-  const selection = behaviorEngine.tick(collectSignals());
-  if (selection && selection.behavior !== currentBehavior) {
-    currentBehavior = selection.behavior;
-    applyBehaviorChange(selection.behavior);
-    sendBehavior(selection.behavior);
-  }
+   lastPetAt = Date.now();
+   events.emit("CharacterClicked", {
+     characterId: companion?.packId ?? "builtin",
+     x: payload?.x ?? 0,
+     y: payload?.y ?? 0,
+   });
+   if (!interactive) return;
+   const selection = behaviorEngine.tick(collectSignals());
+   if (selection && selection.behavior !== currentBehavior) {
+     currentBehavior = selection.behavior;
+     applyBehaviorChange(selection.behavior);
+     sendBehavior(selection.behavior);
+   }
+ });
+
+// Pixel-aware click-through: the overlay reports when the cursor is over an
+// opaque pixel of the character, and only then does the window capture input.
+// Transparent areas stay click-through, so the companion never blocks clicks.
+ipcMain.on("mischief:overlay:hit", (_event, active: unknown) => {
+  if (!interactive || !overlay || overlay.isDestroyed()) return;
+  const wantCapture = active === true;
+  if (wantCapture === overlayHitActive) return;
+  overlayHitActive = wantCapture;
+  overlay.setIgnoreMouseEvents(!wantCapture);
 });
 
 ipcMain.handle("mischief:settings:get", () => config);
@@ -1045,6 +1151,34 @@ app.whenReady().then(() => {
 
   behaviorTicker = createTicker(behaviorTick, 1000);
   behaviorTicker.start();
+
+  // --- Power & activity reactions -----------------------------------------
+  powerMonitor.on("suspend", () => emitReaction({ kind: "power-suspend" }));
+  powerMonitor.on("resume", () => emitReaction({ kind: "power-resume" }));
+  powerMonitor.on("lock-screen", () => emitReaction({ kind: "lock-screen" }));
+  powerMonitor.on("unlock-screen", () => emitReaction({ kind: "unlock-screen" }));
+  powerMonitor.on("on-ac", () => emitReaction({ kind: "on-ac" }));
+  powerMonitor.on("on-battery", () => emitReaction({ kind: "on-battery" }));
+  powerMonitor.on("shutdown", () => emitReaction({ kind: "app-shutdown" }));
+
+  // Activity burst detection (proxy for fast typing / heavy mouse use).
+  activityPollInterval = setInterval(detectActivityBurst, 1000);
+
+  // Morning greeting based on current hour.
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) {
+    emitReaction({ kind: "time-morning" });
+  } else if (hour >= 20 || hour < 5) {
+    emitReaction({ kind: "time-night" });
+  }
+});
+
+app.on("before-quit", () => {
+  emitReaction({ kind: "app-shutdown" });
+  if (activityPollInterval) {
+    clearInterval(activityPollInterval);
+    activityPollInterval = null;
+  }
 });
 
 app.on("window-all-closed", () => {

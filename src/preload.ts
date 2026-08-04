@@ -76,6 +76,10 @@ contextBridge.exposeInMainWorld("mischief", {
   pet(x: number, y: number): void {
     ipcRenderer.send("mischief:pet", { x, y });
   },
+  /** Overlay: report whether the cursor is currently over an opaque pixel of the companion. */
+  setOverlayHit(active: boolean): void {
+    ipcRenderer.send("mischief:overlay:hit", active === true);
+  },
   onInteractive(callback: (enabled: boolean) => void): () => void {
     const listener = (_event: Electron.IpcRendererEvent, enabled: boolean): void => {
       callback(enabled);
@@ -83,6 +87,18 @@ contextBridge.exposeInMainWorld("mischief", {
     ipcRenderer.on("mischief:interactive", listener);
     return () => {
       ipcRenderer.removeListener("mischief:interactive", listener);
+    };
+  },
+  onBubble(callback: (detail: { text: string; durationMs: number }) => void): () => void {
+    const listener = (
+      _event: Electron.IpcRendererEvent,
+      detail: { text: string; durationMs: number }
+    ): void => {
+      callback(detail);
+    };
+    ipcRenderer.on("mischief:bubble", listener);
+    return () => {
+      ipcRenderer.removeListener("mischief:bubble", listener);
     };
   },
   getSettings(): Promise<AppConfig> {

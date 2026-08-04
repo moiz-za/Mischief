@@ -9,12 +9,20 @@
     <title>Mischief Settings</title>
     <style>
       :root {
-        --background: #0f172a;
+        --cosmic-0: #070a10;
+        --cosmic-1: #0b0f19;
+        --cosmic-2: #111827;
+        --surface: rgba(30, 41, 59, 0.55);
+        --surface-strong: rgba(30, 41, 59, 0.85);
+        --border: rgba(148, 163, 184, 0.18);
         --foreground: #f8fafc;
-        --accent: #4ade80;
-        --surface: #1e293b;
-        --border: #334155;
         --muted: #94a3b8;
+        --mint: #6ee7b7;
+        --emerald: #34d399;
+        --cyan: #06b6d4;
+        --rose: #f43f5e;
+        --amber: #fbbf24;
+        --grad: linear-gradient(135deg, #6ee7b7 0%, #34d399 45%, #06b6d4 100%);
       }
 
       * {
@@ -25,258 +33,653 @@
       body {
         margin: 0;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: var(--background);
+        background: transparent;
         color: var(--foreground);
         user-select: none;
       }
 
       body {
-        padding: 20px 24px;
-      }
-
-      h1 {
-        font-size: 16px;
-        margin: 0 0 4px;
-      }
-
-      .subtitle {
-        color: var(--muted);
-        font-size: 12px;
-        margin: 0 0 18px;
-      }
-
-      .field {
-        margin-bottom: 16px;
-      }
-
-      label {
-        display: block;
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--muted);
-        margin-bottom: 6px;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-
-      select {
         width: 100%;
-        padding: 8px 10px;
-        font-size: 13px;
-        color: var(--foreground);
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-      }
-
-      .checks {
+        height: 100%;
+        padding: 16px 20px 14px;
         display: flex;
         flex-direction: column;
         gap: 10px;
-        margin-top: 4px;
+        background:
+          radial-gradient(120% 90% at 15% -10%, rgba(16, 185, 129, 0.16), transparent 55%),
+          radial-gradient(120% 90% at 100% 110%, rgba(6, 182, 212, 0.12), transparent 55%),
+          linear-gradient(160deg, var(--cosmic-1) 0%, var(--cosmic-2) 55%, var(--cosmic-0) 100%);
+        overflow: hidden;
       }
 
-      .check {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 13px;
+      /* Floating mischief sparkles */
+      .sparkle {
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        color: var(--amber);
+        font-size: 10px;
+        line-height: 1;
+        animation: twinkle 3.2s ease-in-out infinite;
+        pointer-events: none;
+      }
+      .sparkle.s1 { top: 12%; left: 8%; animation-delay: 0s; }
+      .sparkle.s2 { top: 22%; right: 10%; animation-delay: 1.1s; font-size: 8px; }
+      .sparkle.s3 { bottom: 26%; left: 14%; animation-delay: 2s; font-size: 9px; }
+      .sparkle.s4 { top: 8%; right: 34%; animation-delay: 0.6s; font-size: 6px; color: var(--mint); }
+
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.15; transform: scale(0.8); }
+        50% { opacity: 0.9; transform: scale(1.15); }
       }
 
-      .check input {
-        accent-color: var(--accent);
-      }
-
-      .actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-        margin-top: 20px;
-      }
-
-      button {
-        padding: 7px 14px;
-        font-size: 13px;
-        border-radius: 6px;
-        cursor: pointer;
-        border: 1px solid var(--border);
-        background: var(--surface);
-        color: var(--foreground);
-      }
-
-      button.primary {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: #052e16;
-        font-weight: 600;
-      }
-
-      button.danger {
-        border-color: #ef4444;
-        color: #f87171;
-      }
-
-      .companion-row {
+      /* Header */
+      header {
         display: flex;
         align-items: center;
         gap: 12px;
-        margin: 8px 0;
       }
 
-      #companionPreview {
-        width: 56px;
-        height: 56px;
+      .mascot {
+        width: 46px;
+        height: 46px;
+        flex: 0 0 auto;
+        filter: drop-shadow(0 6px 18px rgba(16, 185, 129, 0.35));
+        animation: float 4s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-4px); }
+      }
+
+      .title-wrap { min-width: 0; }
+
+      h1 {
+        margin: 0;
+        font-size: 19px;
+        letter-spacing: 0.01em;
+        background: var(--grad);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .tagline {
+        margin: 1px 0 0;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .version {
+        margin-left: auto;
+        align-self: flex-start;
+        font-size: 10px;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 3px 9px;
+        background: var(--surface);
+      }
+
+      /* Section headings */
+      .section-label {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+
+      .section-label::before {
+        content: "✦";
+        color: var(--emerald);
+        font-size: 12px;
+      }
+
+      /* Companion hero card */
+      .hero {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        border-radius: 16px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(8px);
+      }
+
+      .hero .big {
+        width: 52px;
+        height: 52px;
         object-fit: contain;
-        border-radius: 10px;
+        border-radius: 14px;
+        background: rgba(11, 15, 25, 0.7);
+        box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.15);
+      }
+
+      .hero .meta { min-width: 0; }
+
+      .hero .name {
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .hero .sub {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 3px;
+      }
+
+      .badge {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        color: var(--mint);
+        background: rgba(52, 211, 153, 0.1);
+      }
+
+      .remove {
+        margin-left: auto;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--rose);
+        background: transparent;
+        border: 1px solid rgba(244, 63, 94, 0.4);
+        border-radius: 999px;
+        padding: 5px 12px;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+      }
+      .remove:hover { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
+
+      /* Companion tiles */
+      .tiles {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+        margin-top: 8px;
+        max-height: 148px;
+        overflow-y: auto;
+        padding: 4px 4px 4px 2px;
+      }
+
+      .tiles::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      .tiles::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.4);
+        border-radius: 999px;
+      }
+
+      .tiles::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 0.3);
+        border-radius: 999px;
+      }
+
+      .tiles::-webkit-scrollbar-thumb:hover {
+        background: var(--mint);
+      }
+
+      .tile {
+        position: relative;
+        aspect-ratio: 1;
+        padding: 0;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        cursor: pointer;
+        overflow: hidden;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      }
+
+      .tile img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .tile:hover { transform: translateY(-2px); border-color: rgba(110, 231, 183, 0.5); }
+
+      .tile.selected {
+        border-color: transparent;
+        box-shadow: 0 0 0 2px var(--emerald), 0 0 18px rgba(52, 211, 153, 0.35);
+      }
+
+      .tile.selected::after {
+        content: "✓";
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        width: 15px;
+        height: 15px;
+        font-size: 10px;
+        line-height: 15px;
+        text-align: center;
+        color: #052e16;
+        background: var(--grad);
+        border-radius: 50%;
+        font-weight: 800;
+      }
+
+      .tile.add {
+        border: 1.5px dashed rgba(148, 163, 184, 0.4);
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--mint);
+        font-size: 20px;
+        font-weight: 400;
+        transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+      .tile.add:hover {
+        border-color: var(--emerald);
+        background: rgba(52, 211, 153, 0.08);
+        box-shadow: 0 0 16px rgba(52, 211, 153, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .hint {
+        margin: 6px 0 0;
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      /* Personality chips */
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        flex: 1 1 auto;
+        min-width: 80px;
+        padding: 6px 8px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--muted);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      }
+
+      .chip:hover { color: var(--foreground); border-color: rgba(110, 231, 183, 0.5); }
+
+      .chip.selected {
+        color: #052e16;
+        background: var(--grad);
+        border-color: transparent;
+        font-weight: 700;
+      }
+
+      /* Intensity segments */
+      .segments {
+        display: flex;
+        gap: 0;
+        padding: 3px;
+        border-radius: 12px;
         background: var(--surface);
         border: 1px solid var(--border);
       }
 
-      .companion-actions {
-        display: flex;
-        gap: 8px;
-        margin-top: 8px;
+      .seg {
+        flex: 1;
+        padding: 6px 4px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+        background: transparent;
+        border: 0;
+        border-radius: 9px;
+        cursor: pointer;
+        transition: color 0.15s ease, background 0.15s ease;
       }
 
-      .hint {
-        font-size: 11px;
-        color: var(--muted);
-        margin-top: 6px;
+      .seg:hover { color: var(--foreground); }
+
+      .seg.selected {
+        color: #052e16;
+        background: var(--grad);
+        font-weight: 700;
       }
+
+      /* Toggles */
+      .toggles {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 7px 12px;
+        border-radius: 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+      }
+
+      .toggle-row .t-label { font-size: 13px; font-weight: 600; }
+      .toggle-row .t-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+      .switch { position: relative; display: inline-block; width: 42px; height: 24px; flex: 0 0 auto; }
+
+      .switch input { opacity: 0; width: 0; height: 0; }
+
+      .track {
+        position: absolute;
+        inset: 0;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.25);
+        transition: background 0.2s ease;
+      }
+
+      .track::before {
+        content: "";
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        left: 3px;
+        top: 3px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        transition: transform 0.2s ease;
+      }
+
+      .switch input:checked + .track { background: var(--grad); }
+      .switch input:checked + .track::before { transform: translateX(18px); background: #ffffff; }
+
+      /* Footer */
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: auto;
+        padding-top: 2px;
+      }
+
+      button.btn {
+        padding: 8px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 12px;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: var(--surface-strong);
+        color: var(--foreground);
+        transition: transform 0.1s ease, filter 0.15s ease;
+      }
+
+      button.btn:active { transform: scale(0.97); }
+
+      button.btn.primary {
+        border: 0;
+        background: var(--grad);
+        color: #052e16;
+      }
+      button.btn.primary:hover { filter: brightness(1.08); }
     </style>
   </head>
   <body>
-    <h1>Mischief Settings</h1>
-    <p class="subtitle">The companion's personality and desktop behavior.</p>
+    <span class="sparkle s1">✦</span>
+    <span class="sparkle s2">✦</span>
+    <span class="sparkle s3">✦</span>
+    <span class="sparkle s4">✦</span>
 
-    <div class="field">
-      <label for="companion">Companion</label>
-      <div class="companion-row">
-        <select id="companion"></select>
-        <img id="companionPreview" alt="Companion preview" />
+    <header>
+      <svg class="mascot" viewBox="0 0 512 512" aria-hidden="true">
+        <defs>
+          <linearGradient id="mascot-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6EE7B7" />
+            <stop offset="45%" stop-color="#34D399" />
+            <stop offset="100%" stop-color="#06B6D4" />
+          </linearGradient>
+        </defs>
+        <path d="M 120 185 C 100 110, 155 90, 185 150 C 165 170, 140 185, 120 185 Z" fill="url(#mascot-grad)" />
+        <path d="M 392 185 C 412 110, 357 90, 327 150 C 347 170, 372 185, 392 185 Z" fill="url(#mascot-grad)" />
+        <path d="M 112 250 C 112 165, 400 165, 400 250 C 400 350, 350 395, 256 395 C 162 395, 112 350, 112 250 Z" fill="url(#mascot-grad)" />
+        <ellipse cx="195" cy="265" rx="28" ry="34" fill="#0F172A" />
+        <circle cx="205" cy="253" r="10" fill="#FFFFFF" />
+        <ellipse cx="317" cy="265" rx="28" ry="34" fill="#0F172A" />
+        <circle cx="327" cy="253" r="10" fill="#FFFFFF" />
+        <path d="M 220 315 Q 256 350 292 315" fill="none" stroke="#0F172A" stroke-width="7" stroke-linecap="round" />
+        <path d="M 242 331 Q 256 344 270 331 Z" fill="#F43F5E" />
+      </svg>
+      <div class="title-wrap">
+        <h1>Mischief</h1>
+        <p class="tagline">Tune your little troublemaker.</p>
       </div>
-      <p class="hint">Which companion walks your desktop. Switches instantly.</p>
-      <div class="companion-actions">
-        <button id="addImage" type="button">Add your own companion…</button>
-        <button id="removeCompanion" type="button" class="danger" style="display: none">
-          Remove
-        </button>
+      <span class="version" id="version">v0.2.0</span>
+    </header>
+
+    <section>
+      <div class="section-label">Companion</div>
+      <div class="hero">
+        <img class="big" id="companionPreview" alt="Companion preview" />
+        <div class="meta">
+          <div class="name" id="companionName">—</div>
+          <div class="sub">
+            <span class="badge" id="companionTag">built-in</span>
+          </div>
+        </div>
+        <button class="remove" id="removeCompanion" style="display: none">Remove</button>
       </div>
-      <p class="hint">Any image works — a pet, a person, a logo, a plant, anything. Cut it out of its background and it moves on its own.</p>
-    </div>
-
-    <div class="field">
-      <label for="intensity">Personality intensity</label>
-      <select id="intensity">
-        <option value="silent">Silent — only manual interactions, nothing automatic</option>
-        <option value="calm">Calm — rare events, long idle, office-friendly</option>
-        <option value="normal">Normal — balanced (recommended)</option>
-        <option value="playful">Playful — frequent surprises</option>
-        <option value="chaos">Chaos — maximum mischief, still safe</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label for="personality">Personality</label>
-      <select id="personality">
-        <option value="friendly">Friendly — gentle and encouraging</option>
-        <option value="curious">Curious — explores and watches you</option>
-        <option value="lazy">Lazy — sleeps often, rare interactions</option>
-        <option value="energetic">Energetic — fast and frequent</option>
-        <option value="mischievous">Mischievous — unexpected, never harmful</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Desktop behavior</label>
-      <div class="checks">
-        <span class="check"
-          ><input type="checkbox" id="interactive" /> Interactive mode — click the companion to pet
-          it</span
-        >
-        <span class="check"
-          ><input type="checkbox" id="followCursor" /> Follow cursor when idle</span
-        >
-      </div>
-      <p class="hint">
-        Interactive mode lets the overlay receive clicks over that small area; it is off by default.
+      <div class="tiles" id="tiles"></div>
+      <p class="hint" id="companionHint">
+        Any image can join the desktop — a pet, a person, a logo, a plant, anything. Cut it out of its
+        background and it moves on its own.
       </p>
-    </div>
+    </section>
+
+    <section>
+      <div class="section-label">Personality</div>
+      <div class="chips" id="personality"></div>
+    </section>
+
+    <section>
+      <div class="section-label">Mischief intensity</div>
+      <div class="segments" id="intensity"></div>
+      <p class="hint">Silent keeps to itself. Chaos is still safe — always reversible, always just playful.</p>
+    </section>
+
+    <section>
+      <div class="section-label">Desktop behavior</div>
+      <div class="toggles">
+        <label class="toggle-row">
+          <div>
+            <div class="t-label">Interactive mode</div>
+            <div class="t-desc">Click the companion to pet it</div>
+          </div>
+          <span class="switch"><input type="checkbox" id="interactive" /><span class="track"></span></span>
+        </label>
+        <label class="toggle-row">
+          <div>
+            <div class="t-label">Follow cursor</div>
+            <div class="t-desc">Trail along when you're idle</div>
+          </div>
+          <span class="switch"><input type="checkbox" id="followCursor" /><span class="track"></span></span>
+        </label>
+      </div>
+    </section>
 
     <div class="actions">
-      <button id="cancel">Cancel</button>
-      <button id="save" class="primary">Save</button>
+      <button class="btn" id="cancel">Cancel</button>
+      <button class="btn primary" id="save">Save changes</button>
     </div>
 
     <script>
       const $ = (id) => document.getElementById(id);
 
+      const PERSONALITIES = [
+        { value: "friendly", label: "Friendly" },
+        { value: "curious", label: "Curious" },
+        { value: "lazy", label: "Lazy" },
+        { value: "energetic", label: "Energetic" },
+        { value: "mischievous", label: "Mischievous" },
+      ];
+
+      const INTENSITIES = [
+        { value: "silent", label: "Silent" },
+        { value: "calm", label: "Calm" },
+        { value: "normal", label: "Normal" },
+        { value: "playful", label: "Playful" },
+        { value: "chaos", label: "Chaos" },
+      ];
+
       let companions = [];
+      let selectedId = "";
 
       function currentCompanion() {
-        return companions.find((c) => c.packId === $("companion").value) || null;
+        return companions.find((c) => c.packId === selectedId) || null;
       }
 
-      function updatePreview() {
+      function updateHero() {
         const companion = currentCompanion();
         const preview = $("companionPreview");
+        $("companionName").textContent = companion ? companion.displayName : "—";
+        $("companionTag").textContent = companion
+          ? companion.meta && companion.meta.cutout
+            ? "animated"
+            : companion.custom
+              ? "custom"
+              : "built-in"
+          : "built-in";
         if (companion) {
           preview.src = companion.sprite;
-          preview.style.display = "block";
+          preview.style.visibility = "visible";
         } else {
-          preview.style.display = "none";
+          preview.removeAttribute("src");
+          preview.style.visibility = "hidden";
         }
-        $("removeCompanion").style.display =
-          companion && companion.custom ? "inline-block" : "none";
+        $("removeCompanion").style.display = companion && companion.custom ? "inline-block" : "none";
+      }
+
+      function renderTiles() {
+        const grid = $("tiles");
+        grid.innerHTML = "";
+        for (const companion of companions) {
+          const tile = document.createElement("button");
+          tile.type = "button";
+          tile.className = "tile" + (companion.packId === selectedId ? " selected" : "");
+          tile.title = companion.displayName;
+          tile.dataset.packId = companion.packId;
+          const img = document.createElement("img");
+          img.src = companion.sprite;
+          img.alt = companion.displayName;
+          tile.appendChild(img);
+          tile.addEventListener("click", () => selectCompanion(companion.packId));
+          grid.appendChild(tile);
+        }
+        const add = document.createElement("button");
+        add.type = "button";
+        add.className = "tile add";
+        add.title = "Add your own companion";
+        add.textContent = "+";
+        add.addEventListener("click", onAddImage);
+        grid.appendChild(add);
+      }
+
+      function selectCompanion(packId) {
+        selectedId = packId;
+        for (const tile of $("tiles").querySelectorAll(".tile[data-pack-id]")) {
+          tile.classList.toggle("selected", tile.dataset.packId === packId);
+        }
+        updateHero();
+      }
+
+      function renderPersonality(value) {
+        const wrap = $("personality");
+        wrap.innerHTML = "";
+        for (const item of PERSONALITIES) {
+          const chip = document.createElement("button");
+          chip.type = "button";
+          chip.className = "chip" + (item.value === value ? " selected" : "");
+          chip.textContent = item.label;
+          chip.dataset.value = item.value;
+          chip.addEventListener("click", () => {
+            for (const c of wrap.querySelectorAll(".chip")) c.classList.remove("selected");
+            chip.classList.add("selected");
+          });
+          wrap.appendChild(chip);
+        }
+      }
+
+      function renderIntensity(value) {
+        const wrap = $("intensity");
+        wrap.innerHTML = "";
+        for (const item of INTENSITIES) {
+          const seg = document.createElement("button");
+          seg.type = "button";
+          seg.className = "seg" + (item.value === value ? " selected" : "");
+          seg.textContent = item.label;
+          seg.dataset.value = item.value;
+          seg.addEventListener("click", () => {
+            for (const s of wrap.querySelectorAll(".seg")) s.classList.remove("selected");
+            seg.classList.add("selected");
+          });
+          wrap.appendChild(seg);
+        }
+      }
+
+      function personalityValue() {
+        return $("personality").querySelector(".chip.selected").dataset.value;
+      }
+
+      function intensityValue() {
+        return $("intensity").querySelector(".seg.selected").dataset.value;
       }
 
       async function refreshAll() {
         const config = await window.mischief.getSettings();
         companions = await window.mischief.listCompanions();
-        const select = $("companion");
-        select.innerHTML = "";
-        for (const companion of companions) {
-          const option = document.createElement("option");
-          option.value = companion.packId;
-          const tag = companion.meta && companion.meta.cutout ? "animated" : "custom";
-          option.textContent = companion.custom
-            ? `${companion.displayName} (${tag})`
-            : companion.displayName;
-          select.appendChild(option);
-        }
-        if (companions.some((c) => c.packId === config.companionId)) {
-          select.value = config.companionId;
-        }
-        $("intensity").value = config.intensity;
-        $("personality").value = config.personality;
+        selectedId =
+          companions.find((c) => c.packId === config.companionId)?.packId ?? companions[0]?.packId ?? "";
+        $("version").textContent = "v" + (window.mischief.version ?? "0.2.0");
+        renderTiles();
+        updateHero();
+        renderPersonality(config.personality);
+        renderIntensity(config.intensity);
         $("interactive").checked = config.interactive;
         $("followCursor").checked = config.followCursor;
-        updatePreview();
       }
 
-      $("companion").addEventListener("change", updatePreview);
-
-      $("addImage").addEventListener("click", async () => {
+      async function onAddImage() {
         const list = await window.mischief.importCompanion();
         if (!list) return;
         await refreshAll();
-      });
+      }
 
       $("removeCompanion").addEventListener("click", async () => {
         const companion = currentCompanion();
         if (!companion || !companion.custom) return;
-        if (!confirm(`Remove "${companion.displayName}"? Your image is deleted locally.`)) {
-          return;
-        }
+        if (!confirm(`Remove "${companion.displayName}"? Your image is deleted locally.`)) return;
         await window.mischief.removeCustomCompanion(companion.packId);
         await refreshAll();
       });
 
       $("save").addEventListener("click", async () => {
         await window.mischief.saveSettings({
-          companionId: $("companion").value,
-          intensity: $("intensity").value,
-          personality: $("personality").value,
+          companionId: selectedId,
+          intensity: intensityValue(),
+          personality: personalityValue(),
           interactive: $("interactive").checked,
           followCursor: $("followCursor").checked,
         });

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' mischief-asset:"
+      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' blob: mischief-asset:; connect-src 'self' blob: mischief-asset:"
     />
     <title>Mischief</title>
     <script src="procedural.renderer.js"></script>
@@ -154,11 +154,81 @@
       const params = new URLSearchParams(location.search);
       const sprite = params.get("sprite");
 
+      // --- Pixel-aware click-through ---------------------------------------
+      // Sprites are re-served as blob URLs so canvases stay origin-clean and we
+      // can read alpha values (getImageData would throw on tainted canvases).
+      const hitCanvas = document.createElement("canvas");
+      hitCanvas.width = 96;
+      hitCanvas.height = 96;
+      const hitCtx = hitCanvas.getContext("2d");
+      let hitRasterValid = false;
+      let lastHit = false;
+
+      async function spriteToBlobUrl(url) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) return null;
+          return URL.createObjectURL(await res.blob());
+        } catch {
+          return null;
+        }
+      }
+
+      function rasterizeHit() {
+        hitCtx.clearRect(0, 0, 96, 96);
+        const img = creature.querySelector("img");
+        if (!img || !img.complete || !img.naturalWidth || !img.naturalHeight) {
+          hitRasterValid = false;
+          return;
+        }
+        const iw = img.naturalWidth;
+        const ih = img.naturalHeight;
+        const s = Math.min(80 / iw, 80 / ih);
+        const w = iw * s;
+        const h = ih * s;
+        hitCtx.drawImage(img, 8 + (80 - w) / 2, 8 + (80 - h) / 2, w, h);
+        hitRasterValid = true;
+      }
+
+      function sampleHit(clientX, clientY) {
+        const x = Math.round(clientX);
+        const y = Math.round(clientY);
+        if (x < 0 || y < 0 || x >= 96 || y >= 96) return false;
+        try {
+          if (motionCanvas && motionCanvas.width) {
+            const dx = x - 8;
+            const dy = y - 8;
+            if (dx < 0 || dy < 0 || dx >= 80 || dy >= 80) return false;
+            const d = motionCanvas.getContext("2d").getImageData(dx, dy, 1, 1).data;
+            return d[3] > 12;
+          }
+          if (hitRasterValid) {
+            const d = hitCtx.getImageData(x, y, 1, 1).data;
+            return d[3] > 12;
+          }
+        } catch {
+          return false;
+        }
+        return false;
+      }
+
+      window.addEventListener("mousemove", (event) => {
+        if (!window.mischief || !window.mischief.setOverlayHit) return;
+        const hit = sampleHit(event.clientX, event.clientY);
+        if (hit !== lastHit) {
+          lastHit = hit;
+          window.mischief.setOverlayHit(hit);
+        }
+      });
+
       if (sprite) {
         const img = document.createElement("img");
-        img.src = sprite;
         img.alt = "Mischief companion";
+        img.addEventListener("load", rasterizeHit);
         creature.prepend(img);
+        spriteToBlobUrl(sprite).then((blobUrl) => {
+          img.src = blobUrl || sprite;
+        });
       } else {
         creature.innerHTML =
           `
@@ -327,7 +397,9 @@
           motionImage = image;
           motionLoop();
         };
-        image.src = url;
+        spriteToBlobUrl(url).then((blobUrl) => {
+          image.src = blobUrl || url;
+        });
       }
 
       function stopMotion() {
@@ -357,6 +429,10 @@
         }
         img.style.display = "";
         img.src = url;
+        img.addEventListener("load", rasterizeHit);
+        spriteToBlobUrl(url).then((blobUrl) => {
+          if (blobUrl && img.isConnected) img.src = blobUrl;
+        });
         applyAnim(currentAnim);
       }
 
