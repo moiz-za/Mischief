@@ -43,18 +43,18 @@ CI runs all of these automatically on every pull request.
 
 ## What You Can Contribute
 
-- **Code** — features, fixes, refactors (follow `docs/development/`)
+- **Code** — features, fixes, refactors (see `docs/`)
 - **Experience Packs** — declarative content: characters, animations, audio (`docs/experiences/`)
-- **Plugins** — sandboxed extensions using the SDK (`docs/plugins/`, `docs/sdk/`)
+- **Plugins** — sandboxed extensions using the SDK (see `examples/plugins/`)
 - **Translations** — localization files (`localization/`)
 - **Documentation** — `docs/` (treated as source code)
-- **Samples & examples** — `samples/`, `examples/`
+- **Samples & examples** — `examples/`
 - **Bug reports & feature ideas** — via issues and Discussions
 
 ## Coding Standards
 
 - TypeScript, strict mode.
-- Follow the existing architecture and dependency rules (see `docs/architecture/`).
+- Follow the existing architecture and dependency rules (see `docs/README.md`)
 - One responsibility per file; clear naming; no unnecessary comments.
 - New public APIs must be documented and versioned.
 - Accessibility is mandatory; every feature needs an accessibility review.
@@ -80,7 +80,7 @@ Use the pull request template and include:
 ## Getting Help
 
 - Open a Discussion on GitHub
-- Check `docs/development/` for build and testing guides
+- Check the README for build and testing commands
 - Ask in issues with the `question` label
 
 Thank you for helping make Mischief great!

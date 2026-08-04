@@ -26,7 +26,7 @@ We will acknowledge reports promptly and work with you on a fix and disclosure t
 - **Experience Packs are data only** — they never execute code.
 - **Plugins are sandboxed** and must declare permissions; nothing is granted by default.
 - The Runtime never accesses user files outside approved application directories.
-- See `docs/architecture/` for the full security model.
+- See the README "Transparency" section for the full security model.
 
 ## Supported Versions
 

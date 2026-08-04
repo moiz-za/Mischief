@@ -163,8 +163,7 @@ examples/plugins/hello-plugin/          # a minimal plugin skeleton
 ```
 
 - [Experience Pack docs](docs/experiences/README.md)
-- [Plugin SDK docs](docs/sdk/README.md)
-- [Community spec drafts](specs/README.md)
+- [Plugin skeletons](examples/plugins/hello-plugin/)
 
 New to the project? Browse the [`good first issue`](https://github.com/moiz-za/Mischief/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) list — icons, localization, and manifest validation are great starting points.
 
@@ -240,18 +239,11 @@ mischief/
 │   ├── renderer/           overlay companion
 │   └── domain/             pure, tested logic (no Electron)
 ├── examples/               starter content
-│   ├── experiences/sample-creature/
-│   └── plugins/hello-plugin/
-├── docs/                   api · architecture · development · sdk · user-guide
-├── packs/                  installable Experience Packs
-├── plugins/                installable plugins
+│   ├── experiences/        12 companion packs (cat, ghost, robot, …)
+│   └── plugins/            plugin skeletons
+├── docs/                   experience-pack guide + community docs
 ├── tests/                  unit tests (Vitest)
-├── benchmarks/
-├── specs/                  community spec drafts
 ├── localization/           locale data
-├── licenses/               third-party license texts
-├── third_party/            vendored dependencies
-├── tools/                  developer tooling
 ├── assets/                 branding + demo media
 └── scripts/                build + hook tooling
 ```
