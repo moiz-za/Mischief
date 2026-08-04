@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Hedgehog Spines / Back Gradient -->
+    <linearGradient id="spine-brown" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#78350F"/>
+      <stop offset="50%" stop-color="#451A03"/>
+      <stop offset="100%" stop-color="#270E02"/>
+    </linearGradient>
+
+    <!-- Cream Belly Gradient -->
+    <linearGradient id="hedge-cream" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FDE68A"/>
+    </linearGradient>
+
+    <!-- Clover Green -->
+    <linearGradient id="clover-green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ADE80"/>
+      <stop offset="100%" stop-color="#16A34A"/>
+    </linearGradient>
+
+    <filter id="hedge-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#hedge-shadow)">
+    <!-- Spiky Moss Back Body -->
+    <path d="M 28 50 C 20 20, 100 20, 104 50 C 112 80, 100 105, 64 105 C 28 105, 16 80, 28 50 Z" fill="url(#spine-brown)"/>
+
+    <!-- Spine Points Accent -->
+    <polygon points="32,32 24,20 38,28" fill="#451A03"/>
+    <polygon points="48,22 42,10 56,18" fill="#451A03"/>
+    <polygon points="68,22 62,10 76,18" fill="#451A03"/>
+    <polygon points="88,30 96,18 84,26" fill="#451A03"/>
+    <polygon points="102,46 112,40 98,52" fill="#451A03"/>
+
+    <!-- Tiny Woodland Clover Leaf sprouting from spines -->
+    <circle cx="48" cy="18" r="4" fill="url(#clover-green)"/>
+    <circle cx="54" cy="18" r="4" fill="url(#clover-green)"/>
+    <circle cx="51" cy="13" r="4" fill="url(#clover-green)"/>
+
+    <!-- Tiny Mushroom Sprouting -->
+    <path d="M 82 22 A 6 6 0 0 1 94 22 Z" fill="#EF4444"/>
+    <circle cx="86" cy="19" r="1" fill="#FFFFFF"/>
+    <circle cx="90" cy="19" r="1" fill="#FFFFFF"/>
+    <rect x="87" y="22" width="2" height="4" fill="#FEF3C7"/>
+
+    <!-- Snout Face Base -->
+    <path d="M 44 60 C 44 48, 84 48, 84 60 C 90 75, 84 88, 64 88 C 44 88, 38 75, 44 60 Z" fill="url(#hedge-cream)"/>
+
+    <!-- Cute Eyes -->
+    <circle cx="52" cy="62" r="4.5" fill="#270E02"/>
+    <circle cx="76" cy="62" r="4.5" fill="#270E02"/>
+    <circle cx="53.5" cy="60.5" r="1.5" fill="#FFFFFF"/>
+    <circle cx="77.5" cy="60.5" r="1.5" fill="#FFFFFF"/>
+
+    <!-- Snout Nose -->
+    <ellipse cx="64" cy="74" rx="4" ry="3" fill="#270E02"/>
+    <path d="M 64 77 Q 64 80 61 81 M 64 77 Q 64 80 67 81" fill="none" stroke="#270E02" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Tiny Hedgehog Paws -->
+    <ellipse cx="44" cy="98" rx="7" ry="4" fill="url(#hedge-cream)"/>
+    <ellipse cx="84" cy="98" rx="7" ry="4" fill="url(#hedge-cream)"/>
+  </g>
+</svg>

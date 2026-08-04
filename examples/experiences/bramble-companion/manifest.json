@@ -1,0 +1,22 @@
+{
+  "id": "bramble-companion",
+  "name": "Bramble the Mossy Hedgehog",
+  "version": "1.0.0",
+  "category": "cozy",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A woodland hedgehog with clover leaves and tiny mushrooms sprouting from its spines, curling into a cozy spiky ball when idle.",
+  "tags": ["companion", "hedgehog", "nature", "cozy", "woodland"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/bramble.svg"],
+  "characters": ["characters/bramble.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 30000,
+    "cloverSproutEnabled": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

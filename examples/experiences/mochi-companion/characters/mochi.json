@@ -1,0 +1,27 @@
+{
+  "id": "mochi",
+  "species": "shiba-inu",
+  "displayName": "Mochi",
+  "author": "Mischief Contributors",
+  "animations": {
+    "idle": { "fps": 8, "duration": 1300, "loop": true },
+    "walk": { "fps": 10, "duration": 650, "loop": true },
+    "run": { "fps": 14, "duration": 400, "loop": true },
+    "happy": { "fps": 10, "duration": 500, "loop": true },
+    "sad": { "fps": 5, "duration": 1200, "loop": true },
+    "sleep": { "fps": 4, "duration": 1800, "loop": true },
+    "yawn": { "fps": 6, "duration": 1000, "loop": false }
+  },
+  "behavior": {
+    "weightedDecision": true,
+    "idleWeight": 0.55,
+    "walkWeight": 0.25,
+    "happyWeight": 0.1,
+    "runWeight": 0.05,
+    "sadWeight": 0.03,
+    "sleepWeight": 0.02
+  },
+  "personality": "lazy",
+  "voice": { "enabled": false },
+  "sounds": []
+}

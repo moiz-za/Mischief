@@ -1,0 +1,22 @@
+{
+  "id": "pixel-rex-companion",
+  "name": "Pixel-Rex the Retro Dino",
+  "version": "1.0.0",
+  "category": "retro",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "An 8-bit retro T-Rex desktop pet that stomps across window tops and plays desk-jump obstacle mini games.",
+  "tags": ["companion", "dino", "retro", "8bit", "gaming"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/pixel-rex.svg"],
+  "characters": ["characters/pixel-rex.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 25000,
+    "deskJumpMiniGame": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

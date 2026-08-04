@@ -1,0 +1,22 @@
+{
+  "id": "voxel-companion",
+  "name": "Voxel the Mecha Cat",
+  "version": "1.0.0",
+  "category": "tech",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A futuristic mecha feline with floating anti-gravity paws, holo-whiskers, and code editor scanning abilities.",
+  "tags": ["companion", "mecha", "cat", "scifi", "tech"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/voxel.svg"],
+  "characters": ["characters/voxel.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 26000,
+    "codeScannerEnabled": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

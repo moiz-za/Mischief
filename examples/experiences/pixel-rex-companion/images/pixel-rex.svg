@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Pixel Green Color Palette -->
+    <linearGradient id="dino-green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ADE80"/>
+      <stop offset="50%" stop-color="#22C55E"/>
+      <stop offset="100%" stop-color="#15803D"/>
+    </linearGradient>
+
+    <filter id="dino-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#dino-shadow)">
+    <!-- 8-Bit Pixel Block Grid Representation of T-Rex -->
+    <!-- Head & Snout -->
+    <rect x="56" y="24" width="40" height="32" rx="4" fill="url(#dino-green)"/>
+    <rect x="80" y="32" width="24" height="16" rx="2" fill="url(#dino-green)"/>
+    
+    <!-- Pixel Eye -->
+    <rect x="68" y="32" width="8" height="8" rx="1" fill="#0F172A"/>
+    <rect x="70" y="34" width="3" height="3" fill="#FFFFFF"/>
+
+    <!-- Open Pixel Mouth & Teeth -->
+    <rect x="88" y="44" width="12" height="4" fill="#0F172A"/>
+    <rect x="90" y="44" width="3" height="2" fill="#FFFFFF"/>
+
+    <!-- Neck & Body -->
+    <rect x="48" y="48" width="32" height="40" rx="4" fill="url(#dino-green)"/>
+    
+    <!-- Tail (Pixel Stepped Backwards) -->
+    <rect x="32" y="60" width="20" height="16" rx="2" fill="url(#dino-green)"/>
+    <rect x="16" y="68" width="20" height="12" rx="2" fill="url(#dino-green)"/>
+    <rect x="8" y="72" width="12" height="8" rx="2" fill="url(#dino-green)"/>
+
+    <!-- Tiny T-Rex Arms -->
+    <rect x="76" y="60" width="12" height="6" rx="1" fill="#166534"/>
+    <rect x="84" y="66" width="4" height="4" rx="1" fill="#166534"/>
+
+    <!-- Back Feet / Legs -->
+    <rect x="44" y="84" width="12" height="24" rx="2" fill="#166534"/>
+    <rect x="40" y="104" width="16" height="6" rx="1" fill="#166534"/>
+
+    <rect x="64" y="84" width="12" height="24" rx="2" fill="url(#dino-green)"/>
+    <rect x="60" y="104" width="16" height="6" rx="1" fill="url(#dino-green)"/>
+
+    <!-- Pixel Spine Details -->
+    <rect x="40" y="44" width="6" height="6" fill="#86EFAC"/>
+    <rect x="28" y="56" width="6" height="6" fill="#86EFAC"/>
+    <rect x="14" y="64" width="4" height="4" fill="#86EFAC"/>
+  </g>
+</svg>

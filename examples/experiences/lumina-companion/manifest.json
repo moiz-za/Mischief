@@ -1,0 +1,22 @@
+{
+  "id": "lumina-companion",
+  "name": "Lumina the Crystal Phoenix",
+  "version": "1.0.0",
+  "category": "fantasy",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A magical crystal phoenix bird that refracts light into rainbow flares and crystal shimmers across open app windows.",
+  "tags": ["companion", "phoenix", "crystal", "prism", "fantasy"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/lumina.svg"],
+  "characters": ["characters/lumina.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 28000,
+    "prismRefractionEnabled": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

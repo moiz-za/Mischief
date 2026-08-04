@@ -1,0 +1,22 @@
+{
+  "id": "nami-companion",
+  "name": "Nami the Wave Otter",
+  "version": "1.0.0",
+  "category": "chill",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A cheerful sea otter floating on an ocean wave, juggling pebbles and swimming along the desktop bottom.",
+  "tags": ["companion", "otter", "water", "ocean", "chill"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/nami.svg"],
+  "characters": ["characters/nami.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 30000,
+    "waveFloatEnabled": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

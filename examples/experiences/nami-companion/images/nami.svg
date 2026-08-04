@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Otter Fur Gradient -->
+    <linearGradient id="otter-fur" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#92400E"/>
+      <stop offset="50%" stop-color="#78350F"/>
+      <stop offset="100%" stop-color="#451A03"/>
+    </linearGradient>
+
+    <!-- Cream Belly Gradient -->
+    <linearGradient id="otter-cream" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FDE68A"/>
+    </linearGradient>
+
+    <!-- Ocean Wave Cyan -->
+    <linearGradient id="ocean-wave" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+
+    <filter id="otter-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#otter-shadow)">
+    <!-- Ocean Wave Base -->
+    <path d="M 8 95 Q 32 80 64 95 Q 96 110 120 95 L 120 120 L 8 120 Z" fill="url(#ocean-wave)" opacity="0.85"/>
+    <path d="M 8 102 Q 40 92 64 102 Q 88 112 120 102 L 120 120 L 8 120 Z" fill="#0284C7" opacity="0.5"/>
+
+    <!-- Otter Body (Floating Horizontal) -->
+    <ellipse cx="64" cy="76" rx="38" ry="22" fill="url(#otter-fur)"/>
+    <ellipse cx="64" cy="74" rx="24" ry="14" fill="url(#otter-cream)"/>
+
+    <!-- Otter Tail -->
+    <path d="M 26 76 C 10 76, 5 90, 18 92 Z" fill="url(#otter-fur)"/>
+
+    <!-- Otter Head -->
+    <circle cx="92" cy="62" r="22" fill="url(#otter-fur)"/>
+    <ellipse cx="94" cy="66" rx="14" ry="11" fill="url(#otter-cream)"/>
+
+    <!-- Small Otter Ears -->
+    <circle cx="82" cy="44" r="5" fill="#451A03"/>
+    <circle cx="102" cy="44" r="5" fill="#451A03"/>
+
+    <!-- Eyes (Happy Arches) -->
+    <path d="M 84 58 Q 88 54 92 58" fill="none" stroke="#451A03" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 98 58 Q 102 54 106 58" fill="none" stroke="#451A03" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Muzzle & Nose -->
+    <ellipse cx="96" cy="65" rx="4" ry="3" fill="#451A03"/>
+    <path d="M 96 68 Q 96 71 93 72 M 96 68 Q 96 71 99 72" fill="none" stroke="#451A03" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Paws Holding Smooth Sea Pebble -->
+    <circle cx="56" cy="72" r="6" fill="#78350F"/>
+    <circle cx="70" cy="72" r="6" fill="#78350F"/>
+    <!-- Smooth Sea Pebble -->
+    <ellipse cx="63" cy="70" rx="7" ry="5" fill="#94A3B8"/>
+    <ellipse cx="61" cy="69" rx="3" ry="2" fill="#F1F5F9" opacity="0.6"/>
+  </g>
+</svg>

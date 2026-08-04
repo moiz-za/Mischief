@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Crystal Prism Wings Gradient -->
+    <linearGradient id="prism-wing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="35%" stop-color="#818CF8"/>
+      <stop offset="70%" stop-color="#C084FC"/>
+      <stop offset="100%" stop-color="#F472B6"/>
+    </linearGradient>
+
+    <!-- Crystal Body Gradient -->
+    <linearGradient id="crystal-body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0F2FE"/>
+      <stop offset="50%" stop-color="#BAE6FD"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+
+    <!-- Rainbow Sparkle -->
+    <linearGradient id="sparkle-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+
+    <filter id="prism-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g filter="url(#prism-glow)">
+    <!-- Crystal Tail Feathers -->
+    <polygon points="64,88 48,118 64,106 80,118" fill="url(#prism-wing)"/>
+    <polygon points="64,88 56,124 64,112 72,124" fill="url(#crystal-body)"/>
+
+    <!-- Left Prism Wing -->
+    <path d="M 44 58 L 8 36 L 24 64 L 40 76 Z" fill="url(#prism-wing)"/>
+    <path d="M 44 58 L 18 20 L 32 50 Z" fill="url(#crystal-body)" opacity="0.8"/>
+
+    <!-- Right Prism Wing -->
+    <path d="M 84 58 L 120 36 L 104 64 L 88 76 Z" fill="url(#prism-wing)"/>
+    <path d="M 84 58 L 110 20 L 96 50 Z" fill="url(#crystal-body)" opacity="0.8"/>
+
+    <!-- Phoenix Head & Crystal Crown Crest -->
+    <polygon points="64,12 56,32 72,32" fill="url(#sparkle-gold)"/>
+    <polygon points="64,18 48,36 80,36" fill="url(#prism-wing)"/>
+
+    <!-- Head Oval -->
+    <ellipse cx="64" cy="46" rx="22" ry="20" fill="url(#crystal-body)"/>
+
+    <!-- Crystal Beak -->
+    <polygon points="60,48 68,48 64,58" fill="url(#sparkle-gold)"/>
+
+    <!-- Eyes -->
+    <ellipse cx="52" cy="44" rx="5" ry="7" fill="#0F172A"/>
+    <ellipse cx="76" cy="44" rx="5" ry="7" fill="#0F172A"/>
+    <circle cx="54" cy="41" r="2.5" fill="#FFFFFF"/>
+    <circle cx="78" cy="41" r="2.5" fill="#FFFFFF"/>
+    <circle cx="50" cy="47" r="1" fill="#38BDF8"/>
+    <circle cx="74" cy="47" r="1" fill="#38BDF8"/>
+
+    <!-- Main Torso Body -->
+    <ellipse cx="64" cy="74" rx="20" ry="24" fill="url(#crystal-body)"/>
+
+    <!-- Floating Rainbow Refraction Sparks -->
+    <path d="M 12 16 Q 16 16 16 12 Q 16 16 20 16 Q 16 16 16 20 Q 16 16 12 16 Z" fill="url(#sparkle-gold)"/>
+    <path d="M 108 16 Q 112 16 112 12 Q 112 16 116 16 Q 112 16 112 20 Q 112 16 108 16 Z" fill="url(#prism-wing)"/>
+  </g>
+</svg>

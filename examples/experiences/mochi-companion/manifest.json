@@ -1,0 +1,22 @@
+{
+  "id": "mochi-companion",
+  "name": "Mochi the Shiba Baker",
+  "version": "1.0.0",
+  "category": "cozy",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A squishy bread-loaf shaped Shiba Inu wearing a chef toque, bringing bakery aromas and cozy vibes to your desktop.",
+  "tags": ["companion", "shiba", "baker", "cozy", "foodie"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/mochi.svg"],
+  "characters": ["characters/mochi.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 32000,
+    "pastryAromaEnabled": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}
