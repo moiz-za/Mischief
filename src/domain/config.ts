@@ -7,6 +7,8 @@ import { INTENSITIES, PERSONALITIES, type Intensity, type Personality } from "./
  * no silent failure).
  */
 export interface AppConfig {
+  /** Installed companion pack to show (fallback: first valid pack). */
+  companionId: string;
   intensity: Intensity;
   personality: Personality;
   interactive: boolean;
@@ -14,6 +16,7 @@ export interface AppConfig {
 }
 
 export const DEFAULT_CONFIG: AppConfig = {
+  companionId: "cat-companion",
   intensity: "normal",
   personality: "curious",
   interactive: false,
@@ -23,6 +26,10 @@ export const DEFAULT_CONFIG: AppConfig = {
 export function sanitizeConfig(input: unknown): AppConfig {
   const partial = isRecord(input) ? input : {};
   return {
+    companionId:
+      typeof partial.companionId === "string" && partial.companionId.length > 0
+        ? partial.companionId
+        : DEFAULT_CONFIG.companionId,
     intensity: isIntensity(partial.intensity) ? partial.intensity : DEFAULT_CONFIG.intensity,
     personality: isPersonality(partial.personality)
       ? partial.personality

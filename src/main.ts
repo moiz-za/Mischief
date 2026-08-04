@@ -26,6 +26,7 @@ import type { CharacterManifest } from "./domain/manifest";
 import { followPosition } from "./domain/overlay";
 import { loadExperiencePack, type PackReader } from "./domain/pack";
 import { createTicker, type Ticker } from "./domain/scheduler";
+import { pickSprite } from "./domain/sprite";
 
 let overlay: BrowserWindow | null = null;
 let tray: Tray | null = null;
@@ -48,14 +49,20 @@ const events = new EventBus();
 const OVERLAY_SIZE = 96;
 const CURSOR_GAP = 10;
 const EXPERIENCE_DIR = path.join(__dirname, "renderer", "experiences");
-const PACK_ORDER = ["cat-companion", "ghost-companion", "robot-companion"];
+const PACK_ORDER = ["cat-companion", "ghost-companion", "robot-companion", "pixel-buddy"];
 
-interface LoadedCompanion {
+interface CompanionDescriptor {
   packId: string;
   displayName: string;
   species: string;
-  sprite: string;
+  /** Sprite asset path inside the pack, e.g. "images/whiskers.svg". */
+  spritePath: string;
   character: CharacterManifest;
+}
+
+interface LoadedCompanion extends CompanionDescriptor {
+  /** Overlay URL: experiences/<packId>/<spritePath>. */
+  sprite: string;
 }
 
 function createDirReader(baseDir: string): PackReader {
@@ -73,7 +80,8 @@ function createDirReader(baseDir: string): PackReader {
   };
 }
 
-function loadCompanion(): LoadedCompanion | null {
+function enumerateCompanions(): CompanionDescriptor[] {
+  const companions: CompanionDescriptor[] = [];
   for (const packId of PACK_ORDER) {
     const dir = path.join(EXPERIENCE_DIR, packId);
     if (!fs.existsSync(dir)) continue;
@@ -81,23 +89,24 @@ function loadCompanion(): LoadedCompanion | null {
     if (!result.pack) continue;
     const character = result.pack.characters[0];
     if (!character) continue;
-    const sprite = result.pack.manifest.assets.find(
-      (asset) =>
-        asset.endsWith(".svg") &&
-        !asset.includes("..") &&
-        !asset.startsWith("/") &&
-        /^[a-zA-Z0-9._/-]+$/.test(asset)
-    );
-    if (!sprite) continue;
-    return {
+    const spritePath = pickSprite(result.pack.manifest.assets);
+    if (!spritePath) continue;
+    companions.push({
       packId,
       displayName: character.character.displayName,
       species: character.character.species,
-      sprite: `experiences/${packId}/${sprite}`,
+      spritePath,
       character: character.character,
-    };
+    });
   }
-  return null;
+  return companions;
+}
+
+function loadCompanion(packId?: string): LoadedCompanion | null {
+  const companions = enumerateCompanions();
+  const chosen = (packId && companions.find((c) => c.packId === packId)) || companions[0];
+  if (!chosen) return null;
+  return { ...chosen, sprite: `experiences/${chosen.packId}/${chosen.spritePath}` };
 }
 
 function hardenWebContents(win: BrowserWindow): void {
@@ -360,11 +369,30 @@ function persistConfig(): void {
 }
 
 function applyConfig(next: AppConfig): void {
+  const companionChanged = next.companionId !== companion?.packId;
   config = next;
   behaviorEngine?.setIntensity(next.intensity);
   behaviorEngine?.setPersonality(next.personality);
   if (interactive !== next.interactive) setInteractive(next.interactive);
   if (followEnabled !== next.followCursor) setFollowEnabled(next.followCursor);
+  if (companionChanged) swapCompanion(next.companionId);
+}
+
+function swapCompanion(packId: string): void {
+  const next = loadCompanion(packId);
+  if (!next || next.packId === companion?.packId) return;
+  if (companion) {
+    events.emit("CharacterRemoved", { characterId: companion.packId });
+  }
+  companion = next;
+  config.companionId = next.packId;
+  behaviorEngine?.setCharacter(next.character);
+  if (overlay && !overlay.isDestroyed()) {
+    overlay.webContents.send("mischief:sprite", next.sprite);
+  }
+  tray?.setToolTip(`${next.displayName} (${next.species}) - Mischief`);
+  events.emit("CharacterSpawned", { characterId: next.packId });
+  console.log(`[Mischief] Switched companion to "${next.displayName}" (${next.packId})`);
 }
 
 function openSettings(): void {
@@ -374,7 +402,7 @@ function openSettings(): void {
   }
   settingsWindow = new BrowserWindow({
     width: 400,
-    height: 500,
+    height: 560,
     resizable: false,
     title: "Mischief Settings",
     backgroundColor: "#0f172a",
@@ -506,6 +534,14 @@ ipcMain.on("mischief:pet", (_event, payload: { x: number; y: number } | undefine
 
 ipcMain.handle("mischief:settings:get", () => config);
 
+ipcMain.handle("mischief:companions:list", () =>
+  enumerateCompanions().map(({ packId, displayName, species }) => ({
+    packId,
+    displayName,
+    species,
+  }))
+);
+
 ipcMain.handle("mischief:settings:set", (_event, partial: unknown) => {
   const merged =
     typeof partial === "object" && partial !== null
@@ -520,9 +556,13 @@ app.setName("Mischief");
 
 app.whenReady().then(() => {
   loadConfig();
-  companion = loadCompanion();
+  companion = loadCompanion(config.companionId);
   if (companion) {
     console.log(`[Mischief] Loaded companion "${companion.displayName}" (${companion.packId})`);
+    if (companion.packId !== config.companionId) {
+      config.companionId = companion.packId;
+      persistConfig();
+    }
   } else {
     console.warn("[Mischief] No example experience pack loaded; using built-in creature");
   }

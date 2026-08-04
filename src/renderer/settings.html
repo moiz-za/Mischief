@@ -123,6 +123,12 @@
     <p class="subtitle">The companion's personality and desktop behavior.</p>
 
     <div class="field">
+      <label for="companion">Companion</label>
+      <select id="companion"></select>
+      <p class="hint">Which installed companion walks your desktop. Switches instantly.</p>
+    </div>
+
+    <div class="field">
       <label for="intensity">Personality intensity</label>
       <select id="intensity">
         <option value="silent">Silent — only manual interactions, nothing automatic</option>
@@ -170,6 +176,17 @@
 
       async function load() {
         const config = await window.mischief.getSettings();
+        const companions = await window.mischief.listCompanions();
+        const select = $("companion");
+        for (const companion of companions) {
+          const option = document.createElement("option");
+          option.value = companion.packId;
+          option.textContent = `${companion.displayName} (${companion.species})`;
+          select.appendChild(option);
+        }
+        if (companions.some((c) => c.packId === config.companionId)) {
+          select.value = config.companionId;
+        }
         $("intensity").value = config.intensity;
         $("personality").value = config.personality;
         $("interactive").checked = config.interactive;
@@ -178,6 +195,7 @@
 
       $("save").addEventListener("click", async () => {
         await window.mischief.saveSettings({
+          companionId: $("companion").value,
           intensity: $("intensity").value,
           personality: $("personality").value,
           interactive: $("interactive").checked,

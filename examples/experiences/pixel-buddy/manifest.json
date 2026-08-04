@@ -1,0 +1,21 @@
+{
+  "id": "pixel-buddy",
+  "name": "Pixel Buddy",
+  "version": "0.1.0",
+  "category": "games",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A pixel-art blob that bobs and blinks — demonstrates animated GIF sprites.",
+  "tags": ["pixel", "companion", "gif", "example"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/buddy.gif"],
+  "characters": ["characters/pixel.json"],
+  "animations": [],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 25000
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "pixel",
+  "species": "pixel",
+  "displayName": "Pixel",
+  "author": "Mischief Contributors",
+  "animations": {
+    "idle": { "fps": 8, "duration": 1000, "loop": true },
+    "walk": { "fps": 10, "duration": 600, "loop": true },
+    "yawn": { "fps": 6, "duration": 2200, "loop": false },
+    "sleep": { "fps": 4, "duration": 3000, "loop": true }
+  },
+  "behavior": {
+    "weightedDecision": true,
+    "idleWeight": 0.5,
+    "walkWeight": 0.3,
+    "yawnWeight": 0.1,
+    "sleepWeight": 0.1
+  },
+  "personality": "curious",
+  "voice": { "enabled": false },
+  "sounds": []
+}

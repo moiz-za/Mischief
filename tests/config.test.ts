@@ -10,15 +10,28 @@ describe("sanitizeConfig", () => {
 
   it("keeps valid fields and falls back per-invalid-field", () => {
     const config = sanitizeConfig({
+      companionId: "ghost-companion",
       intensity: "chaos",
       personality: "bogus",
       interactive: 42,
       followCursor: true,
     });
+    expect(config.companionId).toBe("ghost-companion");
     expect(config.intensity).toBe("chaos");
     expect(config.personality).toBe(DEFAULT_CONFIG.personality);
     expect(config.interactive).toBe(false);
     expect(config.followCursor).toBe(true);
+  });
+
+  it("falls back for an empty or non-string companionId", () => {
+    expect(sanitizeConfig({ companionId: "" }).companionId).toBe(DEFAULT_CONFIG.companionId);
+    expect(sanitizeConfig({ companionId: 42 }).companionId).toBe(DEFAULT_CONFIG.companionId);
+  });
+
+  it("accepts any non-empty companionId (installed packs resolve at runtime)", () => {
+    expect(sanitizeConfig({ companionId: "robot-companion" }).companionId).toBe(
+      "robot-companion"
+    );
   });
 
   it("accepts all intensity and personality values", () => {
@@ -34,6 +47,7 @@ describe("sanitizeConfig", () => {
 describe("parseConfig / serializeConfig", () => {
   it("round-trips a config", () => {
     const config = {
+      companionId: "robot-companion" as const,
       intensity: "playful" as const,
       personality: "lazy" as const,
       interactive: true,

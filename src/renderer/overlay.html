@@ -211,6 +211,18 @@
         });
       }
 
+      if (window.mischief && window.mischief.onSprite) {
+        window.mischief.onSprite((sprite) => {
+          let img = creature.querySelector("img");
+          if (!img) {
+            img = document.createElement("img");
+            img.alt = "Mischief companion";
+            creature.prepend(img);
+          }
+          img.src = sprite;
+        });
+      }
+
       creature.addEventListener("click", (event) => {
         if (window.mischief && window.mischief.pet) {
           window.mischief.pet(event.clientX, event.clientY);

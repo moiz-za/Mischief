@@ -21,7 +21,8 @@ Experience Packs contain no executable code and cannot access the filesystem or 
    ```
 
 2. Edit `manifest.json` and `characters/*.json` (see the references below).
-3. Drop in a sprite at `images/…` and reference it from `assets`.
+3. Drop in a sprite at `images/…` and reference it from `assets` (SVG, PNG,
+   JPG/JPEG, WebP, or animated GIF — see *Supported sprite formats* below).
 4. Validate against the same strict loader the runtime uses:
 
    ```bash
@@ -66,12 +67,25 @@ kebab-case, and versions must be semantic version strings.
 | `description`           | string   | Required, non-empty                                                                        |
 | `tags`                  | string[] | Required (may be empty)                                                                    |
 | `minimumRuntimeVersion` | string   | Required, semver                                                                           |
-| `assets`                | string[] | Required. Paths must exist; the first `.svg` is used as the overlay sprite                 |
+| `assets`                | string[] | Required. Paths must exist; the first supported sprite is used as the overlay sprite (SVG/PNG/JPG/JPEG/WebP/GIF, safe relative path) |
 | `characters`            | string[] | Required. Paths must exist and contain valid character manifests                           |
 | `animations`            | string[] | Required (may be empty)                                                                    |
 | `audio`                 | string[] | Required (may be empty)                                                                    |
 | `configuration`         | object   | Required. Free-form per-pack settings (e.g. `idleTimeoutMs`)                               |
 | `compatibility`         | object   | Required. `{ "platforms": ["windows","macos","linux"] }` — non-empty subset of those three |
+
+### Supported sprite formats
+
+Any image format the overlay `<img>` can render works as a companion sprite:
+
+- **SVG** — crisp at any size, and can embed its own CSS animation.
+- **PNG / JPG / JPEG / WebP** — static raster images.
+- **GIF** — animates for free in the overlay; a great way to give a companion
+  living motion. The `pixel-buddy` example pack is an animated GIF sprite.
+
+Raster sprites are static (except GIFs); the CSS bob/sway/sleep effects still
+apply to every format. Paths must be safe relative paths (no `..`, no leading
+`/`) so they can be turned into overlay URLs.
 
 ### Minimal example
 
@@ -167,14 +181,16 @@ asset-existence checks. A pack only ships if it prints `[OK]`.
 
 ## Loading your pack
 
-Today the runtime loads the first valid pack from the bundled examples directory
-(see `PACK_ORDER` in `src/main.ts`). To make your pack the companion:
+The runtime bundles every pack under `examples/experiences/` (see `PACK_ORDER`
+in `src/main.ts`). To make your pack the companion:
 
 1. Put it at `examples/experiences/<your-pack-id>/`.
-2. Add `<your-pack-id>` to the front of `PACK_ORDER`.
-3. `npm run dev` — the companion appears at your screen corner.
+2. Build (`npm run build`) so it is copied into `dist/renderer/experiences/`.
+3. `npm run dev` — it now appears in **Settings → Companion**, where you can
+   switch to it instantly (no restart).
 
-A user-facing "install pack from a folder" flow ships in a future release.
+The last chosen companion is persisted in `settings.json` (`companionId`);
+if a chosen pack is removed, the runtime falls back to the first valid pack.
 
 ---
 

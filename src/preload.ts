@@ -6,10 +6,17 @@ export interface BehaviorMessage {
 }
 
 export interface AppConfig {
+  companionId: string;
   intensity: "silent" | "calm" | "normal" | "playful" | "chaos";
   personality: "friendly" | "curious" | "lazy" | "energetic" | "mischievous";
   interactive: boolean;
   followCursor: boolean;
+}
+
+export interface CompanionInfo {
+  packId: string;
+  displayName: string;
+  species: string;
 }
 
 contextBridge.exposeInMainWorld("mischief", {
@@ -21,6 +28,15 @@ contextBridge.exposeInMainWorld("mischief", {
     ipcRenderer.on("mischief:behavior", listener);
     return () => {
       ipcRenderer.removeListener("mischief:behavior", listener);
+    };
+  },
+  onSprite(callback: (sprite: string) => void): () => void {
+    const listener = (_event: Electron.IpcRendererEvent, sprite: string): void => {
+      callback(sprite);
+    };
+    ipcRenderer.on("mischief:sprite", listener);
+    return () => {
+      ipcRenderer.removeListener("mischief:sprite", listener);
     };
   },
   pet(x: number, y: number): void {
@@ -40,5 +56,8 @@ contextBridge.exposeInMainWorld("mischief", {
   },
   saveSettings(partial: Partial<AppConfig>): Promise<AppConfig> {
     return ipcRenderer.invoke("mischief:settings:set", partial);
+  },
+  listCompanions(): Promise<CompanionInfo[]> {
+    return ipcRenderer.invoke("mischief:companions:list");
   },
 });
