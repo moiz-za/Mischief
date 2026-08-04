@@ -1,5 +1,7 @@
 # Never publish the master specification
 Main Docs/
+KNOWN_ISSUES.md
+Main Docs/KNOWN_ISSUES.md
 
 # Local records (not part of the public repo)
 SUPPORT.md
