@@ -52,6 +52,7 @@ describe("parseConfig / serializeConfig", () => {
       personality: "lazy" as const,
       interactive: true,
       followCursor: false,
+      soundEnabled: true,
     };
     expect(parseConfig(serializeConfig(config))).toEqual(config);
   });

@@ -1,3 +1,5 @@
+import type { CharacterManifest } from "./manifest";
+
 export interface Reaction {
   text: string;
   durationMs: number;
@@ -20,7 +22,13 @@ export type Signal =
   | { kind: "clipboard-copy" }
   | { kind: "screenshot" }
   | { kind: "pet" }
-  | { kind: "mischief-random" };
+  | { kind: "mischief-random" }
+  | { kind: "ide-save" }
+  | { kind: "git-commit" }
+  | { kind: "build-green" }
+  | { kind: "hydrate" }
+  | { kind: "posture-check" }
+  | { kind: "combo-streak"; comboCount: number };
 
 const POOLS: Record<string, Reaction[]> = {
   "power-suspend": [
@@ -116,6 +124,37 @@ const POOLS: Record<string, Reaction[]> = {
     { text: "Nudge nudge.", durationMs: 3000 },
     { text: "Wink.", durationMs: 2500 },
   ],
+  "ide-save": [
+    { text: "Saved! 💾", durationMs: 2500 },
+    { text: "Git commit ready! 🚀", durationMs: 3000 },
+    { text: "Build green! ✅", durationMs: 2500 },
+  ],
+  "git-commit": [
+    { text: "Saved! 💾", durationMs: 2500 },
+    { text: "Git commit ready! 🚀", durationMs: 3000 },
+    { text: "Build green! ✅", durationMs: 2500 },
+  ],
+  "build-green": [
+    { text: "Saved! 💾", durationMs: 2500 },
+    { text: "Git commit ready! 🚀", durationMs: 3000 },
+    { text: "Build green! ✅", durationMs: 2500 },
+  ],
+  "hydrate": [
+    { text: "Time to drink water! 💧", durationMs: 3500 },
+    { text: "Drink some water! 💧", durationMs: 3500 },
+    { text: "Stay hydrated! 🥤", durationMs: 3000 },
+  ],
+  "posture-check": [
+    { text: "Stretch those shoulders! 🤸", durationMs: 3500 },
+    { text: "Posture check! 🤸", durationMs: 3500 },
+    { text: "Sit up straight!", durationMs: 3000 },
+  ],
+  "combo-streak": [
+    { text: "Combo x2! 🎉", durationMs: 2500 },
+    { text: "Combo x3! 🎉", durationMs: 2500 },
+    { text: "Super happy!", durationMs: 3000 },
+    { text: "More pets!", durationMs: 2500 },
+  ],
 };
 
 const WEIGHTS: Record<string, number[]> = {
@@ -136,6 +175,12 @@ const WEIGHTS: Record<string, number[]> = {
   "screenshot": [3, 2, 1],
   "pet": [4, 3, 2, 1, 1],
   "mischief-random": [3, 2, 1, 1, 1, 1],
+  "ide-save": [3, 2, 1],
+  "git-commit": [3, 2, 1],
+  "build-green": [3, 2, 1],
+  "hydrate": [3, 2, 1],
+  "posture-check": [3, 2, 1],
+  "combo-streak": [4, 3, 2, 1],
 };
 
 function pick<T>(pool: T[], weights: number[]): T {
@@ -148,12 +193,24 @@ function pick<T>(pool: T[], weights: number[]): T {
   return pool[pool.length - 1];
 }
 
-export function pickReaction(signal: Signal): Reaction {
+export function pickReaction(signal: Signal, character?: CharacterManifest | null): Reaction {
   const key = signal.kind;
+  const charPool = character?.speech?.[key];
+  if (charPool && charPool.length > 0) {
+    return { text: pickRandom(charPool), durationMs: defaultDuration(charPool) };
+  }
   const pool = POOLS[key];
   const weights = WEIGHTS[key];
   if (!pool || pool.length === 0) return { text: "", durationMs: 0 };
   return pick(pool, weights);
+}
+
+function pickRandom<T>(items: T[]): T {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function defaultDuration(pool: string[]): number {
+  return pool.length > 0 ? 3000 : 0;
 }
 
 export function isPowerSignal(signal: Signal): boolean {

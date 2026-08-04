@@ -12,6 +12,7 @@ export interface AppConfig {
   personality: "friendly" | "curious" | "lazy" | "energetic" | "mischievous";
   interactive: boolean;
   followCursor: boolean;
+  soundEnabled: boolean;
 }
 
 export interface CompanionInfo {
@@ -99,6 +100,24 @@ contextBridge.exposeInMainWorld("mischief", {
     ipcRenderer.on("mischief:bubble", listener);
     return () => {
       ipcRenderer.removeListener("mischief:bubble", listener);
+    };
+  },
+  onPlaySound(callback: (detail: { soundType: string }) => void): () => void {
+    const listener = (_event: Electron.IpcRendererEvent, detail: { soundType: string }): void => {
+      callback(detail);
+    };
+    ipcRenderer.on("mischief:play-sound", listener);
+    return () => {
+      ipcRenderer.removeListener("mischief:play-sound", listener);
+    };
+  },
+  onMuted(callback: (muted: boolean) => void): () => void {
+    const listener = (_event: Electron.IpcRendererEvent, muted: boolean): void => {
+      callback(muted);
+    };
+    ipcRenderer.on("mischief:muted", listener);
+    return () => {
+      ipcRenderer.removeListener("mischief:muted", listener);
     };
   },
   getSettings(): Promise<AppConfig> {

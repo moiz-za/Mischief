@@ -73,6 +73,7 @@ export interface CharacterManifest {
   personality: string;
   voice: { enabled: boolean };
   sounds: string[];
+  speech?: Record<string, string[]>;
 }
 
 const KEBAB_CASE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -133,6 +134,7 @@ const CHARACTER_KEYS = new Set([
   "personality",
   "voice",
   "sounds",
+  "speech",
 ]);
 
 const ANIMATION_KEYS = new Set(["fps", "duration", "loop"]);
@@ -232,6 +234,19 @@ export function validateCharacterManifest(input: unknown): ValidationResult {
     expectNonEmptyString(obj.personality, "personality", issues);
     expectVoice(obj.voice, "voice", issues);
     expectStringArray(obj.sounds, "sounds", issues);
+    if (obj.speech !== undefined) {
+      const speech = requireRecord(obj.speech, "speech", issues);
+      if (speech) {
+        for (const [key, value] of Object.entries(speech)) {
+          if (!Array.isArray(value) || value.some((v) => typeof v !== "string")) {
+            issues.push({
+              path: `speech.${key}`,
+              message: "Expected an array of strings",
+            });
+          }
+        }
+      }
+    }
   }
   return result(issues);
 }

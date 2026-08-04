@@ -23,5 +23,17 @@
   },
   "personality": "curious",
   "voice": { "enabled": false },
-  "sounds": []
+  "sounds": [],
+  "speech": {
+    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
+    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
+    "idle-long": ["Prism light refract! 💎", "Shimmering bright ✨", "Rainbow flare!"],
+    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
+    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
+    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
+    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
+    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
+    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
+    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+  }
 }

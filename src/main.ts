@@ -80,6 +80,8 @@ let activityPollInterval: NodeJS.Timeout | null = null;
 let lastClipboardText: string | null = null;
 let randomMischiefInterval: NodeJS.Timeout | null = null;
 let lastPetAt: number | null = null;
+let petComboCount = 0;
+let lastPetComboAt: number | null = null;
 let currentBehavior: BehaviorDef | null = null;
 let wanderTimer: NodeJS.Timeout | null = null;
 let wandering = false;
@@ -585,9 +587,12 @@ function showBubble(text: string, durationMs: number): void {
 
 function emitReaction(signal: Signal): void {
   if (!interactive) return;
-  const reaction = pickReaction(signal);
+  const reaction = pickReaction(signal, companion?.character);
   if (!reaction.text) return;
   showBubble(reaction.text, reaction.durationMs);
+  if (config.soundEnabled && overlay && !overlay.isDestroyed()) {
+    overlay.webContents.send("mischief:play-sound", { soundType: signal.kind });
+  }
 }
 
 function detectActivityBurst(): void {
@@ -829,6 +834,9 @@ function applyConfig(next: AppConfig): void {
   if (interactive !== next.interactive) setInteractive(next.interactive);
   if (followEnabled !== next.followCursor) setFollowEnabled(next.followCursor);
   if (companionChanged) swapCompanion(next.companionId);
+  if (overlay && !overlay.isDestroyed()) {
+    overlay.webContents.send("mischief:muted", !next.soundEnabled);
+  }
 }
 
 function swapCompanion(packId: string): void {
@@ -972,8 +980,15 @@ function createApplicationMenu(): void {
 
 // --- IPC --------------------------------------------------------------------
 
- ipcMain.on("mischief:pet", (_event, payload: { x: number; y: number } | undefined) => {
-    lastPetAt = Date.now();
+  ipcMain.on("mischief:pet", (_event, payload: { x: number; y: number } | undefined) => {
+    const now = Date.now();
+    lastPetAt = now;
+    if (lastPetComboAt !== null && now - lastPetComboAt <= 5000) {
+      petComboCount++;
+    } else {
+      petComboCount = 1;
+    }
+    lastPetComboAt = now;
     events.emit("CharacterClicked", {
       characterId: companion?.packId ?? "builtin",
       x: payload?.x ?? 0,
@@ -981,6 +996,9 @@ function createApplicationMenu(): void {
     });
     if (!interactive) return;
     emitReaction({ kind: "pet" });
+    if (petComboCount >= 2) {
+      emitReaction({ kind: "combo-streak", comboCount: petComboCount });
+    }
     const selection = behaviorEngine.tick(collectSignals());
     if (selection && selection.behavior !== currentBehavior) {
       currentBehavior = selection.behavior;
@@ -1191,6 +1209,48 @@ app.whenReady().then(() => {
       emitReaction({ kind: "clipboard-copy" });
     }
   }, 2000);
+
+  // Developer & system reaction triggers.
+  setInterval(() => {
+    if (!interactive) return;
+    const hour = new Date().getHours();
+    if (hour >= 9 && hour < 18 && Math.random() < 0.05) {
+      emitReaction({ kind: "ide-save" });
+    }
+  }, 60000);
+
+  setInterval(() => {
+    if (!interactive) return;
+    const hour = new Date().getHours();
+    if (hour >= 9 && hour < 18 && Math.random() < 0.03) {
+      emitReaction({ kind: "git-commit" });
+    }
+  }, 120000);
+
+  setInterval(() => {
+    if (!interactive) return;
+    const hour = new Date().getHours();
+    if (hour >= 9 && hour < 18 && Math.random() < 0.02) {
+      emitReaction({ kind: "build-green" });
+    }
+  }, 180000);
+
+  // Wellness reminders.
+  setInterval(() => {
+    if (!interactive) return;
+    const hour = new Date().getHours();
+    if (hour >= 9 && hour < 18 && Math.random() < 0.04) {
+      emitReaction({ kind: "hydrate" });
+    }
+  }, 90000);
+
+  setInterval(() => {
+    if (!interactive) return;
+    const hour = new Date().getHours();
+    if (hour >= 9 && hour < 18 && Math.random() < 0.03) {
+      emitReaction({ kind: "posture-check" });
+    }
+  }, 150000);
 
   // Random mischief — occasional funny bubble even without triggers.
   randomMischiefInterval = setInterval(() => {

@@ -517,6 +517,13 @@
           </div>
           <span class="switch"><input type="checkbox" id="followCursor" /><span class="track"></span></span>
         </label>
+        <label class="toggle-row">
+          <div>
+            <div class="t-label">Sound effects</div>
+            <div class="t-desc">Play gentle chimes when petted or reacting</div>
+          </div>
+          <span class="switch"><input type="checkbox" id="soundEnabled" /><span class="track"></span></span>
+        </label>
       </div>
     </section>
 
@@ -659,6 +666,7 @@
         renderIntensity(config.intensity);
         $("interactive").checked = config.interactive;
         $("followCursor").checked = config.followCursor;
+        $("soundEnabled").checked = config.soundEnabled !== false;
       }
 
       async function onAddImage() {
@@ -682,6 +690,7 @@
           personality: personalityValue(),
           interactive: $("interactive").checked,
           followCursor: $("followCursor").checked,
+          soundEnabled: $("soundEnabled").checked,
         });
         window.close();
       });
