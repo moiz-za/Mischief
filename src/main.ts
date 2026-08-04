@@ -880,7 +880,9 @@ function openSettings(): void {
   });
   settingsWindow.setMenuBarVisibility(false);
   hardenWebContents(settingsWindow);
-  settingsWindow.loadFile(path.join(__dirname, "renderer", "settings.html"));
+  settingsWindow.loadFile(path.join(__dirname, "renderer", "settings.html"), {
+    query: { version: app.getVersion() },
+  });
   settingsWindow.on("closed", () => {
     settingsWindow = null;
   });
@@ -1175,7 +1177,13 @@ app.whenReady().then(() => {
   createApplicationMenu();
   createTray();
   createOverlay();
+  // Always wire up follow-cursor and interactive mode after the overlay is
+  // created — applyConfig only calls setFollowEnabled/setInteractive when the
+  // value differs from the in-memory flag, but on first boot both flags start
+  // at their defaults so the condition is never true.
   applyConfig(config);
+  // Ensure follow-cursor interval is started regardless of default-value match.
+  applyFollow();
 
   behaviorTicker = createTicker(behaviorTick, 1000);
   behaviorTicker.start();
