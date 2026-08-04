@@ -32,7 +32,6 @@
 ## 📖 Table of Contents
 
 - [Features](#-features)
-- [Quick Demo](#-quick-demo)
 - [How It Works](#-how-it-works)
 - [Why Mischief](#-why-mischief)
 - [Installation](#-installation)
@@ -85,16 +84,6 @@
 - Pure, tested domain layer (`src/domain/`) with Vitest coverage
 - CI that typechecks, lints, builds, tests, audits dependencies, and scans for secrets
 - [`good first issue`](https://github.com/moiz-za/Mischief/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) bugs you can pick up in minutes
-
----
-
-## 🖥️ Quick Demo
-
-A Mischief companion wandering a desktop, bobbing as it goes:
-
-<p align="center">
-  <img src="assets/demo/demo.gif" alt="Mischief demo — the companion wanders your desktop, bobbing as it goes" width="640" />
-</p>
 
 ---
 
@@ -250,7 +239,7 @@ mischief/
 ├── docs/                   experience-pack guide + community docs
 ├── tests/                  unit tests (Vitest)
 ├── localization/           locale data
-├── assets/                 branding + demo media
+├── assets/                 branding + icons
 └── scripts/                build + hook tooling
 ```
 
