@@ -371,8 +371,11 @@
         motionRaf = requestAnimationFrame(motionLoop);
       }
 
+      let motionGeneration = 0;
+
       function startMotion(url, meta) {
         stopMotion();
+        const gen = ++motionGeneration;
         if (!motionFor || !sanitizeCompanionMeta) {
           handleSprite(url, { cutout: false, face: null });
           return;
@@ -395,15 +398,18 @@
         }
         const image = new Image();
         image.onload = () => {
+          if (gen !== motionGeneration) return;
           motionImage = image;
           motionLoop();
         };
         spriteToBlobUrl(url).then((blobUrl) => {
+          if (gen !== motionGeneration) return;
           image.src = blobUrl || url;
         });
       }
 
       function stopMotion() {
+        motionGeneration++;
         if (motionRaf) {
           cancelAnimationFrame(motionRaf);
           motionRaf = null;

@@ -683,6 +683,7 @@
         const companion = currentCompanion();
         if (!companion || !companion.custom) return;
         if (!confirm(`Remove "${companion.displayName}"? Your image is deleted locally.`)) return;
+        selectedId = "";
         await window.mischief.removeCustomCompanion(companion.packId);
         await refreshAll();
       });

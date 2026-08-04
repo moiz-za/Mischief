@@ -176,7 +176,14 @@ function tryLoadCompanionDir(dir: string, packId: string, custom: boolean): Comp
   };
 }
 
+let cachedCompanions: CompanionDescriptor[] | null = null;
+
+function invalidateCompanionCache(): void {
+  cachedCompanions = null;
+}
+
 function enumerateCompanions(): CompanionDescriptor[] {
+  if (cachedCompanions) return cachedCompanions;
   const companions: CompanionDescriptor[] = [];
   for (const packId of PACK_ORDER) {
     const dir = path.join(EXPERIENCE_DIR, packId);
@@ -193,6 +200,7 @@ function enumerateCompanions(): CompanionDescriptor[] {
       if (descriptor) companions.push(descriptor);
     }
   }
+  cachedCompanions = companions;
   return companions;
 }
 
@@ -281,6 +289,8 @@ function ensureCustomCompanion(sourcePath: string): CompanionDescriptor | null {
   const descriptor = tryLoadCompanionDir(dir, id, true);
   if (!descriptor) {
     fs.rmSync(dir, { recursive: true, force: true });
+  } else {
+    invalidateCompanionCache();
   }
   return descriptor;
 }
@@ -289,6 +299,7 @@ function removeCustomCompanion(packId: string): boolean {
   const dir = path.join(customCompanionsDir(), packId);
   if (!fs.existsSync(dir)) return false;
   fs.rmSync(dir, { recursive: true, force: true });
+  invalidateCompanionCache();
   // ISS-007: swap to a valid fallback, not the deleted pack ID
   if (companion?.packId === packId) {
     const fallback = enumerateCompanions().find((c) => c.packId !== packId);
@@ -474,6 +485,8 @@ function ensureImportedCompanion(
   const descriptor = tryLoadCompanionDir(dir, id, true);
   if (!descriptor) {
     fs.rmSync(dir, { recursive: true, force: true });
+  } else {
+    invalidateCompanionCache();
   }
   return descriptor;
 }
@@ -533,6 +546,10 @@ function createOverlay(): void {
   overlay.webContents.once("did-finish-load", () => {
     if (overlay && !overlay.isDestroyed()) {
       overlay.webContents.send("mischief:interactive", interactive);
+      overlay.webContents.send("mischief:muted", !config.soundEnabled);
+      if (companion) {
+        overlay.webContents.send("mischief:sprite", { url: companion.sprite, meta: companion.meta });
+      }
     }
   });
   overlay.setAlwaysOnTop(true, "screen-saver");
@@ -614,6 +631,10 @@ function emitReaction(signal: Signal): void {
 }
 
 function detectActivityBurst(): void {
+  if (!interactive) {
+    consecutiveLowIdle = 0;
+    return;
+  }
   const idleSeconds = powerMonitor.getSystemIdleTime();
   if (idleSeconds < 1) {
     consecutiveLowIdle++;
@@ -1212,6 +1233,9 @@ app.whenReady().then(() => {
   powerMonitor.on("on-ac", () => emitReaction({ kind: "on-ac" }));
   powerMonitor.on("on-battery", () => emitReaction({ kind: "on-battery" }));
   powerMonitor.on("shutdown", () => emitReaction({ kind: "app-shutdown" }));
+
+  screen.on("display-removed", () => parkInCorner());
+  screen.on("display-metrics-changed", () => parkInCorner());
 
   // Activity burst detection (proxy for fast typing / heavy mouse use).
   activityPollInterval = setInterval(detectActivityBurst, 1000);
