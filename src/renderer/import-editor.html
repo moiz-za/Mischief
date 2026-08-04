@@ -323,14 +323,23 @@
         };
       }
 
+      let renderRaf = null;
+      function scheduleRender() {
+        if (renderRaf) return;
+        renderRaf = requestAnimationFrame(() => {
+          renderRaf = null;
+          if (currentImage) ctx.drawImage(currentImage, 0, 0);
+          drawOverlay();
+        });
+      }
+
       function addStroke(normalized) {
         const stroke = { x: normalized.x, y: normalized.y, radius: state.brushSize };
         const target = state.mode === "keep" ? state.keep : state.remove;
         target.push(stroke);
         state.dirty = true;
         lastPoint = normalized;
-        if (currentImage) ctx.drawImage(currentImage, 0, 0);
-        drawOverlay();
+        scheduleRender();
         requestPreview();
       }
 

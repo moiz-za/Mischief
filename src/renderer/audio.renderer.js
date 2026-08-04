@@ -81,6 +81,7 @@
   };
 
   function playSound(soundType) {
+    ensureContext();
     var fn = soundMap[soundType];
     if (fn) {
       try {

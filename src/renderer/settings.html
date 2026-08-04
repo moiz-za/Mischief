@@ -659,17 +659,26 @@
       }
 
       async function refreshAll() {
-        const config = await window.mischief.getSettings();
-        companions = await window.mischief.listCompanions();
+        companions = (await window.mischief.listCompanions()) || [];
+        const rawConfig = (await window.mischief.getSettings()) || {};
+        const config = {
+          soundEnabled: true,
+          interactive: true,
+          followCursor: true,
+          personality: "curious",
+          intensity: "normal",
+          ...rawConfig,
+        };
         selectedId =
+          selectedId ||
           companions.find((c) => c.packId === config.companionId)?.packId ?? companions[0]?.packId ?? "";
         $("version").textContent = "v" + (new URLSearchParams(location.search).get("version") ?? window.mischief.version ?? "0.2.0");
         renderTiles();
         updateHero();
         renderPersonality(config.personality);
         renderIntensity(config.intensity);
-        $("interactive").checked = config.interactive;
-        $("followCursor").checked = config.followCursor;
+        $("interactive").checked = config.interactive !== false;
+        $("followCursor").checked = config.followCursor !== false;
         $("soundEnabled").checked = config.soundEnabled !== false;
       }
 

@@ -208,9 +208,9 @@
             return d[3] > 12;
           }
         } catch {
-          return false;
+          return x >= 8 && x < 88 && y >= 8 && y < 88;
         }
-        return false;
+        return hitRasterValid ? false : x >= 8 && x < 88 && y >= 8 && y < 88;
       }
 
       window.addEventListener("mousemove", (event) => {

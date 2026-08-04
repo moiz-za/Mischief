@@ -1,38 +1,10 @@
 # KNOWN ISSUES
 
-Full codebase audit log. Updated 2026-08-04.
+Full codebase audit log. All issues closed as of 2026-08-04.
 
 ---
 
-## 🔴 Open Issues — Round 3 Audit
-
-### ISS-024 — `import-editor.html` Canvas Clearing During Rapid Brush Movements
-- **Severity**: Low — Visual artifact
-- **Location**: [`src/renderer/import-editor.html`](file:///Users/moiz/Documents/GitHub/Mischief/src/renderer/import-editor.html) L326–335
-- **Issue**: `addStroke()` redraws `currentImage` and calls `drawOverlay()` synchronously on `pointermove`. Rapid continuous brushing can trigger redrawing before the previous frame preview promise resolves, resulting in slight stroke flicker on high-DPI displays.
-- **Fix Direction**: Throttle pointermove stroke additions using `requestAnimationFrame` or debounce canvas re-renders.
-
-### ISS-025 — `soundEnabled` Value Normalization in Legacy Config Loading
-- **Severity**: Low — Edge case
-- **Location**: [`src/renderer/settings.html`](file:///Users/moiz/Documents/GitHub/Mischief/src/renderer/settings.html) L673
-- **Issue**: `$("soundEnabled").checked = config.soundEnabled !== false` evaluates safely, but if `config` loaded from disk lacks the `soundEnabled` property (from v0.1.0 pre-sound configs), the renderer UI shows `checked = true` while the underlying config object passed back to `saveSettings` will omit `soundEnabled` unless explicitly toggled.
-- **Fix Direction**: Ensure `sanitizeConfig` is run on all IPC config responses before returning to renderer.
-
-### ISS-026 — Web Audio Context Auto-Play Suspension in `audio.renderer.js`
-- **Severity**: Low — Audio playback
-- **Location**: [`src/renderer/audio.renderer.js`](file:///Users/moiz/Documents/GitHub/Mischief/src/renderer/audio.renderer.js)
-- **Issue**: Chromium auto-play policy may suspend `AudioContext` created in background Electron windows without initial gesture. Sound signals sent to overlay might silently fail until an explicit user interaction occurs.
-- **Fix Direction**: Call `audioCtx.resume()` inside `window.mischief.onPlaySound` listener before playing synthesized buffer.
-
-### ISS-027 — Canvas Hit Testing Exception on CORS Image Fallback
-- **Severity**: Medium — Robustness
-- **Location**: [`src/renderer/overlay.html`](file:///Users/moiz/Documents/GitHub/Mischief/src/renderer/overlay.html) L198–212
-- **Issue**: If `spriteToBlobUrl` fails and falls back to a non-blob protocol URL, `hitCtx.getImageData(x, y, 1, 1)` will throw a DOMException (tainted canvas) and default `sampleHit` to `false`, disabling click-through transparency for that sprite frame.
-- **Fix Direction**: Wrap `getImageData` in a try/catch block (already present) and fallback to bounding box hit testing when canvas is tainted.
-
----
-
-## ✅ Closed Issues (ISS-001 through ISS-023)
+## ✅ All Issues Closed (ISS-001 through ISS-027)
 
 ### ISS-001 — Save Button Not Visible in Settings Window ✅ FIXED
 - **Root Cause**: `overflow: hidden` overrode `overflow-y: auto`, clipping the page body.
@@ -143,6 +115,26 @@ Full codebase audit log. Updated 2026-08-04.
 - **Root Cause**: Filenames with only symbols fallback to `"companion"`.
 - **Fix**: Confirmed intended safe behavior with unique suffixing (`"companion-2"`).
 - **Files**: [`src/domain/custom-companion.ts`](file:///Users/moiz/Documents/GitHub/Mischief/src/domain/custom-companion.ts)
+
+### ISS-024 — `import-editor.html` Canvas Clearing During Rapid Brush Movements ✅ FIXED
+- **Root Cause**: `addStroke()` redrew canvas synchronously on every `pointermove` event.
+- **Fix**: Batched canvas re-rendering using `requestAnimationFrame` (`scheduleRender()`).
+- **Files**: [`src/renderer/import-editor.html`](file:///Users/moiz/Documents/GitHub/Mischief/src/renderer/import-editor.html)
+
+### ISS-025 — `soundEnabled` Value Normalization in Legacy Config Loading ✅ FIXED
+- **Root Cause**: Missing fallback default in `refreshAll()` when reading un-sanitized partial settings objects.
+- **Fix**: Safely defaulted `config` properties before rendering UI toggles.
+- **Files**: [`src/renderer/settings.html`](file:///Users/moiz/Documents/GitHub/Mischief/src/renderer/settings.html)
+
+### ISS-026 — Web Audio Context Auto-Play Suspension in `audio.renderer.js` ✅ FIXED
+- **Root Cause**: AudioContext could remain suspended if initialized without a direct gesture.
+- **Fix**: Added `ensureContext()` call inside `playSound()` to automatically resume suspended contexts.
+- **Files**: [`src/renderer/audio.renderer.js`](file:///Users/moiz/Documents/GitHub/Mischief/src/renderer/audio.renderer.js)
+
+### ISS-027 — Canvas Hit Testing Exception on CORS Image Fallback ✅ FIXED
+- **Root Cause**: `hitCtx.getImageData` throws CORS DOMException if image canvas is tainted.
+- **Fix**: Added fallback to bounding-box hit detection inside `sampleHit()` catch block.
+- **Files**: [`src/renderer/overlay.html`](file:///Users/moiz/Documents/GitHub/Mischief/src/renderer/overlay.html)
 
 ---
 
