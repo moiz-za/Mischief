@@ -4,6 +4,8 @@ All notable changes to Mischief are documented here. Format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-08-04
+
 ### Added
 
 - **Companion switcher** — choose from installed companion packs in Settings; the mascot hot-swaps instantly (sprite, tray tooltip, and behavior engine all update live, no restart)
@@ -11,6 +13,11 @@ All notable changes to Mischief are documented here. Format follows [Keep a Chan
 - **Custom companions** — add any image from Settings (PNG/JPG/WebP/GIF); Mischief builds a validated Experience Pack in the app's user-data folder — no coding, nothing uploaded — renders it over a privileged `mischief-asset://` protocol, and lets you remove it any time
 - **Import any image as a companion** — one "Add your own companion…" flow replaces the separate add-image and pet buttons: GIFs are added as-is; static images open an import editor with an optional background cutout (border-flood cutout + Remove/Keep brushes + sensitivity, all on-device) and a pinned anchor for expressions (blink/mouth/Zzz/hearts/tears). Cutout companions are animated per-frame on a canvas (bob/lean/squash-and-stretch + anchored effects). Works for a pet, a person, a logo, a plant — anything. Image pipeline in the main process via `nativeImage` (decode/encode/premultiply), pixel math in pure tested domain modules (`segmentation.ts`, `procedural.ts`); the overlay ports `procedural.ts` to a browser bundle (`procedural.renderer.js`)
 - **Import pipeline internals** — new IPC (`mischief:companions:import`, `mischief:import-editor:*`, `mischief:companion:meta`), `CustomCompanionImported` event, `meta` (`CompanionMeta`) carried on companion descriptors and sprite messages, packs persisted under `<userData>/custom-companions/`. Metadata lives in `configuration.mischief.imported` (pre-release `pet` key still read)
+
+### Fixed
+
+- **Settings UI Layout** — fixed flex height constraints and scroll handling in `settings.html`, ensuring footer action buttons (`Save` / `Cancel`) stay pinned at the bottom of the window.
+- **Repository Boundaries** — untracked private `Main Docs/` specifications from Git and enforced privacy rules in `.gitignore` and `.agents/AGENTS.md`.
 
 ## [0.2.0] - 2026-08-04
 
