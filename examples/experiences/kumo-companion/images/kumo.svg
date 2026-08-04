@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Cyber Neon Gradient -->
+    <linearGradient id="cyber-body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+
+    <!-- Neon Cyan Glow -->
+    <linearGradient id="neon-cyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="100%" stop-color="#00F0FF"/>
+    </linearGradient>
+
+    <!-- Neon Pink Accent -->
+    <linearGradient id="neon-pink" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F43F5E"/>
+      <stop offset="100%" stop-color="#FB7185"/>
+    </linearGradient>
+
+    <!-- High Neon Glow Filter -->
+    <filter id="neon-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g filter="url(#neon-glow)">
+    <!-- Cyber Tail (Glowing Energy Node Rings) -->
+    <path d="M 24 60 C 5 40, -5 95, 30 100 C 45 102, 50 85, 36 72 Z" fill="url(#cyber-body)"/>
+    <path d="M 15 65 C 10 75, 20 85, 28 80 Z" fill="url(#neon-cyan)"/>
+    <circle cx="12" cy="72" r="3" fill="url(#neon-pink)"/>
+
+    <!-- Left Cyber Ear -->
+    <polygon points="28,20 52,42 22,48" fill="url(#cyber-body)"/>
+    <polygon points="32,25 46,40 27,44" fill="url(#neon-cyan)"/>
+
+    <!-- Right Cyber Ear -->
+    <polygon points="100,20 76,42 106,48" fill="url(#cyber-body)"/>
+    <polygon points="96,25 82,40 101,44" fill="url(#neon-cyan)"/>
+
+    <!-- Main Cyber Fox Head -->
+    <path d="M 28 50 Q 64 25 100 50 Q 108 85 64 92 Q 20 85 28 50 Z" fill="url(#cyber-body)"/>
+
+    <!-- Cyber Visor / Eye Markings -->
+    <path d="M 36 55 Q 64 45 92 55 Q 85 70 64 72 Q 43 70 36 55 Z" fill="#090D16" stroke="url(#neon-cyan)" stroke-width="1.5"/>
+
+    <!-- Glowing Cyan Eyes -->
+    <polygon points="44,58 54,58 51,65 47,65" fill="url(#neon-cyan)"/>
+    <polygon points="84,58 74,58 77,65 81,65" fill="url(#neon-cyan)"/>
+
+    <!-- Cheek Circuit Traces -->
+    <path d="M 30 68 L 40 68 L 45 74" fill="none" stroke="url(#neon-pink)" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M 98 68 L 88 68 L 83 74" fill="none" stroke="url(#neon-pink)" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Cyber Snout & Mouth -->
+    <polygon points="62,72 66,72 64,75" fill="url(#neon-pink)"/>
+    <path d="M 60 78 Q 64 82 68 78" fill="none" stroke="url(#neon-cyan)" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Body & Cyber Collar -->
+    <ellipse cx="64" cy="98" rx="26" ry="20" fill="url(#cyber-body)"/>
+    <rect x="46" y="88" width="36" height="5" rx="2.5" fill="url(#neon-pink)"/>
+  </g>
+</svg>

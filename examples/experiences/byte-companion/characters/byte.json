@@ -1,0 +1,27 @@
+{
+  "id": "byte",
+  "species": "robot",
+  "displayName": "Byte",
+  "author": "Mischief Contributors",
+  "animations": {
+    "idle": { "fps": 10, "duration": 1000, "loop": true },
+    "walk": { "fps": 12, "duration": 500, "loop": true },
+    "run": { "fps": 16, "duration": 300, "loop": true },
+    "happy": { "fps": 12, "duration": 450, "loop": true },
+    "sad": { "fps": 6, "duration": 1000, "loop": true },
+    "sleep": { "fps": 4, "duration": 1500, "loop": true },
+    "yawn": { "fps": 8, "duration": 800, "loop": false }
+  },
+  "behavior": {
+    "weightedDecision": true,
+    "idleWeight": 0.35,
+    "walkWeight": 0.3,
+    "runWeight": 0.15,
+    "happyWeight": 0.1,
+    "sadWeight": 0.05,
+    "sleepWeight": 0.05
+  },
+  "personality": "friendly",
+  "voice": { "enabled": false },
+  "sounds": []
+}

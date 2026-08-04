@@ -1,0 +1,22 @@
+{
+  "id": "zen-companion",
+  "name": "Zen the Bonsai Panda",
+  "version": "1.0.0",
+  "category": "productivity",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A mindful Red Panda companion for deep focus, Pomodoro sprints, and relaxing desktop breaks.",
+  "tags": ["companion", "productivity", "panda", "mindfulness"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/zen.svg"],
+  "characters": ["characters/zen.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 30000,
+    "pomodoroFocusSupported": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

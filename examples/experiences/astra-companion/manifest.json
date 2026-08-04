@@ -1,0 +1,22 @@
+{
+  "id": "astra-companion",
+  "name": "Astra the Stardust Dragon",
+  "version": "1.0.0",
+  "category": "fantasy",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A magical celestial dragon hatchling with stardust particle trails and night-owl stargazing behaviors.",
+  "tags": ["companion", "dragon", "stardust", "fantasy", "celestial"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/astra.svg"],
+  "characters": ["characters/astra.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 30000,
+    "stargazingNightMode": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

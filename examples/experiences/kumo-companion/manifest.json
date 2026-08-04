@@ -1,0 +1,22 @@
+{
+  "id": "kumo-companion",
+  "name": "Kumo the Cyber Fox",
+  "version": "1.0.0",
+  "category": "tech",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A cyberpunk neon Kitsune for developers, gamers, and dark-mode power users.",
+  "tags": ["companion", "cyberpunk", "fox", "neon", "tech"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/kumo.svg"],
+  "characters": ["characters/kumo.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 25000,
+    "neonGlowEnabled": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

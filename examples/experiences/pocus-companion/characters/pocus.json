@@ -1,0 +1,27 @@
+{
+  "id": "pocus",
+  "species": "ghost",
+  "displayName": "Pocus",
+  "author": "Mischief Contributors",
+  "animations": {
+    "idle": { "fps": 8, "duration": 1200, "loop": true },
+    "walk": { "fps": 10, "duration": 600, "loop": true },
+    "run": { "fps": 14, "duration": 350, "loop": true },
+    "happy": { "fps": 10, "duration": 500, "loop": true },
+    "sad": { "fps": 6, "duration": 1000, "loop": true },
+    "sleep": { "fps": 4, "duration": 1500, "loop": true },
+    "yawn": { "fps": 8, "duration": 800, "loop": false }
+  },
+  "behavior": {
+    "weightedDecision": true,
+    "idleWeight": 0.4,
+    "walkWeight": 0.3,
+    "happyWeight": 0.15,
+    "runWeight": 0.08,
+    "sadWeight": 0.04,
+    "sleepWeight": 0.03
+  },
+  "personality": "mischievous",
+  "voice": { "enabled": false },
+  "sounds": []
+}

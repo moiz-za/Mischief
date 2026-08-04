@@ -79,7 +79,19 @@ const events = new EventBus();
 const OVERLAY_SIZE = 96;
 const CURSOR_GAP = 10;
 const EXPERIENCE_DIR = path.join(__dirname, "renderer", "experiences");
-const PACK_ORDER = ["cat-companion", "ghost-companion", "robot-companion", "pixel-buddy"];
+const PACK_ORDER = [
+  "zen-companion",
+  "kumo-companion",
+  "astra-companion",
+  "barnaby-companion",
+  "pippin-companion",
+  "pocus-companion",
+  "byte-companion",
+  "cat-companion",
+  "ghost-companion",
+  "robot-companion",
+  "pixel-buddy",
+];
 const CUSTOM_COMPANIONS_DIR = "custom-companions";
 
 interface CompanionDescriptor {

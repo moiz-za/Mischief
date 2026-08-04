@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Celestial Cosmic Gradient -->
+    <linearGradient id="dragon-skin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A855F7"/>
+      <stop offset="50%" stop-color="#7E22CE"/>
+      <stop offset="100%" stop-color="#3B0764"/>
+    </linearGradient>
+
+    <!-- Star Gold Gradient -->
+    <linearGradient id="star-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="100%" stop-color="#EAB308"/>
+    </linearGradient>
+
+    <!-- Soft Wing Pink/Violet -->
+    <linearGradient id="wing-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F472B6"/>
+      <stop offset="100%" stop-color="#C084FC"/>
+    </linearGradient>
+
+    <filter id="glow-star" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g filter="url(#glow-star)">
+    <!-- Dragon Tail with Star Tip -->
+    <path d="M 28 75 C 10 65, 0 100, 32 105 C 45 108, 48 90, 36 82 Z" fill="url(#dragon-skin)"/>
+    <path d="M 14 90 Q 18 90 18 84 Q 18 90 22 90 Q 18 90 18 96 Q 18 90 14 90 Z" fill="url(#star-gold)"/>
+
+    <!-- Left Wing -->
+    <path d="M 24 55 Q 5 35 25 25 Q 32 40 38 52 Z" fill="url(#wing-grad)"/>
+
+    <!-- Right Wing -->
+    <path d="M 104 55 Q 123 35 103 25 Q 96 40 90 52 Z" fill="url(#wing-grad)"/>
+
+    <!-- Dragon Horns (Gold Star Horns) -->
+    <path d="M 46 32 L 40 16 L 49 26 Z" fill="url(#star-gold)"/>
+    <path d="M 82 32 L 88 16 L 79 26 Z" fill="url(#star-gold)"/>
+
+    <!-- Head Body -->
+    <ellipse cx="64" cy="56" rx="34" ry="28" fill="url(#dragon-skin)"/>
+
+    <!-- Cute Big Eyes -->
+    <ellipse cx="48" cy="56" rx="8" ry="10" fill="#0F172A"/>
+    <ellipse cx="80" cy="56" rx="8" ry="10" fill="#0F172A"/>
+    <circle cx="51" cy="52" r="3.5" fill="#FFFFFF"/>
+    <circle cx="83" cy="52" r="3.5" fill="#FFFFFF"/>
+    <circle cx="46" cy="60" r="1.5" fill="#FDE047"/>
+    <circle cx="78" cy="60" r="1.5" fill="#FDE047"/>
+
+    <!-- Cute Snout & Cute Smile -->
+    <ellipse cx="64" cy="66" rx="9" ry="6" fill="#C084FC" opacity="0.4"/>
+    <circle cx="60" cy="65" r="1" fill="#3B0764"/>
+    <circle cx="68" cy="65" r="1" fill="#3B0764"/>
+    <path d="M 60 70 Q 64 74 68 70" fill="none" stroke="#FDE047" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Dragon Belly & Body -->
+    <ellipse cx="64" cy="92" rx="24" ry="20" fill="url(#dragon-skin)"/>
+    <ellipse cx="64" cy="94" rx="14" ry="14" fill="url(#star-gold)" opacity="0.3"/>
+
+    <!-- Floating Stardust Sparks -->
+    <path d="M 20 20 Q 24 20 24 16 Q 24 20 28 20 Q 24 20 24 24 Q 24 20 20 20 Z" fill="url(#star-gold)"/>
+    <path d="M 100 20 Q 104 20 104 16 Q 104 20 108 20 Q 104 20 104 24 Q 104 20 100 20 Z" fill="url(#star-gold)"/>
+  </g>
+</svg>

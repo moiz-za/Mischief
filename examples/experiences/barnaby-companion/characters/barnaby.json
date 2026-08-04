@@ -1,0 +1,27 @@
+{
+  "id": "barnaby",
+  "species": "capybara",
+  "displayName": "Barnaby",
+  "author": "Mischief Contributors",
+  "animations": {
+    "idle": { "fps": 6, "duration": 1500, "loop": true },
+    "walk": { "fps": 8, "duration": 800, "loop": true },
+    "run": { "fps": 10, "duration": 600, "loop": true },
+    "happy": { "fps": 8, "duration": 600, "loop": true },
+    "sad": { "fps": 5, "duration": 1200, "loop": true },
+    "sleep": { "fps": 4, "duration": 1800, "loop": true },
+    "yawn": { "fps": 6, "duration": 1000, "loop": false }
+  },
+  "behavior": {
+    "weightedDecision": true,
+    "idleWeight": 0.6,
+    "walkWeight": 0.2,
+    "happyWeight": 0.1,
+    "runWeight": 0.04,
+    "sadWeight": 0.03,
+    "sleepWeight": 0.03
+  },
+  "personality": "lazy",
+  "voice": { "enabled": false },
+  "sounds": []
+}

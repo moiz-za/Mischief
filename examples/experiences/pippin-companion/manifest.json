@@ -1,0 +1,22 @@
+{
+  "id": "pippin-companion",
+  "name": "Pippin the Wobbly Penguin",
+  "version": "1.0.0",
+  "category": "fun",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A wobbly penguin desktop pet that slides on its belly across window edges and taskbars.",
+  "tags": ["companion", "penguin", "waddle", "slide", "cute"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/pippin.svg"],
+  "characters": ["characters/pippin.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 25000,
+    "taskbarSlideEnabled": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

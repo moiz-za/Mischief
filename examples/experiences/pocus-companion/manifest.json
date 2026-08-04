@@ -1,0 +1,22 @@
+{
+  "id": "pocus-companion",
+  "name": "Pocus the Ghostling",
+  "version": "1.0.0",
+  "category": "spooky",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "A translucent cozy ghostling that plays peek-a-boo behind open app windows.",
+  "tags": ["companion", "ghost", "spooky", "cozy", "translucent"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/pocus.svg"],
+  "characters": ["characters/pocus.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 30000,
+    "peekABooEnabled": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

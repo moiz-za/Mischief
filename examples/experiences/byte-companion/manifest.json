@@ -1,0 +1,22 @@
+{
+  "id": "byte-companion",
+  "name": "Byte the Vintage Bot",
+  "version": "1.0.0",
+  "category": "retro",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "An 8-bit vintage CRT monitor robot with ASCII facial expressions and rocket hover propulsion.",
+  "tags": ["companion", "robot", "retro", "8bit", "vintage"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/byte.svg"],
+  "characters": ["characters/byte.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 25000,
+    "asciiFacesEnabled": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}

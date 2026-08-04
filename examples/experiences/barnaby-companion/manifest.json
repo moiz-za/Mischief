@@ -1,0 +1,22 @@
+{
+  "id": "barnaby-companion",
+  "name": "Barnaby the Coffee Capybara",
+  "version": "1.0.0",
+  "category": "chill",
+  "author": "Mischief Contributors",
+  "license": "MIT",
+  "description": "An ultra-chill capybara balancing a coffee mug and orange slice on its head.",
+  "tags": ["companion", "capybara", "coffee", "chill", "relaxed"],
+  "minimumRuntimeVersion": "0.2.0",
+  "assets": ["images/barnaby.svg"],
+  "characters": ["characters/barnaby.json"],
+  "animations": ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"],
+  "audio": [],
+  "configuration": {
+    "idleTimeoutMs": 35000,
+    "immuneToChaos": true
+  },
+  "compatibility": {
+    "platforms": ["windows", "macos", "linux"]
+  }
+}
