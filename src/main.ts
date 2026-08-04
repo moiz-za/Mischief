@@ -77,6 +77,12 @@ let overlayHitActive = false;
 let consecutiveLowIdle = 0;
 let lastActivityBurstAt: number | null = null;
 let activityPollInterval: NodeJS.Timeout | null = null;
+let clipboardInterval: NodeJS.Timeout | null = null;
+let ideSaveInterval: NodeJS.Timeout | null = null;
+let gitCommitInterval: NodeJS.Timeout | null = null;
+let buildGreenInterval: NodeJS.Timeout | null = null;
+let hydrateInterval: NodeJS.Timeout | null = null;
+let postureInterval: NodeJS.Timeout | null = null;
 let lastClipboardText: string | null = null;
 let randomMischiefInterval: NodeJS.Timeout | null = null;
 let lastPetAt: number | null = null;
@@ -283,8 +289,14 @@ function removeCustomCompanion(packId: string): boolean {
   const dir = path.join(customCompanionsDir(), packId);
   if (!fs.existsSync(dir)) return false;
   fs.rmSync(dir, { recursive: true, force: true });
+  // ISS-007: swap to a valid fallback, not the deleted pack ID
   if (companion?.packId === packId) {
-    swapCompanion(packId);
+    const fallback = enumerateCompanions().find((c) => c.packId !== packId);
+    if (fallback) {
+      swapCompanion(fallback.packId);
+    } else {
+      companion = null;
+    }
   }
   return true;
 }
@@ -542,7 +554,7 @@ function createBubbleWindow(): void {
   if (bubbleWindow && !bubbleWindow.isDestroyed()) return;
   bubbleWindow = new BrowserWindow({
     width: 220,
-    height: 80,
+    height: 100,
     frame: false,
     transparent: true,
     resizable: false,
@@ -571,7 +583,7 @@ function positionBubble(): void {
   const [bx, by] = overlay.getPosition();
   const [bw, bh] = overlay.getSize();
   const bubbleW = 220;
-  const bubbleH = 80;
+  const bubbleH = 100;
   const x = bx + Math.round((bw - bubbleW) / 2);
   const y = by - bubbleH - 10;
   bubbleWindow.setPosition(Math.max(0, x), Math.max(0, y));
@@ -589,7 +601,9 @@ function showBubble(text: string, durationMs: number): void {
 function emitReaction(signal: Signal): void {
   if (!interactive) return;
   const now = Date.now();
-  if (now - lastBubbleAt < 5000) return;
+  // ISS-009: app-shutdown is a one-time event — bypass the throttle
+  const isShutdown = signal.kind === "app-shutdown";
+  if (!isShutdown && now - lastBubbleAt < 5000) return;
   const reaction = pickReaction(signal, companion?.character);
   if (!reaction.text) return;
   showBubble(reaction.text, reaction.durationMs);
@@ -754,7 +768,9 @@ function stopWander(): void {
 
 function parkInCorner(): void {
   if (!overlay || overlay.isDestroyed()) return;
-  const { workArea } = screen.getPrimaryDisplay();
+  // ISS-014: use the display nearest the companion, not always the primary display
+  const [ox, oy] = overlay.getPosition();
+  const { workArea } = screen.getDisplayNearestPoint({ x: ox, y: oy });
   const margin = 12;
   overlay.setPosition(
     workArea.x + workArea.width - OVERLAY_SIZE - margin,
@@ -1200,21 +1216,11 @@ app.whenReady().then(() => {
   // Activity burst detection (proxy for fast typing / heavy mouse use).
   activityPollInterval = setInterval(detectActivityBurst, 1000);
 
-  // Morning greeting based on current hour.
-  const hour = new Date().getHours();
-  if (hour >= 5 && hour < 12) {
-    emitReaction({ kind: "time-morning" });
-  } else if (hour >= 12 && hour < 17) {
-    emitReaction({ kind: "time-lunch" });
-  } else if (hour >= 17 && hour < 20) {
-    emitReaction({ kind: "time-evening" });
-  } else {
-    emitReaction({ kind: "time-night" });
-  }
 
   // Clipboard change detection.
   lastClipboardText = clipboard.readText();
-  setInterval(() => {
+  // ISS-010: store handle so we can clear it on quit
+  clipboardInterval = setInterval(() => {
     const current = clipboard.readText();
     if (current !== lastClipboardText && current.length > 0) {
       lastClipboardText = current;
@@ -1222,8 +1228,8 @@ app.whenReady().then(() => {
     }
   }, 2000);
 
-  // Developer & system reaction triggers.
-  setInterval(() => {
+  // Developer & system reaction triggers (ISS-010: stored handles).
+  ideSaveInterval = setInterval(() => {
     if (!interactive) return;
     const hour = new Date().getHours();
     if (hour >= 9 && hour < 18 && Math.random() < 0.02) {
@@ -1231,7 +1237,7 @@ app.whenReady().then(() => {
     }
   }, 120000);
 
-  setInterval(() => {
+  gitCommitInterval = setInterval(() => {
     if (!interactive) return;
     const hour = new Date().getHours();
     if (hour >= 9 && hour < 18 && Math.random() < 0.015) {
@@ -1239,7 +1245,7 @@ app.whenReady().then(() => {
     }
   }, 180000);
 
-  setInterval(() => {
+  buildGreenInterval = setInterval(() => {
     if (!interactive) return;
     const hour = new Date().getHours();
     if (hour >= 9 && hour < 18 && Math.random() < 0.01) {
@@ -1247,8 +1253,8 @@ app.whenReady().then(() => {
     }
   }, 300000);
 
-  // Wellness reminders.
-  setInterval(() => {
+  // Wellness reminders (ISS-010: stored handles).
+  hydrateInterval = setInterval(() => {
     if (!interactive) return;
     const hour = new Date().getHours();
     if (hour >= 9 && hour < 18 && Math.random() < 0.02) {
@@ -1256,7 +1262,7 @@ app.whenReady().then(() => {
     }
   }, 180000);
 
-  setInterval(() => {
+  postureInterval = setInterval(() => {
     if (!interactive) return;
     const hour = new Date().getHours();
     if (hour >= 9 && hour < 18 && Math.random() < 0.015) {
@@ -1270,17 +1276,34 @@ app.whenReady().then(() => {
       emitReaction({ kind: "mischief-random" });
     }
   }, 60000);
+
+  // ISS-008: delay startup greeting so overlay + bubble windows are ready
+  const greetHour = new Date().getHours();
+  const greetSignal: Signal =
+    greetHour >= 5 && greetHour < 12
+      ? { kind: "time-morning" }
+      : greetHour >= 12 && greetHour < 17
+        ? { kind: "time-lunch" }
+        : greetHour >= 17 && greetHour < 20
+          ? { kind: "time-evening" }
+          : { kind: "time-night" };
+  setTimeout(() => emitReaction(greetSignal), 1500);
 });
 
 app.on("before-quit", () => {
   emitReaction({ kind: "app-shutdown" });
-  if (activityPollInterval) {
-    clearInterval(activityPollInterval);
-    activityPollInterval = null;
-  }
-  if (randomMischiefInterval) {
-    clearInterval(randomMischiefInterval);
-    randomMischiefInterval = null;
+  // ISS-010: clear all stored interval handles
+  for (const [ref, setter] of [
+    [activityPollInterval, (v: NodeJS.Timeout | null) => { activityPollInterval = v; }],
+    [clipboardInterval,    (v: NodeJS.Timeout | null) => { clipboardInterval = v; }],
+    [ideSaveInterval,      (v: NodeJS.Timeout | null) => { ideSaveInterval = v; }],
+    [gitCommitInterval,    (v: NodeJS.Timeout | null) => { gitCommitInterval = v; }],
+    [buildGreenInterval,   (v: NodeJS.Timeout | null) => { buildGreenInterval = v; }],
+    [hydrateInterval,      (v: NodeJS.Timeout | null) => { hydrateInterval = v; }],
+    [postureInterval,      (v: NodeJS.Timeout | null) => { postureInterval = v; }],
+    [randomMischiefInterval, (v: NodeJS.Timeout | null) => { randomMischiefInterval = v; }],
+  ] as Array<[NodeJS.Timeout | null, (v: NodeJS.Timeout | null) => void]>) {
+    if (ref) { clearInterval(ref); setter(null); }
   }
 });
 

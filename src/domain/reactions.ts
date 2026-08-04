@@ -124,20 +124,21 @@ const POOLS: Record<string, Reaction[]> = {
     { text: "Nudge nudge.", durationMs: 3000 },
     { text: "Wink.", durationMs: 2500 },
   ],
+  // ISS-006: each developer trigger has unique, contextually accurate messages
   "ide-save": [
     { text: "Saved! 💾", durationMs: 2500 },
-    { text: "Git commit ready! 🚀", durationMs: 3000 },
-    { text: "Build green! ✅", durationMs: 2500 },
+    { text: "All changes saved.", durationMs: 2500 },
+    { text: "Safe and sound 💾", durationMs: 2500 },
   ],
   "git-commit": [
-    { text: "Saved! 💾", durationMs: 2500 },
     { text: "Git commit ready! 🚀", durationMs: 3000 },
-    { text: "Build green! ✅", durationMs: 2500 },
+    { text: "Committed!", durationMs: 2500 },
+    { text: "History recorded 📝", durationMs: 3000 },
   ],
   "build-green": [
-    { text: "Saved! 💾", durationMs: 2500 },
-    { text: "Git commit ready! 🚀", durationMs: 3000 },
     { text: "Build green! ✅", durationMs: 2500 },
+    { text: "Tests passing!", durationMs: 2500 },
+    { text: "Ship it! 🚀", durationMs: 3000 },
   ],
   "hydrate": [
     { text: "Time to drink water! 💧", durationMs: 3500 },
@@ -195,6 +196,12 @@ function pick<T>(pool: T[], weights: number[]): T {
 
 export function pickReaction(signal: Signal, character?: CharacterManifest | null): Reaction {
   const key = signal.kind;
+  // ISS-012: combo-streak uses the actual comboCount to build dynamic text
+  if (key === "combo-streak" && "comboCount" in signal) {
+    const count = (signal as { kind: "combo-streak"; comboCount: number }).comboCount;
+    const text = count >= 10 ? `Combo x${count}! 🔥` : count >= 5 ? `Combo x${count}! 🎉` : `Combo x${count}! 🎉`;
+    return { text, durationMs: 2500 };
+  }
   const charPool = character?.speech?.[key];
   if (charPool && charPool.length > 0) {
     return { text: pickRandom(charPool), durationMs: defaultDuration(charPool) };

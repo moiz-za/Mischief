@@ -608,6 +608,10 @@
         selectedId = packId;
         for (const tile of $("tiles").querySelectorAll(".tile[data-pack-id]")) {
           tile.classList.toggle("selected", tile.dataset.packId === packId);
+          // ISS-013: keep the selected tile visible without jarring full-page jump
+          if (tile.dataset.packId === packId) {
+            tile.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
         }
         updateHero();
       }
