@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self' mischief-asset:"
+      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' mischief-asset:"
     />
     <title>Mischief</title>
+    <script src="procedural.renderer.js"></script>
     <style>
       html,
       body {
@@ -188,8 +189,19 @@
         happy: "anim-happy",
       };
       const ONE_SHOT = new Set(["anim-yawn", "anim-happy"]);
+      const ANIM_TO_PET_STATE = {
+        walk: "walk",
+        run: "run",
+        happy: "happy",
+        sad: "sad",
+        sleep: "sleep",
+        yawn: "yawn",
+      };
+
+      let currentAnim = "idle";
 
       function applyAnim(anim) {
+        currentAnim = anim;
         const cls = ANIM_CLASSES[anim] || "anim-idle";
         creature.className = cls;
         if (ONE_SHOT.has(cls)) {
@@ -205,21 +217,167 @@
 
       applyAnim("idle");
 
+      // --- Procedural pet animation (canvas) --------------------------------
+
+      let petMeta = null;
+      let petState = "idle";
+      let petImage = null;
+      let petCanvas = null;
+      let petRaf = null;
+
+      function drawEffects(ctx, effects) {
+        if (!petMeta || !petMeta.face) return;
+        const W = petCanvas.width;
+        const H = petCanvas.height;
+        const fx = petMeta.face.x * W;
+        const fy = petMeta.face.y * H;
+        for (const cue of effects) {
+          const x = fx + cue.ox * W;
+          const y = fy + cue.oy * H;
+          if (cue.kind === "blink") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.8)";
+            const w = 0.3 * W;
+            const h = 0.035 * W;
+            roundRect(ctx, x - w / 2, y - h / 2, w, h, h / 2);
+            ctx.fill();
+          } else if (cue.kind === "mouth") {
+            ctx.fillStyle = "rgba(15, 23, 42, 0.75)";
+            const w = 0.16 * W;
+            const h = 0.04 * W * Math.sin(Math.PI * cue.phase);
+            ctx.beginPath();
+            ctx.ellipse(x, y, w / 2, Math.max(0.5, h), 0, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (cue.kind === "zzz") {
+            const alpha = Math.sin(Math.PI * cue.phase);
+            ctx.fillStyle = `rgba(30, 41, 59, ${0.7 * alpha})`;
+            ctx.font = `${0.16 * W}px serif`;
+            ctx.fillText("z", x, y);
+          } else if (cue.kind === "hearts") {
+            const alpha = Math.sin(Math.PI * cue.phase);
+            ctx.fillStyle = `rgba(239, 68, 68, ${0.9 * alpha})`;
+            ctx.font = `${0.15 * W}px serif`;
+            ctx.fillText("\u2665", x, y);
+          } else if (cue.kind === "tears") {
+            ctx.fillStyle = "rgba(56, 189, 248, 0.85)";
+            ctx.beginPath();
+            ctx.arc(x, y, 0.02 * W, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+
+      const { motionFor, sanitizePetMeta } = window.MischiefProcedural || {};
+
+      function petLoop() {
+        if (!petCanvas || !petImage || !petMeta || !motionFor) return;
+        const frame = motionFor(petState, performance.now() / 1000, petMeta);
+        const ctx = petCanvas.getContext("2d");
+        const W = petCanvas.width;
+        const H = petCanvas.height;
+        ctx.clearRect(0, 0, W, H);
+        ctx.globalAlpha = frame.motion.opacity;
+        ctx.save();
+        ctx.translate(W / 2 + frame.motion.dx, H * 0.92 + frame.motion.dy);
+        ctx.rotate((frame.motion.rotate * Math.PI) / 180);
+        ctx.scale(frame.motion.scaleX, frame.motion.scaleY);
+        const iw = petImage.naturalWidth;
+        const ih = petImage.naturalHeight;
+        const scale = Math.min(W / iw, H / ih) * 0.9;
+        ctx.drawImage(petImage, (-iw * scale) / 2, -ih * scale, iw * scale, ih * scale);
+        ctx.restore();
+        ctx.globalAlpha = 1;
+        drawEffects(ctx, frame.effects);
+        petRaf = requestAnimationFrame(petLoop);
+      }
+
+      function startPet(url, meta) {
+        stopPet();
+        if (!motionFor || !sanitizePetMeta) {
+          handleSprite(url, { cutout: false, face: null });
+          return;
+        }
+        petMeta = sanitizePetMeta(meta);
+        petState = "idle";
+        creature.className = "";
+        const zzz = document.getElementById("zzz");
+        if (zzz) zzz.style.display = "none";
+        const cssImg = creature.querySelector("img");
+        if (cssImg) cssImg.style.display = "none";
+        if (!petCanvas) {
+          petCanvas = document.createElement("canvas");
+          petCanvas.id = "petCanvas";
+          petCanvas.style.position = "absolute";
+          petCanvas.style.inset = "0";
+          petCanvas.width = 80;
+          petCanvas.height = 80;
+          creature.prepend(petCanvas);
+        }
+        const image = new Image();
+        image.onload = () => {
+          petImage = image;
+          petLoop();
+        };
+        image.src = url;
+      }
+
+      function stopPet() {
+        if (petRaf) {
+          cancelAnimationFrame(petRaf);
+          petRaf = null;
+        }
+        petImage = null;
+      }
+
+      function handleSprite(url, meta) {
+        if (meta && meta.cutout) {
+          startPet(url, meta);
+          return;
+        }
+        stopPet();
+        if (petCanvas) petCanvas.remove();
+        petCanvas = null;
+        petMeta = null;
+        const zzz = document.getElementById("zzz");
+        if (zzz) zzz.style.display = "";
+        let img = creature.querySelector("img");
+        if (!img) {
+          img = document.createElement("img");
+          img.alt = "Mischief companion";
+          creature.prepend(img);
+        }
+        img.style.display = "";
+        img.src = url;
+        applyAnim(currentAnim);
+      }
+
+      if (window.mischief && window.mischief.getPetMeta) {
+        window.mischief.getPetMeta().then((message) => {
+          if (message && message.meta && message.meta.cutout) {
+            startPet(message.url, message.meta);
+          }
+        });
+      }
+
       if (window.mischief && window.mischief.onBehavior) {
         window.mischief.onBehavior((behavior) => {
+          petState = ANIM_TO_PET_STATE[behavior.anim] || "idle";
           applyAnim(behavior.anim);
         });
       }
 
       if (window.mischief && window.mischief.onSprite) {
-        window.mischief.onSprite((sprite) => {
-          let img = creature.querySelector("img");
-          if (!img) {
-            img = document.createElement("img");
-            img.alt = "Mischief companion";
-            creature.prepend(img);
-          }
-          img.src = sprite;
+        window.mischief.onSprite((message) => {
+          handleSprite(message.url, message.meta);
         });
       }
 

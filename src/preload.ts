@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import type { PetMeta } from "./domain/procedural";
 
 export interface BehaviorMessage {
   anim: string;
@@ -21,6 +22,35 @@ export interface CompanionInfo {
   sprite: string;
   /** True for user-added companions that can be removed. */
   custom: boolean;
+  /** Custom-pet metadata (cutout flag + face anchor). */
+  meta: PetMeta;
+}
+
+export interface SpriteMessage {
+  url: string;
+  meta: PetMeta;
+}
+
+export interface PetEditorData {
+  sourcePath: string;
+  width: number;
+  height: number;
+  previewDataUrl: string;
+}
+
+export interface PetEditorPreview {
+  previewDataUrl: string;
+  keptRatio: number;
+  width: number;
+  height: number;
+}
+
+export interface PetEditorSaveRequest {
+  cut: boolean;
+  tolerance: number;
+  keep: Array<{ x: number; y: number; radius: number }>;
+  remove: Array<{ x: number; y: number; radius: number }>;
+  face: { x: number; y: number } | null;
 }
 
 contextBridge.exposeInMainWorld("mischief", {
@@ -34,9 +64,9 @@ contextBridge.exposeInMainWorld("mischief", {
       ipcRenderer.removeListener("mischief:behavior", listener);
     };
   },
-  onSprite(callback: (sprite: string) => void): () => void {
-    const listener = (_event: Electron.IpcRendererEvent, sprite: string): void => {
-      callback(sprite);
+  onSprite(callback: (message: SpriteMessage) => void): () => void {
+    const listener = (_event: Electron.IpcRendererEvent, message: SpriteMessage): void => {
+      callback(message);
     };
     ipcRenderer.on("mischief:sprite", listener);
     return () => {
@@ -69,5 +99,26 @@ contextBridge.exposeInMainWorld("mischief", {
   },
   removeCustomCompanion(packId: string): Promise<boolean> {
     return ipcRenderer.invoke("mischief:companions:remove", packId);
+  },
+  /** Opens the custom pet editor; resolves with the companion list when it closes. */
+  openPetEditor(): Promise<CompanionInfo[] | null> {
+    return ipcRenderer.invoke("mischief:pet-editor:open-window");
+  },
+  /** Overlay: fetch the active companion's sprite + pet metadata. */
+  getPetMeta(): Promise<SpriteMessage | null> {
+    return ipcRenderer.invoke("mischief:pet:meta");
+  },
+  // Pet editor window internals.
+  getPetEditorData(): Promise<PetEditorData | null> {
+    return ipcRenderer.invoke("mischief:pet-editor:get");
+  },
+  previewPetEditor(request: Omit<PetEditorSaveRequest, "face">): Promise<PetEditorPreview | null> {
+    return ipcRenderer.invoke("mischief:pet-editor:preview", request);
+  },
+  savePetEditor(request: PetEditorSaveRequest): Promise<CompanionInfo[] | null> {
+    return ipcRenderer.invoke("mischief:pet-editor:save", request);
+  },
+  cancelPetEditor(): Promise<null> {
+    return ipcRenderer.invoke("mischief:pet-editor:cancel");
   },
 });

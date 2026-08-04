@@ -157,7 +157,7 @@
       </div>
       <p class="hint">Which companion walks your desktop. Switches instantly.</p>
       <div class="companion-actions">
-        <button id="addImage" type="button">Add your own image…</button>
+        <button id="addImage" type="button">Add a pet or image…</button>
         <button id="removeCompanion" type="button" class="danger" style="display: none">
           Remove
         </button>
@@ -237,8 +237,9 @@
         for (const companion of companions) {
           const option = document.createElement("option");
           option.value = companion.packId;
+          const tag = companion.meta && companion.meta.cutout ? "pet" : "custom";
           option.textContent = companion.custom
-            ? `${companion.displayName} (custom)`
+            ? `${companion.displayName} (${tag})`
             : companion.displayName;
           select.appendChild(option);
         }
@@ -255,7 +256,7 @@
       $("companion").addEventListener("change", updatePreview);
 
       $("addImage").addEventListener("click", async () => {
-        const list = await window.mischief.addCustomCompanion();
+        const list = await window.mischief.openPetEditor();
         if (!list) return;
         await refreshAll();
       });

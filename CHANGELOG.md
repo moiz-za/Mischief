@@ -9,6 +9,8 @@ All notable changes to Mischief are documented here. Format follows [Keep a Chan
 - **Companion switcher** — choose from installed companion packs in Settings; the mascot hot-swaps instantly (sprite, tray tooltip, and behavior engine all update live, no restart)
 - **Raster sprite support** — companion sprites can be PNG, JPG/JPEG, WebP, or animated GIF in addition to SVG
 - **Custom companions** — add your own image from Settings (PNG/JPG/WebP/GIF); Mischief builds a validated Experience Pack in the app's user-data folder — no coding, nothing uploaded — renders it over a privileged `mischief-asset://` protocol, and lets you remove it any time
+- **Custom pet photos** — "Add a pet or image…" opens a pet editor that cuts the subject out of its background (light border-flood cutout + Remove/Keep brushes + sensitivity, all on-device), pins a face point for effects (blink/mouth/Zzz/hearts/tears), and saves a `custom-pet` pack whose sprite is animated per-frame on a canvas (bob/lean/squash-and-stretch + anchored effects). Image pipeline in the main process via `nativeImage` (decode/encode/premultiply), pixel math in pure tested domain modules (`segmentation.ts`, `procedural.ts`); the overlay ports `procedural.ts` to a browser bundle (`procedural.renderer.js`)
+- **Pet pipeline internals** — new IPC (`mischief:pet:*`, `mischief:pet-editor:*`), `CustomPetImported` event, `meta` (`PetMeta`) carried on companion descriptors and sprite messages, pet packs persisted under `<userData>/custom-companions/`
 
 ## [0.2.0] - 2026-08-04
 

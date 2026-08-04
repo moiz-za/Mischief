@@ -204,6 +204,40 @@ folder.
 
 ---
 
+## Custom pet photos (background removal + animation)
+
+Starting with a photo of a pet (or anything with a clear outline), Mischief can
+cut out the subject and animate the result as a living desktop companion —
+100% on-device, no uploads.
+
+Use **Settings → Companion → Add a pet or image…**, then:
+
+1. Pick a **PNG, JPG/JPEG, or WebP** (animated GIFs can't be cut out).
+2. The **pet editor** opens with an automatic background cutout (a light
+   border-flood algorithm — no ML model, ~0 MB added). Adjust it:
+   - **Remove** brush erases (paints transparency), **Keep** brush restores.
+   - **Sensitivity** raises/lowers the auto-cut tolerance for similar
+     background colors.
+   - **Tap face** pins the face point once, so blink / mouth / Zzz / hearts /
+     tears anchors land on the right spot. Skip it to get a sensible default
+     (centered upper-third).
+3. **Save** generates a `custom-pet` pack in the same local
+   `custom-companions/` folder (id `configuration.mischief.pet` holds
+   `{ "cutout": true, "face": {x, y} }`) and switches to it instantly.
+
+Cutout pets render on a canvas with **per-frame motion** — bobbing, leaning,
+squash-and-stretch, plus anchored effects — instead of the plain CSS bob used
+for regular (uncut) companions. They use the same behavior engine, so they
+wander, sleep, and react to petting; `run` and `sad` are built into every pet.
+The sprite is stored premultiplied (dark halos around edges are prevented by
+clamping each pixel's color to its alpha).
+
+`configuration.mischief.pet.cutout` is the flag the overlay checks: packs
+without it (including hand-written ones) use the classic CSS path, so adding a
+pet pack by hand is safe — just write `"pet": { "cutout": true, "face": { "x": 0.5, "y": 0.3 } }`.
+
+---
+
 ## Loading your pack
 
 The runtime bundles every pack under `examples/experiences/` (see `PACK_ORDER`

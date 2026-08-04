@@ -2,12 +2,17 @@ import { describe, expect, it } from "vitest";
 import {
   buildCustomCharacter,
   buildCustomPackManifest,
+  buildPetCharacter,
+  buildPetManifest,
+  CUSTOM_PET_SPECIES,
   displayNameFromFile,
   isCustomImage,
+  PET_ANIMATION_KEYS,
   slugify,
   storedImageName,
 } from "../src/domain/custom-companion";
 import { validateCharacterManifest, validateExperienceManifest } from "../src/domain/manifest";
+import { sanitizePetMeta, type PetMeta } from "../src/domain/procedural";
 
 describe("isCustomImage", () => {
   it("accepts supported image extensions", () => {
@@ -70,5 +75,35 @@ describe("custom pack/character builders produce valid manifests", () => {
     const result = validateCharacterManifest(character);
     expect(result.ok, JSON.stringify(result.errors)).toBe(true);
     expect(character.personality).toBe("friendly");
+  });
+});
+
+describe("pet pack/character builders", () => {
+  const meta: PetMeta = sanitizePetMeta({ cutout: true, face: { x: 0.5, y: 0.3 } });
+
+  it("the generated pet manifest passes strict validation", () => {
+    const manifest = buildPetManifest("buddy", "Buddy", "buddy.png", meta);
+    const result = validateExperienceManifest(manifest);
+    expect(result.ok, JSON.stringify(result.errors)).toBe(true);
+    expect(manifest.animations).toEqual(PET_ANIMATION_KEYS);
+    expect(manifest.category).toBe(CUSTOM_PET_SPECIES);
+    expect(manifest.configuration.mischief).toEqual({ pet: meta });
+  });
+
+  it("the generated pet character passes strict validation", () => {
+    const character = buildPetCharacter("buddy", "Buddy");
+    const result = validateCharacterManifest(character);
+    expect(result.ok, JSON.stringify(result.errors)).toBe(true);
+    expect(character.species).toBe(CUSTOM_PET_SPECIES);
+    expect(Object.keys(character.animations)).toEqual(PET_ANIMATION_KEYS);
+    expect(character.animations.run).toBeDefined();
+    expect(character.animations.sad).toBeDefined();
+    expect(character.behavior.sadWeight).toBeGreaterThan(0);
+  });
+
+  it("pet metadata round-trips through the manifest configuration", () => {
+    const manifest = buildPetManifest("buddy", "Buddy", "buddy.png", meta);
+    const restored = sanitizePetMeta((manifest.configuration.mischief as { pet: unknown }).pet);
+    expect(restored).toEqual(meta);
   });
 });

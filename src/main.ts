@@ -18,8 +18,11 @@ import { BehaviorEngine, type BehaviorDef, type ContextSignals } from "./domain/
 import {
   buildCustomCharacter,
   buildCustomPackManifest,
+  buildPetCharacter,
+  buildPetManifest,
   displayNameFromFile,
   isCustomImage,
+  petMetaFromConfiguration,
   slugify,
   storedImageName,
 } from "./domain/custom-companion";
@@ -35,6 +38,16 @@ import {
 import type { CharacterManifest } from "./domain/manifest";
 import { followPosition } from "./domain/overlay";
 import { loadExperiencePack, type PackReader } from "./domain/pack";
+import {
+  applyTrim,
+  cutout,
+  foregroundRatio,
+  premultiplyCopy,
+  rgbaToBgra,
+  type Raster,
+  type Stroke,
+} from "./domain/segmentation";
+import { sanitizePetMeta, type FaceAnchor, type PetMeta } from "./domain/procedural";
 import { createTicker, type Ticker } from "./domain/scheduler";
 import { isSafeSpritePath, pickSprite } from "./domain/sprite";
 
@@ -78,6 +91,8 @@ interface CompanionDescriptor {
   character: CharacterManifest;
   /** True for user-added companions (stored in userData, removable). */
   custom: boolean;
+  /** Custom-pet metadata (cutout + face anchor); defaults for regular packs. */
+  meta: PetMeta;
 }
 
 interface LoadedCompanion extends CompanionDescriptor {
@@ -118,6 +133,7 @@ function tryLoadCompanionDir(dir: string, packId: string, custom: boolean): Comp
     spritePath,
     character: character.character,
     custom,
+    meta: petMetaFromConfiguration(result.pack.manifest.configuration),
   };
 }
 
@@ -246,14 +262,193 @@ function companionListPayload(): Array<{
   species: string;
   sprite: string;
   custom: boolean;
+  meta: PetMeta;
 }> {
-  return enumerateCompanions().map(({ packId, displayName, species, spritePath, custom }) => ({
+  return enumerateCompanions().map(({ packId, displayName, species, spritePath, custom, meta }) => ({
     packId,
     displayName,
     species,
     sprite: `mischief-asset://${packId}/${spritePath}`,
     custom,
+    meta,
   }));
+}
+
+// --- Custom pet photo pipeline (Phase 1) ------------------------------------
+//
+// Decode/encode is done with Electron's nativeImage (pure-JS, no native deps);
+// the pixel math (cutout/trim) runs in the pure domain modules above.
+
+const PET_MAX_DIMENSION = 512;
+const PET_CUTOUT_MIN_COMPONENT = 48;
+/** Below this kept ratio the cutout removed (almost) everything: keep original. */
+const PET_CUTOUT_FALLBACK_RATIO = 0.08;
+const MAX_EDITOR_STROKES = 2000;
+
+interface PendingPet {
+  sourcePath: string;
+  raster: Raster;
+  baseName: string;
+}
+
+interface EditorRequest {
+  /** Run background removal at all (else only brush trims apply). */
+  cut: boolean;
+  tolerance: number;
+  keep: Stroke[];
+  remove: Stroke[];
+  face: FaceAnchor | null;
+}
+
+let pendingPet: PendingPet | null = null;
+
+const clamp = (v: number, min: number, max: number): number => Math.min(max, Math.max(min, v));
+const clamp01 = (v: number): number => clamp(v, 0, 1);
+
+/** Decodes an image file into a straight-alpha RGBA raster, capped at 512px. */
+function decodeRaster(file: string): Raster | null {
+  let image = nativeImage.createFromPath(file);
+  if (image.isEmpty()) return null;
+  const size = image.getSize();
+  if (size.width > PET_MAX_DIMENSION || size.height > PET_MAX_DIMENSION) {
+    const scale = PET_MAX_DIMENSION / Math.max(size.width, size.height);
+    image = image.resize({
+      width: Math.max(1, Math.round(size.width * scale)),
+      height: Math.max(1, Math.round(size.height * scale)),
+    });
+  }
+  const { width, height } = image.getSize();
+  const bgra = image.toBitmap();
+  if (bgra.length !== width * height * 4) return null;
+  const rgba = new Uint8ClampedArray(width * height * 4);
+  for (let i = 0; i < width * height; i++) {
+    const a = bgra[i * 4 + 3];
+    const o = i * 4;
+    if (a === 0 || a === 255) {
+      rgba[o] = bgra[o + 2];
+      rgba[o + 1] = bgra[o + 1];
+      rgba[o + 2] = bgra[o];
+      rgba[o + 3] = a;
+    } else {
+      const f = 255 / a;
+      rgba[o] = Math.round(Math.min(255, bgra[o + 2] * f));
+      rgba[o + 1] = Math.round(Math.min(255, bgra[o + 1] * f));
+      rgba[o + 2] = Math.round(Math.min(255, bgra[o] * f));
+      rgba[o + 3] = a;
+    }
+  }
+  return { width, height, rgba };
+}
+
+/** Encodes a straight-alpha RGBA raster to a PNG buffer. */
+function encodeRasterPng(raster: Raster): Buffer | null {
+  const premultiplied = premultiplyCopy(raster);
+  const bgra = rgbaToBgra(premultiplied);
+  const image = nativeImage.createFromBuffer(Buffer.from(bgra.buffer, bgra.byteOffset, bgra.byteLength), {
+    width: raster.width,
+    height: raster.height,
+  });
+  if (image.isEmpty()) return null;
+  return image.toPNG();
+}
+
+function dataUrl(png: Buffer): string {
+  return `data:image/png;base64,${png.toString("base64")}`;
+}
+
+function sanitizeStrokes(input: unknown): Stroke[] {
+  if (!Array.isArray(input)) return [];
+  const strokes: Stroke[] = [];
+  for (const entry of input) {
+    if (strokes.length >= MAX_EDITOR_STROKES) break;
+    if (typeof entry !== "object" || entry === null) continue;
+    const s = entry as Record<string, unknown>;
+    const x = typeof s.x === "number" ? clamp01(s.x) : 0;
+    const y = typeof s.y === "number" ? clamp01(s.y) : 0;
+    const radius = typeof s.radius === "number" ? clamp(s.radius, 0.01, 0.5) : 0.02;
+    strokes.push({ x, y, radius });
+  }
+  return strokes;
+}
+
+function sanitizeEditorRequest(payload: unknown): EditorRequest | null {
+  if (typeof payload !== "object" || payload === null) return null;
+  const raw = payload as Record<string, unknown>;
+  const cut = raw.cut !== false;
+  const tolerance = typeof raw.tolerance === "number" ? clamp(raw.tolerance, 0, 255) : 30;
+  const keep = sanitizeStrokes(raw.keep);
+  const remove = sanitizeStrokes(raw.remove);
+  let face: FaceAnchor | null = null;
+  const faceRaw = raw.face;
+  if (typeof faceRaw === "object" && faceRaw !== null) {
+    const f = faceRaw as Record<string, unknown>;
+    if (typeof f.x === "number" && typeof f.y === "number") {
+      face = { x: clamp01(f.x), y: clamp01(f.y) };
+    }
+  }
+  return { cut, tolerance, keep, remove, face };
+}
+
+/** Runs cutout + trim for a live editor preview. */
+function processPetRaster(raster: Raster, request: EditorRequest): Raster {
+  if (!request.cut) return applyTrim(raster, request.keep, request.remove);
+  const cut = cutout(raster, {
+    tolerance: request.tolerance,
+    minComponentPixels: PET_CUTOUT_MIN_COMPONENT,
+  });
+  return applyTrim(cut, request.keep, request.remove);
+}
+
+/** Writes a validated custom-pet pack to userData and returns its descriptor. */
+function ensurePetCompanion(
+  sourcePath: string,
+  png: Buffer,
+  meta: PetMeta
+): CompanionDescriptor | null {
+  const baseName = path.basename(sourcePath);
+  if (!isCustomImage(baseName)) return null;
+  const id = uniqueCustomId(slugify(baseName));
+  const dir = path.join(customCompanionsDir(), id);
+  fs.mkdirSync(path.join(dir, "images"), { recursive: true });
+  fs.mkdirSync(path.join(dir, "characters"), { recursive: true });
+
+  const imageName = `${id}.png`;
+  const displayName = displayNameFromFile(baseName);
+  fs.writeFileSync(path.join(dir, "images", imageName), png);
+  fs.writeFileSync(
+    path.join(dir, "manifest.json"),
+    JSON.stringify(buildPetManifest(id, displayName, imageName, meta), null, 2)
+  );
+  fs.writeFileSync(
+    path.join(dir, "characters", `${id}.json`),
+    JSON.stringify(buildPetCharacter(id, displayName), null, 2)
+  );
+
+  const descriptor = tryLoadCompanionDir(dir, id, true);
+  if (!descriptor) {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+  return descriptor;
+}
+
+function createPetEditorWindow(): BrowserWindow {
+  const editor = new BrowserWindow({
+    width: 680,
+    height: 720,
+    resizable: false,
+    title: "Custom Pet Editor",
+    backgroundColor: "#0f172a",
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
+  });
+  editor.setMenuBarVisibility(false);
+  hardenWebContents(editor);
+  editor.loadFile(path.join(__dirname, "renderer", "pet-editor.html"));
+  return editor;
 }
 
 function hardenWebContents(win: BrowserWindow): void {
@@ -535,7 +730,7 @@ function swapCompanion(packId: string): void {
   config.companionId = next.packId;
   behaviorEngine?.setCharacter(next.character);
   if (overlay && !overlay.isDestroyed()) {
-    overlay.webContents.send("mischief:sprite", next.sprite);
+    overlay.webContents.send("mischief:sprite", { url: next.sprite, meta: next.meta });
   }
   tray?.setToolTip(`${next.displayName} (${next.species}) - Mischief`);
   events.emit("CharacterSpawned", { characterId: next.packId });
@@ -704,6 +899,88 @@ ipcMain.handle("mischief:companions:remove", (_event, packId: unknown) => {
   const removed = removeCustomCompanion(packId);
   if (removed) persistConfig();
   return removed;
+});
+
+ipcMain.handle("mischief:pet:meta", () => {
+  if (!companion) return null;
+  return { url: companion.sprite, meta: companion.meta };
+});
+
+ipcMain.handle("mischief:pet-editor:open-window", async () => {
+  const result = await dialog.showOpenDialog({
+    title: "Choose a photo of your pet",
+    properties: ["openFile"],
+    filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "webp"] }],
+  });
+  if (result.canceled || result.filePaths.length === 0) return null;
+  const sourcePath = result.filePaths[0];
+  if (!isCustomImage(path.basename(sourcePath))) return null;
+  const raster = decodeRaster(sourcePath);
+  if (!raster) return null;
+  pendingPet = { sourcePath, raster, baseName: path.basename(sourcePath) };
+  const editor = createPetEditorWindow();
+  await new Promise<void>((resolve) => {
+    editor.once("closed", () => resolve());
+  });
+  pendingPet = null;
+  return companionListPayload();
+});
+
+ipcMain.handle("mischief:pet-editor:get", () => {
+  if (!pendingPet) return null;
+  const png = encodeRasterPng(pendingPet.raster);
+  if (!png) return null;
+  return {
+    sourcePath: pendingPet.sourcePath,
+    width: pendingPet.raster.width,
+    height: pendingPet.raster.height,
+    previewDataUrl: dataUrl(png),
+  };
+});
+
+ipcMain.handle("mischief:pet-editor:preview", (_event, payload: unknown) => {
+  if (!pendingPet) return null;
+  const request = sanitizeEditorRequest(payload);
+  if (!request) return null;
+  const processed = processPetRaster(pendingPet.raster, request);
+  const png = encodeRasterPng(processed);
+  if (!png) return null;
+  return {
+    previewDataUrl: dataUrl(png),
+    keptRatio: foregroundRatio(processed),
+    width: processed.width,
+    height: processed.height,
+  };
+});
+
+ipcMain.handle("mischief:pet-editor:save", (_event, payload: unknown) => {
+  if (!pendingPet) return null;
+  const request = sanitizeEditorRequest(payload);
+  if (!request) return null;
+  const processed = processPetRaster(pendingPet.raster, request);
+  const ratio = foregroundRatio(processed);
+  const useCutout = request.cut && ratio >= PET_CUTOUT_FALLBACK_RATIO;
+  const meta = sanitizePetMeta({ cutout: useCutout, face: request.face });
+  const raster = useCutout ? processed : pendingPet.raster;
+  const png = encodeRasterPng(raster);
+  if (!png) return null;
+
+  const descriptor = ensurePetCompanion(pendingPet.sourcePath, png, meta);
+  if (!descriptor) return null;
+  events.emit("CustomPetImported", {
+    characterId: descriptor.packId,
+    displayName: descriptor.displayName,
+  });
+  if (descriptor.packId !== config.companionId) {
+    applyConfig(sanitizeConfig({ ...config, companionId: descriptor.packId }));
+    persistConfig();
+  }
+  return companionListPayload();
+});
+
+ipcMain.handle("mischief:pet-editor:cancel", () => {
+  pendingPet = null;
+  return null;
 });
 
 ipcMain.handle("mischief:settings:set", (_event, partial: unknown) => {
