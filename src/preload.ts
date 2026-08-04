@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { PetMeta } from "./domain/procedural";
+import type { CompanionMeta } from "./domain/procedural";
 
 export interface BehaviorMessage {
   anim: string;
@@ -22,30 +22,30 @@ export interface CompanionInfo {
   sprite: string;
   /** True for user-added companions that can be removed. */
   custom: boolean;
-  /** Custom-pet metadata (cutout flag + face anchor). */
-  meta: PetMeta;
+  /** Companion metadata (cutout flag + anchor point). */
+  meta: CompanionMeta;
 }
 
 export interface SpriteMessage {
   url: string;
-  meta: PetMeta;
+  meta: CompanionMeta;
 }
 
-export interface PetEditorData {
+export interface ImportEditorData {
   sourcePath: string;
   width: number;
   height: number;
   previewDataUrl: string;
 }
 
-export interface PetEditorPreview {
+export interface ImportEditorPreview {
   previewDataUrl: string;
   keptRatio: number;
   width: number;
   height: number;
 }
 
-export interface PetEditorSaveRequest {
+export interface ImportEditorSaveRequest {
   cut: boolean;
   tolerance: number;
   keep: Array<{ x: number; y: number; radius: number }>;
@@ -94,31 +94,28 @@ contextBridge.exposeInMainWorld("mischief", {
   listCompanions(): Promise<CompanionInfo[]> {
     return ipcRenderer.invoke("mischief:companions:list");
   },
-  addCustomCompanion(): Promise<CompanionInfo[] | null> {
-    return ipcRenderer.invoke("mischief:companions:add-image");
+  /** Picks any image (GIF adds as-is; raster opens the cutout editor). Resolves with the companion list when done. */
+  importCompanion(): Promise<CompanionInfo[] | null> {
+    return ipcRenderer.invoke("mischief:companions:import");
   },
   removeCustomCompanion(packId: string): Promise<boolean> {
     return ipcRenderer.invoke("mischief:companions:remove", packId);
   },
-  /** Opens the custom pet editor; resolves with the companion list when it closes. */
-  openPetEditor(): Promise<CompanionInfo[] | null> {
-    return ipcRenderer.invoke("mischief:pet-editor:open-window");
+  /** Overlay: fetch the active companion's sprite + metadata. */
+  getCompanionSprite(): Promise<SpriteMessage | null> {
+    return ipcRenderer.invoke("mischief:companion:meta");
   },
-  /** Overlay: fetch the active companion's sprite + pet metadata. */
-  getPetMeta(): Promise<SpriteMessage | null> {
-    return ipcRenderer.invoke("mischief:pet:meta");
+  // Import editor window internals.
+  getImportEditorData(): Promise<ImportEditorData | null> {
+    return ipcRenderer.invoke("mischief:import-editor:get");
   },
-  // Pet editor window internals.
-  getPetEditorData(): Promise<PetEditorData | null> {
-    return ipcRenderer.invoke("mischief:pet-editor:get");
+  previewImportEditor(request: Omit<ImportEditorSaveRequest, "face">): Promise<ImportEditorPreview | null> {
+    return ipcRenderer.invoke("mischief:import-editor:preview", request);
   },
-  previewPetEditor(request: Omit<PetEditorSaveRequest, "face">): Promise<PetEditorPreview | null> {
-    return ipcRenderer.invoke("mischief:pet-editor:preview", request);
+  saveImportEditor(request: ImportEditorSaveRequest): Promise<CompanionInfo[] | null> {
+    return ipcRenderer.invoke("mischief:import-editor:save", request);
   },
-  savePetEditor(request: PetEditorSaveRequest): Promise<CompanionInfo[] | null> {
-    return ipcRenderer.invoke("mischief:pet-editor:save", request);
-  },
-  cancelPetEditor(): Promise<null> {
-    return ipcRenderer.invoke("mischief:pet-editor:cancel");
+  cancelImportEditor(): Promise<null> {
+    return ipcRenderer.invoke("mischief:import-editor:cancel");
   },
 });

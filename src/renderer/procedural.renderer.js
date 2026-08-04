@@ -20,7 +20,7 @@
     return (((t % seconds) + seconds) % seconds) / seconds;
   }
 
-  function sanitizePetMeta(input) {
+  function sanitizeCompanionMeta(input) {
     if (typeof input !== "object" || input === null) {
       return { cutout: false, face: null };
     }
@@ -164,7 +164,7 @@
 
   window.MischiefProcedural = {
     motionFor: motionFor,
-    sanitizePetMeta: sanitizePetMeta,
+    sanitizeCompanionMeta: sanitizeCompanionMeta,
     MOTION_STATES: ["idle", "walk", "run", "happy", "sad", "sleep", "yawn", "pet"],
   };
 })();

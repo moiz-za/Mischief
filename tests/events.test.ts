@@ -66,11 +66,11 @@ describe("EventBus", () => {
     expect(second).toHaveBeenCalledTimes(1);
   });
 
-  it("dispatches CustomPetImported with the new companion's info", () => {
+  it("dispatches CustomCompanionImported with the new companion's info", () => {
     const bus = new EventBus();
     const listener = vi.fn();
-    bus.on("CustomPetImported", listener);
-    bus.emit("CustomPetImported", { characterId: "buddy", displayName: "Buddy" });
+    bus.on("CustomCompanionImported", listener);
+    bus.emit("CustomCompanionImported", { characterId: "buddy", displayName: "Buddy" });
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenCalledWith({ characterId: "buddy", displayName: "Buddy" });
   });

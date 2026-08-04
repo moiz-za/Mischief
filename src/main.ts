@@ -18,11 +18,11 @@ import { BehaviorEngine, type BehaviorDef, type ContextSignals } from "./domain/
 import {
   buildCustomCharacter,
   buildCustomPackManifest,
-  buildPetCharacter,
-  buildPetManifest,
+  buildImportedCharacter,
+  buildImportedPackManifest,
+  companionMetaFromConfiguration,
   displayNameFromFile,
   isCustomImage,
-  petMetaFromConfiguration,
   slugify,
   storedImageName,
 } from "./domain/custom-companion";
@@ -47,7 +47,7 @@ import {
   type Raster,
   type Stroke,
 } from "./domain/segmentation";
-import { sanitizePetMeta, type FaceAnchor, type PetMeta } from "./domain/procedural";
+import { sanitizeCompanionMeta, type CompanionMeta, type FaceAnchor } from "./domain/procedural";
 import { createTicker, type Ticker } from "./domain/scheduler";
 import { isSafeSpritePath, pickSprite } from "./domain/sprite";
 
@@ -91,8 +91,8 @@ interface CompanionDescriptor {
   character: CharacterManifest;
   /** True for user-added companions (stored in userData, removable). */
   custom: boolean;
-  /** Custom-pet metadata (cutout + face anchor); defaults for regular packs. */
-  meta: PetMeta;
+  /** Companion metadata (cutout + anchor); defaults for regular packs. */
+  meta: CompanionMeta;
 }
 
 interface LoadedCompanion extends CompanionDescriptor {
@@ -133,7 +133,7 @@ function tryLoadCompanionDir(dir: string, packId: string, custom: boolean): Comp
     spritePath,
     character: character.character,
     custom,
-    meta: petMetaFromConfiguration(result.pack.manifest.configuration),
+    meta: companionMetaFromConfiguration(result.pack.manifest.configuration),
   };
 }
 
@@ -262,7 +262,7 @@ function companionListPayload(): Array<{
   species: string;
   sprite: string;
   custom: boolean;
-  meta: PetMeta;
+  meta: CompanionMeta;
 }> {
   return enumerateCompanions().map(({ packId, displayName, species, spritePath, custom, meta }) => ({
     packId,
@@ -274,18 +274,20 @@ function companionListPayload(): Array<{
   }));
 }
 
-// --- Custom pet photo pipeline (Phase 1) ------------------------------------
+// --- Custom image import pipeline --------------------------------------------
 //
 // Decode/encode is done with Electron's nativeImage (pure-JS, no native deps);
-// the pixel math (cutout/trim) runs in the pure domain modules above.
+// the pixel math (cutout/trim) runs in the pure domain modules above. Any
+// image — a pet, a person, a logo, a plant — can be imported; animated GIFs
+// skip the cutout editor and are added as-is.
 
-const PET_MAX_DIMENSION = 512;
-const PET_CUTOUT_MIN_COMPONENT = 48;
+const IMPORT_MAX_DIMENSION = 512;
+const IMPORT_CUTOUT_MIN_COMPONENT = 48;
 /** Below this kept ratio the cutout removed (almost) everything: keep original. */
-const PET_CUTOUT_FALLBACK_RATIO = 0.08;
+const IMPORT_CUTOUT_FALLBACK_RATIO = 0.08;
 const MAX_EDITOR_STROKES = 2000;
 
-interface PendingPet {
+interface PendingImport {
   sourcePath: string;
   raster: Raster;
   baseName: string;
@@ -300,7 +302,7 @@ interface EditorRequest {
   face: FaceAnchor | null;
 }
 
-let pendingPet: PendingPet | null = null;
+let pendingImport: PendingImport | null = null;
 
 const clamp = (v: number, min: number, max: number): number => Math.min(max, Math.max(min, v));
 const clamp01 = (v: number): number => clamp(v, 0, 1);
@@ -310,8 +312,8 @@ function decodeRaster(file: string): Raster | null {
   let image = nativeImage.createFromPath(file);
   if (image.isEmpty()) return null;
   const size = image.getSize();
-  if (size.width > PET_MAX_DIMENSION || size.height > PET_MAX_DIMENSION) {
-    const scale = PET_MAX_DIMENSION / Math.max(size.width, size.height);
+  if (size.width > IMPORT_MAX_DIMENSION || size.height > IMPORT_MAX_DIMENSION) {
+    const scale = IMPORT_MAX_DIMENSION / Math.max(size.width, size.height);
     image = image.resize({
       width: Math.max(1, Math.round(size.width * scale)),
       height: Math.max(1, Math.round(size.height * scale)),
@@ -390,20 +392,20 @@ function sanitizeEditorRequest(payload: unknown): EditorRequest | null {
 }
 
 /** Runs cutout + trim for a live editor preview. */
-function processPetRaster(raster: Raster, request: EditorRequest): Raster {
+function processImportRaster(raster: Raster, request: EditorRequest): Raster {
   if (!request.cut) return applyTrim(raster, request.keep, request.remove);
   const cut = cutout(raster, {
     tolerance: request.tolerance,
-    minComponentPixels: PET_CUTOUT_MIN_COMPONENT,
+    minComponentPixels: IMPORT_CUTOUT_MIN_COMPONENT,
   });
   return applyTrim(cut, request.keep, request.remove);
 }
 
-/** Writes a validated custom-pet pack to userData and returns its descriptor. */
-function ensurePetCompanion(
+/** Writes a validated imported-companion pack to userData and returns its descriptor. */
+function ensureImportedCompanion(
   sourcePath: string,
   png: Buffer,
-  meta: PetMeta
+  meta: CompanionMeta
 ): CompanionDescriptor | null {
   const baseName = path.basename(sourcePath);
   if (!isCustomImage(baseName)) return null;
@@ -417,11 +419,11 @@ function ensurePetCompanion(
   fs.writeFileSync(path.join(dir, "images", imageName), png);
   fs.writeFileSync(
     path.join(dir, "manifest.json"),
-    JSON.stringify(buildPetManifest(id, displayName, imageName, meta), null, 2)
+    JSON.stringify(buildImportedPackManifest(id, displayName, imageName, meta), null, 2)
   );
   fs.writeFileSync(
     path.join(dir, "characters", `${id}.json`),
-    JSON.stringify(buildPetCharacter(id, displayName), null, 2)
+    JSON.stringify(buildImportedCharacter(id, displayName), null, 2)
   );
 
   const descriptor = tryLoadCompanionDir(dir, id, true);
@@ -431,12 +433,12 @@ function ensurePetCompanion(
   return descriptor;
 }
 
-function createPetEditorWindow(): BrowserWindow {
+function createImportEditorWindow(): BrowserWindow {
   const editor = new BrowserWindow({
     width: 680,
     height: 720,
     resizable: false,
-    title: "Custom Pet Editor",
+    title: "Import Companion",
     backgroundColor: "#0f172a",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -447,7 +449,7 @@ function createPetEditorWindow(): BrowserWindow {
   });
   editor.setMenuBarVisibility(false);
   hardenWebContents(editor);
-  editor.loadFile(path.join(__dirname, "renderer", "pet-editor.html"));
+  editor.loadFile(path.join(__dirname, "renderer", "import-editor.html"));
   return editor;
 }
 
@@ -878,19 +880,46 @@ ipcMain.handle("mischief:settings:get", () => config);
 
 ipcMain.handle("mischief:companions:list", () => companionListPayload());
 
-ipcMain.handle("mischief:companions:add-image", async () => {
+ipcMain.handle("mischief:companions:import", async () => {
   const result = await dialog.showOpenDialog({
     title: "Choose a companion image",
     properties: ["openFile"],
     filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "webp", "gif"] }],
   });
   if (result.canceled || result.filePaths.length === 0) return null;
-  const descriptor = ensureCustomCompanion(result.filePaths[0]);
-  if (!descriptor) return null;
-  if (descriptor.packId !== config.companionId) {
-    applyConfig(sanitizeConfig({ ...config, companionId: descriptor.packId }));
-    persistConfig();
+  const sourcePath = result.filePaths[0];
+  const baseName = path.basename(sourcePath);
+  if (!isCustomImage(baseName)) return null;
+
+  // Animated GIFs can't be cut out: import the original as-is.
+  const ext = baseName.split(".").pop()?.toLowerCase() ?? "";
+  if (ext === "gif") {
+    const descriptor = ensureCustomCompanion(sourcePath);
+    if (!descriptor) return null;
+    if (descriptor.packId !== config.companionId) {
+      applyConfig(sanitizeConfig({ ...config, companionId: descriptor.packId }));
+      persistConfig();
+    }
+    return companionListPayload();
   }
+
+  // Raster images open the cutout editor (cutout optional, see editor toggle).
+  const raster = decodeRaster(sourcePath);
+  if (!raster) {
+    const descriptor = ensureCustomCompanion(sourcePath);
+    if (!descriptor) return null;
+    if (descriptor.packId !== config.companionId) {
+      applyConfig(sanitizeConfig({ ...config, companionId: descriptor.packId }));
+      persistConfig();
+    }
+    return companionListPayload();
+  }
+  pendingImport = { sourcePath, raster, baseName };
+  const editor = createImportEditorWindow();
+  await new Promise<void>((resolve) => {
+    editor.once("closed", () => resolve());
+  });
+  pendingImport = null;
   return companionListPayload();
 });
 
@@ -901,48 +930,28 @@ ipcMain.handle("mischief:companions:remove", (_event, packId: unknown) => {
   return removed;
 });
 
-ipcMain.handle("mischief:pet:meta", () => {
+ipcMain.handle("mischief:companion:meta", () => {
   if (!companion) return null;
   return { url: companion.sprite, meta: companion.meta };
 });
 
-ipcMain.handle("mischief:pet-editor:open-window", async () => {
-  const result = await dialog.showOpenDialog({
-    title: "Choose a photo of your pet",
-    properties: ["openFile"],
-    filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "webp"] }],
-  });
-  if (result.canceled || result.filePaths.length === 0) return null;
-  const sourcePath = result.filePaths[0];
-  if (!isCustomImage(path.basename(sourcePath))) return null;
-  const raster = decodeRaster(sourcePath);
-  if (!raster) return null;
-  pendingPet = { sourcePath, raster, baseName: path.basename(sourcePath) };
-  const editor = createPetEditorWindow();
-  await new Promise<void>((resolve) => {
-    editor.once("closed", () => resolve());
-  });
-  pendingPet = null;
-  return companionListPayload();
-});
-
-ipcMain.handle("mischief:pet-editor:get", () => {
-  if (!pendingPet) return null;
-  const png = encodeRasterPng(pendingPet.raster);
+ipcMain.handle("mischief:import-editor:get", () => {
+  if (!pendingImport) return null;
+  const png = encodeRasterPng(pendingImport.raster);
   if (!png) return null;
   return {
-    sourcePath: pendingPet.sourcePath,
-    width: pendingPet.raster.width,
-    height: pendingPet.raster.height,
+    sourcePath: pendingImport.sourcePath,
+    width: pendingImport.raster.width,
+    height: pendingImport.raster.height,
     previewDataUrl: dataUrl(png),
   };
 });
 
-ipcMain.handle("mischief:pet-editor:preview", (_event, payload: unknown) => {
-  if (!pendingPet) return null;
+ipcMain.handle("mischief:import-editor:preview", (_event, payload: unknown) => {
+  if (!pendingImport) return null;
   const request = sanitizeEditorRequest(payload);
   if (!request) return null;
-  const processed = processPetRaster(pendingPet.raster, request);
+  const processed = processImportRaster(pendingImport.raster, request);
   const png = encodeRasterPng(processed);
   if (!png) return null;
   return {
@@ -953,21 +962,21 @@ ipcMain.handle("mischief:pet-editor:preview", (_event, payload: unknown) => {
   };
 });
 
-ipcMain.handle("mischief:pet-editor:save", (_event, payload: unknown) => {
-  if (!pendingPet) return null;
+ipcMain.handle("mischief:import-editor:save", (_event, payload: unknown) => {
+  if (!pendingImport) return null;
   const request = sanitizeEditorRequest(payload);
   if (!request) return null;
-  const processed = processPetRaster(pendingPet.raster, request);
+  const processed = processImportRaster(pendingImport.raster, request);
   const ratio = foregroundRatio(processed);
-  const useCutout = request.cut && ratio >= PET_CUTOUT_FALLBACK_RATIO;
-  const meta = sanitizePetMeta({ cutout: useCutout, face: request.face });
-  const raster = useCutout ? processed : pendingPet.raster;
+  const useCutout = request.cut && ratio >= IMPORT_CUTOUT_FALLBACK_RATIO;
+  const meta = sanitizeCompanionMeta({ cutout: useCutout, face: request.face });
+  const raster = useCutout ? processed : pendingImport.raster;
   const png = encodeRasterPng(raster);
   if (!png) return null;
 
-  const descriptor = ensurePetCompanion(pendingPet.sourcePath, png, meta);
+  const descriptor = ensureImportedCompanion(pendingImport.sourcePath, png, meta);
   if (!descriptor) return null;
-  events.emit("CustomPetImported", {
+  events.emit("CustomCompanionImported", {
     characterId: descriptor.packId,
     displayName: descriptor.displayName,
   });
@@ -978,8 +987,8 @@ ipcMain.handle("mischief:pet-editor:save", (_event, payload: unknown) => {
   return companionListPayload();
 });
 
-ipcMain.handle("mischief:pet-editor:cancel", () => {
-  pendingPet = null;
+ipcMain.handle("mischief:import-editor:cancel", () => {
+  pendingImport = null;
   return null;
 });
 

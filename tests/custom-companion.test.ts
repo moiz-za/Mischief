@@ -2,17 +2,18 @@ import { describe, expect, it } from "vitest";
 import {
   buildCustomCharacter,
   buildCustomPackManifest,
-  buildPetCharacter,
-  buildPetManifest,
-  CUSTOM_PET_SPECIES,
+  buildImportedCharacter,
+  buildImportedPackManifest,
+  companionMetaFromConfiguration,
+  CUSTOM_IMPORTED_SPECIES,
   displayNameFromFile,
+  IMPORTED_ANIMATION_KEYS,
   isCustomImage,
-  PET_ANIMATION_KEYS,
   slugify,
   storedImageName,
 } from "../src/domain/custom-companion";
 import { validateCharacterManifest, validateExperienceManifest } from "../src/domain/manifest";
-import { sanitizePetMeta, type PetMeta } from "../src/domain/procedural";
+import { sanitizeCompanionMeta, type CompanionMeta } from "../src/domain/procedural";
 
 describe("isCustomImage", () => {
   it("accepts supported image extensions", () => {
@@ -78,32 +79,42 @@ describe("custom pack/character builders produce valid manifests", () => {
   });
 });
 
-describe("pet pack/character builders", () => {
-  const meta: PetMeta = sanitizePetMeta({ cutout: true, face: { x: 0.5, y: 0.3 } });
+describe("imported pack/character builders", () => {
+  const meta: CompanionMeta = sanitizeCompanionMeta({ cutout: true, face: { x: 0.5, y: 0.3 } });
 
-  it("the generated pet manifest passes strict validation", () => {
-    const manifest = buildPetManifest("buddy", "Buddy", "buddy.png", meta);
+  it("the generated imported manifest passes strict validation", () => {
+    const manifest = buildImportedPackManifest("buddy", "Buddy", "buddy.png", meta);
     const result = validateExperienceManifest(manifest);
     expect(result.ok, JSON.stringify(result.errors)).toBe(true);
-    expect(manifest.animations).toEqual(PET_ANIMATION_KEYS);
-    expect(manifest.category).toBe(CUSTOM_PET_SPECIES);
-    expect(manifest.configuration.mischief).toEqual({ pet: meta });
+    expect(manifest.animations).toEqual(IMPORTED_ANIMATION_KEYS);
+    expect(manifest.category).toBe(CUSTOM_IMPORTED_SPECIES);
+    expect(manifest.configuration.mischief).toEqual({ imported: meta });
   });
 
-  it("the generated pet character passes strict validation", () => {
-    const character = buildPetCharacter("buddy", "Buddy");
+  it("the generated imported character passes strict validation", () => {
+    const character = buildImportedCharacter("buddy", "Buddy");
     const result = validateCharacterManifest(character);
     expect(result.ok, JSON.stringify(result.errors)).toBe(true);
-    expect(character.species).toBe(CUSTOM_PET_SPECIES);
-    expect(Object.keys(character.animations)).toEqual(PET_ANIMATION_KEYS);
+    expect(character.species).toBe(CUSTOM_IMPORTED_SPECIES);
+    expect(Object.keys(character.animations)).toEqual(IMPORTED_ANIMATION_KEYS);
     expect(character.animations.run).toBeDefined();
     expect(character.animations.sad).toBeDefined();
     expect(character.behavior.sadWeight).toBeGreaterThan(0);
   });
 
-  it("pet metadata round-trips through the manifest configuration", () => {
-    const manifest = buildPetManifest("buddy", "Buddy", "buddy.png", meta);
-    const restored = sanitizePetMeta((manifest.configuration.mischief as { pet: unknown }).pet);
+  it("companion metadata round-trips through the manifest configuration", () => {
+    const manifest = buildImportedPackManifest("buddy", "Buddy", "buddy.png", meta);
+    const restored = companionMetaFromConfiguration(manifest.configuration);
     expect(restored).toEqual(meta);
+  });
+
+  it("reads the legacy pre-release pet config key so old packs keep working", () => {
+    const legacyConfiguration = {
+      mischief: { pet: { cutout: true, face: { x: 0.6, y: 0.4 } } },
+    };
+    expect(companionMetaFromConfiguration(legacyConfiguration)).toEqual({
+      cutout: true,
+      face: { x: 0.6, y: 0.4 },
+    });
   });
 });

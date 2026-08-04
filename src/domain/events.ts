@@ -22,7 +22,7 @@ export interface CharacterSpeakingData extends CharacterEventData {
   message: string;
 }
 
-export interface CustomPetImportedData extends CharacterEventData {
+export interface CustomCompanionImportedData extends CharacterEventData {
   displayName: string;
 }
 
@@ -36,8 +36,8 @@ export interface MischiefEvents {
   CharacterSpeaking: CharacterSpeakingData;
   CharacterRemoved: CharacterEventData;
   ThemeLoaded: { themeId: string };
-  /** Fired when a user photo is imported as an animated custom pet. */
-  CustomPetImported: CustomPetImportedData;
+  /** Fired when a user image is imported as a companion. */
+  CustomCompanionImported: CustomCompanionImportedData;
 }
 
 export type EventName = keyof MischiefEvents;

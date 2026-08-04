@@ -1,30 +1,30 @@
 import { describe, expect, it } from "vitest";
 import {
-  DEFAULT_PET_META,
+  DEFAULT_COMPANION_META,
   MOTION_STATES,
   motionFor,
-  sanitizePetMeta,
-  type PetMeta,
+  sanitizeCompanionMeta,
+  type CompanionMeta,
 } from "../src/domain/procedural";
 
-const META: PetMeta = { cutout: true, face: { x: 0.5, y: 0.3 } };
+const META: CompanionMeta = { cutout: true, face: { x: 0.5, y: 0.3 } };
 
-describe("sanitizePetMeta", () => {
+describe("sanitizeCompanionMeta", () => {
   it("returns defaults for garbage input", () => {
-    expect(sanitizePetMeta(null)).toEqual(DEFAULT_PET_META);
-    expect(sanitizePetMeta("nope")).toEqual(DEFAULT_PET_META);
-    expect(sanitizePetMeta(undefined)).toEqual(DEFAULT_PET_META);
+    expect(sanitizeCompanionMeta(null)).toEqual(DEFAULT_COMPANION_META);
+    expect(sanitizeCompanionMeta("nope")).toEqual(DEFAULT_COMPANION_META);
+    expect(sanitizeCompanionMeta(undefined)).toEqual(DEFAULT_COMPANION_META);
   });
 
   it("passes through valid fields and clamps the face anchor", () => {
-    const meta = sanitizePetMeta({ cutout: true, face: { x: 1.7, y: -0.4 } });
+    const meta = sanitizeCompanionMeta({ cutout: true, face: { x: 1.7, y: -0.4 } });
     expect(meta.cutout).toBe(true);
     expect(meta.face).toEqual({ x: 1, y: 0 });
   });
 
   it("fills missing face with defaults", () => {
-    expect(sanitizePetMeta({ cutout: true }).face).toEqual({ x: 0.5, y: 0.3 });
-    expect(sanitizePetMeta({ cutout: false }).face).toBeNull();
+    expect(sanitizeCompanionMeta({ cutout: true }).face).toEqual({ x: 0.5, y: 0.3 });
+    expect(sanitizeCompanionMeta({ cutout: false }).face).toBeNull();
   });
 });
 
@@ -76,8 +76,8 @@ describe("motionFor", () => {
     }
   });
 
-  it("works without pet metadata (non-cutout fallback)", () => {
-    const frame = motionFor("idle", 0.5, DEFAULT_PET_META);
+  it("works without companion metadata (non-cutout fallback)", () => {
+    const frame = motionFor("idle", 0.5, DEFAULT_COMPANION_META);
     expect(Number.isFinite(frame.motion.dy)).toBe(true);
   });
 });

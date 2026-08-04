@@ -1,38 +1,45 @@
 import type { CharacterManifest, ExperienceManifest } from "./manifest";
-import { sanitizePetMeta, type PetMeta } from "./procedural";
+import { sanitizeCompanionMeta, type CompanionMeta } from "./procedural";
 
 /**
- * Building blocks for user-created companions ("add your own image").
+ * Building blocks for user-created companions ("add your own companion").
  *
- * A photo becomes a full Experience Pack: a safe pack id is derived from the
+ * An image becomes a full Experience Pack: a safe pack id is derived from the
  * file name, the image is stored as the pack sprite, and a character is
  * generated so the behavior engine can animate the companion (idle/walk/sleep/
  * yawn). Pure + tested; I/O happens in the main process.
  *
- * Custom PETs (the auto-animation pipeline) additionally get a background-free
- * cutout sprite and pet metadata (cutout flag + face anchor) stored under
- * `manifest.configuration.mischief.pet`, which the overlay uses to drive the
- * procedural canvas animation.
+ * Imported companions (the cutout editor pipeline) additionally get a
+ * background-free cutout sprite and metadata (cutout flag + anchor point)
+ * stored under `manifest.configuration.mischief.imported`, which the overlay
+ * uses to drive the procedural canvas animation.
  */
 
 export const CUSTOM_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "gif"];
 
 export const DEFAULT_CUSTOM_SPECIES = "custom";
-export const CUSTOM_PET_SPECIES = "custom-pet";
+export const CUSTOM_IMPORTED_SPECIES = "custom-imported";
 export const DEFAULT_CUSTOM_PERSONALITY = "friendly";
 
-/** Animation states a pet character exposes (matches the procedural engine). */
-export const PET_ANIMATION_KEYS = ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"];
+/** Animation states an imported character exposes (matches the procedural engine). */
+export const IMPORTED_ANIMATION_KEYS = ["idle", "walk", "run", "happy", "sad", "sleep", "yawn"];
 
-/** The metadata key under `manifest.configuration` for custom pets. */
-export const PET_CONFIG_KEY = "mischief";
+/** The metadata key under `manifest.configuration` for imported companions. */
+export const COMPANION_CONFIG_KEY = "mischief";
 
-/** Reads pet metadata back out of a validated experience manifest. */
-export function petMetaFromConfiguration(configuration: Record<string, unknown>): PetMeta {
-  const block = configuration[PET_CONFIG_KEY];
-  const pet =
-    typeof block === "object" && block !== null ? (block as Record<string, unknown>).pet : undefined;
-  return sanitizePetMeta(pet);
+/**
+ * Reads companion metadata back out of a validated experience manifest.
+ * Reads the current `imported` key and falls back to the pre-release `pet`
+ * key so older saved packs keep working.
+ */
+export function companionMetaFromConfiguration(
+  configuration: Record<string, unknown>
+): CompanionMeta {
+  const block = configuration[COMPANION_CONFIG_KEY];
+  const entry =
+    typeof block === "object" && block !== null ? (block as Record<string, unknown>) : {};
+  const imported = entry.imported ?? entry.pet;
+  return sanitizeCompanionMeta(imported);
 }
 
 /** True when the file name is an image format we can use as a sprite. */
@@ -94,30 +101,30 @@ export function buildCustomPackManifest(
 }
 
 /**
- * A manifest for an auto-animated custom pet. The cutout sprite is a PNG and
- * the pet metadata (cutout flag + face anchor) travels in `configuration`.
+ * A manifest for an auto-animated imported companion. The cutout sprite is a
+ * PNG and the metadata (cutout flag + anchor) travels in `configuration`.
  */
-export function buildPetManifest(
+export function buildImportedPackManifest(
   id: string,
   displayName: string,
   storedImage: string,
-  meta: PetMeta
+  meta: CompanionMeta
 ): ExperienceManifest {
   return {
     id,
     name: displayName,
     version: "0.1.0",
-    category: CUSTOM_PET_SPECIES,
+    category: CUSTOM_IMPORTED_SPECIES,
     author: "You",
     license: "MIT",
-    description: `Your animated companion "${displayName}", generated from your photo.`,
-    tags: ["custom", "pet", "animated"],
+    description: `Your animated companion "${displayName}", generated from your image.`,
+    tags: ["custom", "personal", "animated"],
     minimumRuntimeVersion: "0.2.0",
     assets: [`images/${storedImage}`],
     characters: [`characters/${id}.json`],
-    animations: PET_ANIMATION_KEYS,
+    animations: IMPORTED_ANIMATION_KEYS,
     audio: [],
-    configuration: { [PET_CONFIG_KEY]: { pet: meta } },
+    configuration: { [COMPANION_CONFIG_KEY]: { imported: meta } },
     compatibility: { platforms: ["windows", "macos", "linux"] },
   };
 }
@@ -155,17 +162,17 @@ export function buildCustomCharacter(
 }
 
 /**
- * A character for an auto-animated custom pet: the full expression matrix the
- * procedural engine can drive (idle/walk/run/happy/sad/sleep/yawn).
+ * A character for an auto-animated imported companion: the full expression
+ * matrix the procedural engine can drive (idle/walk/run/happy/sad/sleep/yawn).
  */
-export function buildPetCharacter(
+export function buildImportedCharacter(
   id: string,
   displayName: string,
   personality = DEFAULT_CUSTOM_PERSONALITY
 ): CharacterManifest {
   return {
     id,
-    species: CUSTOM_PET_SPECIES,
+    species: CUSTOM_IMPORTED_SPECIES,
     displayName,
     author: "You",
     animations: {

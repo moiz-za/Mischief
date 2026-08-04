@@ -189,7 +189,7 @@
         happy: "anim-happy",
       };
       const ONE_SHOT = new Set(["anim-yawn", "anim-happy"]);
-      const ANIM_TO_PET_STATE = {
+      const ANIM_TO_MOTION_STATE = {
         walk: "walk",
         run: "run",
         happy: "happy",
@@ -217,20 +217,20 @@
 
       applyAnim("idle");
 
-      // --- Procedural pet animation (canvas) --------------------------------
+      // --- Procedural companion animation (canvas) --------------------------
 
-      let petMeta = null;
-      let petState = "idle";
-      let petImage = null;
-      let petCanvas = null;
-      let petRaf = null;
+      let companionMeta = null;
+      let motionState = "idle";
+      let motionImage = null;
+      let motionCanvas = null;
+      let motionRaf = null;
 
       function drawEffects(ctx, effects) {
-        if (!petMeta || !petMeta.face) return;
-        const W = petCanvas.width;
-        const H = petCanvas.height;
-        const fx = petMeta.face.x * W;
-        const fy = petMeta.face.y * H;
+        if (!companionMeta || !companionMeta.face) return;
+        const W = motionCanvas.width;
+        const H = motionCanvas.height;
+        const fx = companionMeta.face.x * W;
+        const fy = companionMeta.face.y * H;
         for (const cue of effects) {
           const x = fx + cue.ox * W;
           const y = fy + cue.oy * H;
@@ -276,77 +276,77 @@
         ctx.closePath();
       }
 
-      const { motionFor, sanitizePetMeta } = window.MischiefProcedural || {};
+      const { motionFor, sanitizeCompanionMeta } = window.MischiefProcedural || {};
 
-      function petLoop() {
-        if (!petCanvas || !petImage || !petMeta || !motionFor) return;
-        const frame = motionFor(petState, performance.now() / 1000, petMeta);
-        const ctx = petCanvas.getContext("2d");
-        const W = petCanvas.width;
-        const H = petCanvas.height;
+      function motionLoop() {
+        if (!motionCanvas || !motionImage || !companionMeta || !motionFor) return;
+        const frame = motionFor(motionState, performance.now() / 1000, companionMeta);
+        const ctx = motionCanvas.getContext("2d");
+        const W = motionCanvas.width;
+        const H = motionCanvas.height;
         ctx.clearRect(0, 0, W, H);
         ctx.globalAlpha = frame.motion.opacity;
         ctx.save();
         ctx.translate(W / 2 + frame.motion.dx, H * 0.92 + frame.motion.dy);
         ctx.rotate((frame.motion.rotate * Math.PI) / 180);
         ctx.scale(frame.motion.scaleX, frame.motion.scaleY);
-        const iw = petImage.naturalWidth;
-        const ih = petImage.naturalHeight;
+        const iw = motionImage.naturalWidth;
+        const ih = motionImage.naturalHeight;
         const scale = Math.min(W / iw, H / ih) * 0.9;
-        ctx.drawImage(petImage, (-iw * scale) / 2, -ih * scale, iw * scale, ih * scale);
+        ctx.drawImage(motionImage, (-iw * scale) / 2, -ih * scale, iw * scale, ih * scale);
         ctx.restore();
         ctx.globalAlpha = 1;
         drawEffects(ctx, frame.effects);
-        petRaf = requestAnimationFrame(petLoop);
+        motionRaf = requestAnimationFrame(motionLoop);
       }
 
-      function startPet(url, meta) {
-        stopPet();
-        if (!motionFor || !sanitizePetMeta) {
+      function startMotion(url, meta) {
+        stopMotion();
+        if (!motionFor || !sanitizeCompanionMeta) {
           handleSprite(url, { cutout: false, face: null });
           return;
         }
-        petMeta = sanitizePetMeta(meta);
-        petState = "idle";
+        companionMeta = sanitizeCompanionMeta(meta);
+        motionState = "idle";
         creature.className = "";
         const zzz = document.getElementById("zzz");
         if (zzz) zzz.style.display = "none";
         const cssImg = creature.querySelector("img");
         if (cssImg) cssImg.style.display = "none";
-        if (!petCanvas) {
-          petCanvas = document.createElement("canvas");
-          petCanvas.id = "petCanvas";
-          petCanvas.style.position = "absolute";
-          petCanvas.style.inset = "0";
-          petCanvas.width = 80;
-          petCanvas.height = 80;
-          creature.prepend(petCanvas);
+        if (!motionCanvas) {
+          motionCanvas = document.createElement("canvas");
+          motionCanvas.id = "motionCanvas";
+          motionCanvas.style.position = "absolute";
+          motionCanvas.style.inset = "0";
+          motionCanvas.width = 80;
+          motionCanvas.height = 80;
+          creature.prepend(motionCanvas);
         }
         const image = new Image();
         image.onload = () => {
-          petImage = image;
-          petLoop();
+          motionImage = image;
+          motionLoop();
         };
         image.src = url;
       }
 
-      function stopPet() {
-        if (petRaf) {
-          cancelAnimationFrame(petRaf);
-          petRaf = null;
+      function stopMotion() {
+        if (motionRaf) {
+          cancelAnimationFrame(motionRaf);
+          motionRaf = null;
         }
-        petImage = null;
+        motionImage = null;
       }
 
       function handleSprite(url, meta) {
         if (meta && meta.cutout) {
-          startPet(url, meta);
+          startMotion(url, meta);
           return;
         }
-        stopPet();
-        if (petCanvas) petCanvas.remove();
-        petCanvas = null;
-        petMeta = null;
+        stopMotion();
+        if (motionCanvas) motionCanvas.remove();
+        motionCanvas = null;
+        companionMeta = null;
         const zzz = document.getElementById("zzz");
         if (zzz) zzz.style.display = "";
         let img = creature.querySelector("img");
@@ -360,17 +360,17 @@
         applyAnim(currentAnim);
       }
 
-      if (window.mischief && window.mischief.getPetMeta) {
-        window.mischief.getPetMeta().then((message) => {
+      if (window.mischief && window.mischief.getCompanionSprite) {
+        window.mischief.getCompanionSprite().then((message) => {
           if (message && message.meta && message.meta.cutout) {
-            startPet(message.url, message.meta);
+            startMotion(message.url, message.meta);
           }
         });
       }
 
       if (window.mischief && window.mischief.onBehavior) {
         window.mischief.onBehavior((behavior) => {
-          petState = ANIM_TO_PET_STATE[behavior.anim] || "idle";
+          motionState = ANIM_TO_MOTION_STATE[behavior.anim] || "idle";
           applyAnim(behavior.anim);
         });
       }

@@ -1,15 +1,15 @@
 /**
- * Offline background removal and trim for pet photos (Custom Pet Import
- * Engine, Phase 1). Pure + testable: operates on raw RGBA rasters only, with
- * no I/O and no Electron, so the main process can run it safely and the tests
- * can feed it synthetic buffers.
+ * Offline background removal and trim for user-imported companion images
+ * (Custom Image Import Engine). Pure + testable: operates on raw RGBA rasters
+ * only, with no I/O and no Electron, so the main process can run it safely and
+ * the tests can feed it synthetic buffers.
  *
  * Strategy (no ML model, ~0 bytes added):
  *  - `cutout` grows a background region inward from the image borders using a
  *    seeded flood fill. A pixel is background when it is reachable from the
  *    border and its weighted color distance to the running background mean
- *    stays under `tolerance`. Inset subjects (pets) are never reachable and so
- *    keep their alpha.
+ *    stays under `tolerance`. Inset subjects are never reachable and so keep
+ *    their alpha.
  *  - `applyTrim` gives the user brush strokes (`keep` / `remove`) to fix up the
  *    result: remove strokes flood out of foreground regions, keep strokes
  *    flood out of background regions.

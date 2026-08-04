@@ -6,7 +6,7 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self' data:"
     />
-    <title>Custom Pet Editor</title>
+    <title>Import Companion</title>
     <style>
       :root {
         --background: #0f172a;
@@ -60,6 +60,17 @@
         max-width: 100%;
         max-height: 420px;
         border-radius: 6px;
+      }
+
+      .check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+      }
+
+      .check input {
+        accent-color: var(--accent);
       }
 
       .toolbar {
@@ -131,21 +142,29 @@
     </style>
   </head>
   <body>
-    <h1>Custom Pet Editor</h1>
+    <h1>Import Companion</h1>
     <p class="subtitle">
-      Cut your pet out of its photo, then tap its face. All processing stays on this device.
+      Cut your subject out of its background (or keep it as-is), then pin where its
+      expressions should appear. All processing stays on this device.
     </p>
 
     <div class="canvas-wrap"><canvas id="preview" width="512" height="512"></canvas></div>
     <p class="hint" id="statusHint">
-      Use the brush to remove leftover background or restore parts of your pet.
+      Use the brush to remove leftover background or restore parts of your subject.
     </p>
+
+    <div class="row">
+      <span class="check"
+        ><input type="checkbox" id="cutToggle" checked /> Cut out the background — the subject
+        moves freely on its own</span
+      >
+    </div>
 
     <div class="toolbar">
       <button id="autoCut" class="primary" type="button">Auto cut background</button>
       <span class="mode" id="modeRemove" data-mode="remove">Remove brush</span>
       <span class="mode" id="modeKeep" data-mode="keep">Keep brush</span>
-      <span class="mode" id="modePin" data-mode="pin">Tap face</span>
+      <span class="mode" id="modePin" data-mode="pin">Pin anchor</span>
       <span class="mode" id="modeNone" data-mode="none">View</span>
     </div>
 
@@ -180,6 +199,7 @@
         keep: [],
         remove: [],
         face: null,
+        originalUrl: null,
         previewUrl: null,
         ratio: 1,
         dirty: false,
@@ -201,11 +221,34 @@
         canvas.style.cursor = mode === "pin" ? "crosshair" : mode === "none" ? "default" : "cell";
       }
 
+      function drawImageToCanvas(image) {
+        currentImage = image;
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0);
+        drawOverlay();
+      }
+
+      function showOriginal() {
+        if (!state.originalUrl) return;
+        const image = new Image();
+        image.onload = () => {
+          drawImageToCanvas(image);
+          updateStatus();
+        };
+        image.src = state.originalUrl;
+      }
+
       function requestPreview() {
-        if (!state.sourcePath || !state.cut) return;
+        if (!state.sourcePath) return;
+        if (!state.cut) {
+          showOriginal();
+          return;
+        }
         clearTimeout(previewTimer);
         previewTimer = setTimeout(async () => {
-          const result = await window.mischief.previewPetEditor({
+          const result = await window.mischief.previewImportEditor({
             cut: state.cut,
             tolerance: state.tolerance,
             keep: state.keep,
@@ -216,12 +259,7 @@
           state.ratio = result.keptRatio;
           const image = new Image();
           image.onload = () => {
-            currentImage = image;
-            canvas.width = image.naturalWidth;
-            canvas.height = image.naturalHeight;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(image, 0, 0);
-            drawOverlay();
+            drawImageToCanvas(image);
             updateStatus();
           };
           image.src = result.previewDataUrl;
@@ -265,14 +303,15 @@
         const percent = Math.round(state.ratio * 100);
         $("ratioStatus").textContent = `Kept ${percent}% of the image.`;
         if (!state.cut) {
-          $("statusHint").textContent = "Background removal is off — the original photo will be used.";
+          $("statusHint").textContent = "Background removal is off — the original image will be used.";
         } else if (state.ratio < 0.08) {
           $("statusHint").textContent =
-            "Cutout removed almost everything; the original photo will be kept as-is.";
+            "Cutout removed almost everything; the original image will be kept as-is.";
         } else if (state.face) {
-          $("statusHint").textContent = "Face pinned. Adjust with the brushes, then save.";
+          $("statusHint").textContent = "Anchor pinned. Adjust with the brushes, then save.";
         } else {
-          $("statusHint").textContent = "Tip: tap “Tap face” so expressions (blinks, yawns) land in the right spot.";
+          $("statusHint").textContent =
+            "Tip: pin a point so expressions (blinks, yawns) land in the right spot.";
         }
       }
 
@@ -328,9 +367,19 @@
 
       $("autoCut").addEventListener("click", () => {
         state.cut = true;
+        $("cutToggle").checked = true;
         state.keep = [];
         state.remove = [];
         requestPreview();
+      });
+
+      $("cutToggle").addEventListener("change", (event) => {
+        state.cut = event.target.checked;
+        if (state.cut) {
+          requestPreview();
+        } else {
+          showOriginal();
+        }
       });
 
       $("tolerance").addEventListener("input", (event) => {
@@ -349,7 +398,7 @@
       });
 
       $("cancel").addEventListener("click", async () => {
-        await window.mischief.cancelPetEditor();
+        await window.mischief.cancelImportEditor();
         window.close();
       });
 
@@ -357,36 +406,34 @@
         if (!state.sourcePath) return;
         $("save").disabled = true;
         $("save").textContent = "Saving…";
-        await window.mischief.savePetEditor({
+        await window.mischief.saveImportEditor({
           cut: state.cut,
           tolerance: state.tolerance,
           keep: state.keep,
           remove: state.remove,
-          face: state.face,
+          face: state.cut ? state.face : null,
         });
         window.close();
       });
 
       async function init() {
-        const data = await window.mischief.getPetEditorData();
+        const data = await window.mischief.getImportEditorData();
         if (!data) {
           window.close();
           return;
         }
         state.sourcePath = data.sourcePath;
+        state.originalUrl = data.previewDataUrl;
         state.cut = true;
         const image = new Image();
         image.onload = () => {
-          currentImage = image;
-          canvas.width = image.naturalWidth;
-          canvas.height = image.naturalHeight;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(image, 0, 0);
+          drawImageToCanvas(image);
           setMode("remove");
           updateStatus();
         };
         image.src = data.previewDataUrl;
         state.previewUrl = data.previewDataUrl;
+        requestPreview();
       }
 
       setMode("none");

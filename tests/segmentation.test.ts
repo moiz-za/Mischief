@@ -28,7 +28,7 @@ function pixel(raster: Raster, x: number, y: number): { r: number; g: number; b:
 }
 
 /** Red background with an inset green square (8x8, margin 8 on a 24x24 canvas). */
-function petFixture(): Raster {
+function subjectFixture(): Raster {
   const raster = solid(24, 24, 220, 40, 40);
   for (let y = 8; y < 16; y++) {
     for (let x = 8; x < 16; x++) {
@@ -52,7 +52,7 @@ describe("colorDistance", () => {
 
 describe("cutout", () => {
   it("removes a uniform border background and keeps an inset foreground", () => {
-    const result = cutout(petFixture(), { tolerance: 40 });
+    const result = cutout(subjectFixture(), { tolerance: 40 });
     // Corners cleared.
     expect(pixel(result, 0, 0).a).toBe(0);
     expect(pixel(result, 23, 0).a).toBe(0);
@@ -65,7 +65,7 @@ describe("cutout", () => {
   });
 
   it("respects tolerance: too far colors are kept as foreground", () => {
-    const result = cutout(petFixture(), { tolerance: 5 });
+    const result = cutout(subjectFixture(), { tolerance: 5 });
     // Green is far from red; it must survive.
     expect(pixel(result, 8, 8).a).toBe(255);
     // Red border still removed.
@@ -95,14 +95,14 @@ describe("cutout", () => {
   });
 
   it("does not mutate its input", () => {
-    const input = petFixture();
+    const input = subjectFixture();
     const before = input.rgba[0];
     cutout(input, { tolerance: 40 });
     expect(input.rgba[0]).toBe(before);
   });
 
   it("respects maxBackgroundPixels (resource cap)", () => {
-    const result = cutout(petFixture(), { tolerance: 40, maxBackgroundPixels: 10 });
+    const result = cutout(subjectFixture(), { tolerance: 40, maxBackgroundPixels: 10 });
     // Only a few border pixels processed; foreground untouched.
     expect(pixel(result, 8, 8).a).toBe(255);
     expect(pixel(result, 0, 0).a).toBe(0);
@@ -168,7 +168,7 @@ describe("dropSmallForegroundComponents", () => {
 
 describe("applyTrim", () => {
   it("remove strokes paint their disk transparent", () => {
-    const result = cutout(petFixture(), { tolerance: 40 });
+    const result = cutout(subjectFixture(), { tolerance: 40 });
     const trimmed = applyTrim(result, [], [{ x: 12 / 24, y: 12 / 24, radius: 0.2 }]);
     // Center of the green square is inside the disk -> removed.
     expect(pixel(trimmed, 12, 12).a).toBe(0);
@@ -177,7 +177,7 @@ describe("applyTrim", () => {
   });
 
   it("keep strokes paint their disk opaque", () => {
-    const result = cutout(petFixture(), { tolerance: 40 });
+    const result = cutout(subjectFixture(), { tolerance: 40 });
     const trimmed = applyTrim(result, [{ x: 2 / 24, y: 2 / 24, radius: 0.15 }], []);
     // Stroke sits on cleared red background -> restored to opaque.
     expect(pixel(trimmed, 2, 2).a).toBe(255);
@@ -186,7 +186,7 @@ describe("applyTrim", () => {
   });
 
   it("no-ops without strokes", () => {
-    const result = cutout(petFixture(), { tolerance: 40 });
+    const result = cutout(subjectFixture(), { tolerance: 40 });
     const unchanged = applyTrim(result, [], []);
     expect(unchanged.rgba).toEqual(result.rgba);
   });

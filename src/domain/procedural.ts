@@ -1,24 +1,25 @@
 /**
- * Procedural motion synthesis for custom pet companions (Custom Pet Import
- * Engine, Phase 1). Pure + testable: given a state, elapsed time, and the pet's
- * metadata, it returns the concrete transforms and effect cues the overlay
- * should draw. The overlay's animation loop is thin glue around this.
+ * Procedural motion synthesis for user-imported companion images (Custom Image
+ * Import Engine). Pure + testable: given a state, elapsed time, and the
+ * companion's metadata, it returns the concrete transforms and effect cues the
+ * overlay should draw. The overlay's animation loop is thin glue around this.
  *
- * A static pet photo can only be moved as a whole body (no per-limb rigging),
- * so motion is bob/lean/squash/rotate plus face-anchored procedural overlays
- * (blink, mouth, Zzz, hearts, tears).
+ * Any single static image can only be moved as a whole body (no per-limb
+ * rigging), so motion is bob/lean/squash/rotate plus anchored procedural
+ * overlays (blink, mouth, Zzz, hearts, tears) placed at the user's anchor
+ * point.
  */
 
 export interface FaceAnchor {
-  /** Normalized 0..1 position of the face center. */
+  /** Normalized 0..1 position of the face/anchor center. */
   x: number;
   y: number;
 }
 
-export interface PetMeta {
-  /** The sprite is a background-removed cutout (renders via the pet canvas). */
+export interface CompanionMeta {
+  /** The sprite is a background-removed cutout (renders via the motion canvas). */
   cutout: boolean;
-  /** Where the face is, for overlay effects. */
+  /** Where expressions/effects anchor, for overlay effects. */
   face: FaceAnchor | null;
 }
 
@@ -66,11 +67,11 @@ export const MOTION_STATES: MotionState[] = [
   "pet",
 ];
 
-export const DEFAULT_PET_META: PetMeta = { cutout: false, face: null };
+export const DEFAULT_COMPANION_META: CompanionMeta = { cutout: false, face: null };
 
-/** Parses/validates untrusted pet metadata (clamps, fills defaults). */
-export function sanitizePetMeta(input: unknown): PetMeta {
-  if (typeof input !== "object" || input === null) return { ...DEFAULT_PET_META };
+/** Parses/validates untrusted companion metadata (clamps, fills defaults). */
+export function sanitizeCompanionMeta(input: unknown): CompanionMeta {
+  if (typeof input !== "object" || input === null) return { ...DEFAULT_COMPANION_META };
   const raw = input as Record<string, unknown>;
   const cutout = raw.cutout === true;
   const faceRaw = raw.face;
@@ -81,7 +82,7 @@ export function sanitizePetMeta(input: unknown): PetMeta {
     const y = typeof f.y === "number" ? clamp01(f.y) : 0.3;
     face = { x, y };
   } else if (cutout) {
-    // A cutout pet needs an anchor for overlay effects; default to upper-center.
+    // A cutout image needs an anchor for overlay effects; default to upper-center.
     face = { x: 0.5, y: 0.3 };
   }
   return { cutout, face };
@@ -102,7 +103,7 @@ function cycle(t: number, seconds: number): number {
  * The motion + effects to render for `state` at time `t` (seconds, running
  * continuously). Deterministic for identical inputs.
  */
-export function motionFor(state: MotionState, t: number, _meta: PetMeta): ProceduralFrame {
+export function motionFor(state: MotionState, t: number, _meta: CompanionMeta): ProceduralFrame {
   const effects: EffectCue[] = [];
   let motion: MotionFrame;
 
