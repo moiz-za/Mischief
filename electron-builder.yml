@@ -5,6 +5,12 @@ directories:
 files:
   - dist/**/*
   - package.json
+electronLanguages:
+  - en
+  - es
+  - de
+  - fr
+compression: maximum
 mac:
   icon: assets/icons/icon.icns
   target:
