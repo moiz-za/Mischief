@@ -82,6 +82,7 @@ let randomMischiefInterval: NodeJS.Timeout | null = null;
 let lastPetAt: number | null = null;
 let petComboCount = 0;
 let lastPetComboAt: number | null = null;
+let lastBubbleAt: number | 0 = 0;
 let currentBehavior: BehaviorDef | null = null;
 let wanderTimer: NodeJS.Timeout | null = null;
 let wandering = false;
@@ -587,9 +588,12 @@ function showBubble(text: string, durationMs: number): void {
 
 function emitReaction(signal: Signal): void {
   if (!interactive) return;
+  const now = Date.now();
+  if (now - lastBubbleAt < 5000) return;
   const reaction = pickReaction(signal, companion?.character);
   if (!reaction.text) return;
   showBubble(reaction.text, reaction.durationMs);
+  lastBubbleAt = now;
   if (config.soundEnabled && overlay && !overlay.isDestroyed()) {
     overlay.webContents.send("mischief:play-sound", { soundType: signal.kind });
   }
@@ -1214,50 +1218,50 @@ app.whenReady().then(() => {
   setInterval(() => {
     if (!interactive) return;
     const hour = new Date().getHours();
-    if (hour >= 9 && hour < 18 && Math.random() < 0.05) {
+    if (hour >= 9 && hour < 18 && Math.random() < 0.02) {
       emitReaction({ kind: "ide-save" });
-    }
-  }, 60000);
-
-  setInterval(() => {
-    if (!interactive) return;
-    const hour = new Date().getHours();
-    if (hour >= 9 && hour < 18 && Math.random() < 0.03) {
-      emitReaction({ kind: "git-commit" });
     }
   }, 120000);
 
   setInterval(() => {
     if (!interactive) return;
     const hour = new Date().getHours();
-    if (hour >= 9 && hour < 18 && Math.random() < 0.02) {
-      emitReaction({ kind: "build-green" });
+    if (hour >= 9 && hour < 18 && Math.random() < 0.015) {
+      emitReaction({ kind: "git-commit" });
     }
   }, 180000);
+
+  setInterval(() => {
+    if (!interactive) return;
+    const hour = new Date().getHours();
+    if (hour >= 9 && hour < 18 && Math.random() < 0.01) {
+      emitReaction({ kind: "build-green" });
+    }
+  }, 300000);
 
   // Wellness reminders.
   setInterval(() => {
     if (!interactive) return;
     const hour = new Date().getHours();
-    if (hour >= 9 && hour < 18 && Math.random() < 0.04) {
+    if (hour >= 9 && hour < 18 && Math.random() < 0.02) {
       emitReaction({ kind: "hydrate" });
     }
-  }, 90000);
+  }, 180000);
 
   setInterval(() => {
     if (!interactive) return;
     const hour = new Date().getHours();
-    if (hour >= 9 && hour < 18 && Math.random() < 0.03) {
+    if (hour >= 9 && hour < 18 && Math.random() < 0.015) {
       emitReaction({ kind: "posture-check" });
     }
-  }, 150000);
+  }, 300000);
 
   // Random mischief — occasional funny bubble even without triggers.
   randomMischiefInterval = setInterval(() => {
-    if (interactive && Math.random() < 0.3) {
+    if (interactive && Math.random() < 0.1) {
       emitReaction({ kind: "mischief-random" });
     }
-  }, 30000);
+  }, 60000);
 });
 
 app.on("before-quit", () => {

@@ -73,28 +73,11 @@
 
   var soundMap = {
     pet: purr,
-    "mischief-random": mischief,
     "combo-streak": combo,
     "power-suspend": power,
     "power-resume": power,
     "lock-screen": power,
     "unlock-screen": chime,
-    "on-ac": chime,
-    "on-battery": power,
-    "activity-burst": chime,
-    "idle-long": chime,
-    "app-shutdown": power,
-    "time-morning": timeGreeting,
-    "time-lunch": timeGreeting,
-    "time-evening": timeGreeting,
-    "time-night": timeGreeting,
-    "clipboard-copy": chime,
-    "screenshot": chime,
-    "ide-save": chime,
-    "git-commit": chime,
-    "build-green": chime,
-    "hydrate": chime,
-    "posture-check": chime,
   };
 
   function playSound(soundType) {

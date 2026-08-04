@@ -23,24 +23,26 @@ describe("audio.renderer.js", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
-  it("defines a soundMap with entries for all signal kinds", () => {
+  it("defines a soundMap with entries for user-initiated signals only", () => {
     const signalKinds = [
       "pet",
-      "mischief-random",
       "combo-streak",
       "power-suspend",
       "power-resume",
       "lock-screen",
       "unlock-screen",
-      "on-ac",
-      "on-battery",
+    ];
+
+    for (const kind of signalKinds) {
+      const hasKey = content.includes(`${kind}:`) || content.includes(`"${kind}":`);
+      expect(hasKey).toBe(true);
+    }
+
+    // Automatic triggers should NOT have sounds
+    const automaticKinds = [
+      "mischief-random",
       "activity-burst",
       "idle-long",
-      "app-shutdown",
-      "time-morning",
-      "time-lunch",
-      "time-evening",
-      "time-night",
       "clipboard-copy",
       "screenshot",
       "ide-save",
@@ -48,11 +50,18 @@ describe("audio.renderer.js", () => {
       "build-green",
       "hydrate",
       "posture-check",
+      "time-morning",
+      "time-lunch",
+      "time-evening",
+      "time-night",
+      "on-ac",
+      "on-battery",
+      "app-shutdown",
     ];
 
-    for (const kind of signalKinds) {
+    for (const kind of automaticKinds) {
       const hasKey = content.includes(`${kind}:`) || content.includes(`"${kind}":`);
-      expect(hasKey).toBe(true);
+      expect(hasKey).toBe(false);
     }
   });
 
