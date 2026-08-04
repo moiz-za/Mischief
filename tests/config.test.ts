@@ -19,7 +19,7 @@ describe("sanitizeConfig", () => {
     expect(config.companionId).toBe("ghost-companion");
     expect(config.intensity).toBe("chaos");
     expect(config.personality).toBe(DEFAULT_CONFIG.personality);
-    expect(config.interactive).toBe(false);
+    expect(config.interactive).toBe(true);
     expect(config.followCursor).toBe(true);
   });
 
