@@ -17,6 +17,10 @@ export interface CompanionInfo {
   packId: string;
   displayName: string;
   species: string;
+  /** Overlay-ready sprite URL (mischief-asset://<packId>/<path>). */
+  sprite: string;
+  /** True for user-added companions that can be removed. */
+  custom: boolean;
 }
 
 contextBridge.exposeInMainWorld("mischief", {
@@ -59,5 +63,11 @@ contextBridge.exposeInMainWorld("mischief", {
   },
   listCompanions(): Promise<CompanionInfo[]> {
     return ipcRenderer.invoke("mischief:companions:list");
+  },
+  addCustomCompanion(): Promise<CompanionInfo[] | null> {
+    return ipcRenderer.invoke("mischief:companions:add-image");
+  },
+  removeCustomCompanion(packId: string): Promise<boolean> {
+    return ipcRenderer.invoke("mischief:companions:remove", packId);
   },
 });

@@ -1,10 +1,12 @@
 import {
   app,
   BrowserWindow,
+  dialog,
   ipcMain,
   Menu,
   nativeImage,
   powerMonitor,
+  protocol,
   screen,
   shell,
   Tray,
@@ -13,6 +15,14 @@ import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import { BehaviorEngine, type BehaviorDef, type ContextSignals } from "./domain/behavior";
+import {
+  buildCustomCharacter,
+  buildCustomPackManifest,
+  displayNameFromFile,
+  isCustomImage,
+  slugify,
+  storedImageName,
+} from "./domain/custom-companion";
 import { EventBus } from "./domain/events";
 import { encodeGif, type RawFrame } from "./domain/gif";
 import {
@@ -26,7 +36,14 @@ import type { CharacterManifest } from "./domain/manifest";
 import { followPosition } from "./domain/overlay";
 import { loadExperiencePack, type PackReader } from "./domain/pack";
 import { createTicker, type Ticker } from "./domain/scheduler";
-import { pickSprite } from "./domain/sprite";
+import { isSafeSpritePath, pickSprite } from "./domain/sprite";
+
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: "mischief-asset",
+    privileges: { standard: true, secure: true, corsEnabled: false },
+  },
+]);
 
 let overlay: BrowserWindow | null = null;
 let tray: Tray | null = null;
@@ -50,6 +67,7 @@ const OVERLAY_SIZE = 96;
 const CURSOR_GAP = 10;
 const EXPERIENCE_DIR = path.join(__dirname, "renderer", "experiences");
 const PACK_ORDER = ["cat-companion", "ghost-companion", "robot-companion", "pixel-buddy"];
+const CUSTOM_COMPANIONS_DIR = "custom-companions";
 
 interface CompanionDescriptor {
   packId: string;
@@ -58,11 +76,17 @@ interface CompanionDescriptor {
   /** Sprite asset path inside the pack, e.g. "images/whiskers.svg". */
   spritePath: string;
   character: CharacterManifest;
+  /** True for user-added companions (stored in userData, removable). */
+  custom: boolean;
 }
 
 interface LoadedCompanion extends CompanionDescriptor {
-  /** Overlay URL: experiences/<packId>/<spritePath>. */
+  /** Overlay URL: mischief-asset://<packId>/<spritePath>. */
   sprite: string;
+}
+
+function customCompanionsDir(): string {
+  return path.join(app.getPath("userData"), CUSTOM_COMPANIONS_DIR);
 }
 
 function createDirReader(baseDir: string): PackReader {
@@ -80,24 +104,39 @@ function createDirReader(baseDir: string): PackReader {
   };
 }
 
+function tryLoadCompanionDir(dir: string, packId: string, custom: boolean): CompanionDescriptor | null {
+  const result = loadExperiencePack(createDirReader(dir));
+  if (!result.pack) return null;
+  const character = result.pack.characters[0];
+  if (!character) return null;
+  const spritePath = pickSprite(result.pack.manifest.assets);
+  if (!spritePath) return null;
+  return {
+    packId,
+    displayName: character.character.displayName,
+    species: character.character.species,
+    spritePath,
+    character: character.character,
+    custom,
+  };
+}
+
 function enumerateCompanions(): CompanionDescriptor[] {
   const companions: CompanionDescriptor[] = [];
   for (const packId of PACK_ORDER) {
     const dir = path.join(EXPERIENCE_DIR, packId);
     if (!fs.existsSync(dir)) continue;
-    const result = loadExperiencePack(createDirReader(dir));
-    if (!result.pack) continue;
-    const character = result.pack.characters[0];
-    if (!character) continue;
-    const spritePath = pickSprite(result.pack.manifest.assets);
-    if (!spritePath) continue;
-    companions.push({
-      packId,
-      displayName: character.character.displayName,
-      species: character.character.species,
-      spritePath,
-      character: character.character,
-    });
+    const descriptor = tryLoadCompanionDir(dir, packId, false);
+    if (descriptor) companions.push(descriptor);
+  }
+  const customDir = customCompanionsDir();
+  if (fs.existsSync(customDir)) {
+    for (const packId of fs.readdirSync(customDir)) {
+      const dir = path.join(customDir, packId);
+      if (!fs.statSync(dir).isDirectory()) continue;
+      const descriptor = tryLoadCompanionDir(dir, packId, true);
+      if (descriptor) companions.push(descriptor);
+    }
   }
   return companions;
 }
@@ -106,7 +145,115 @@ function loadCompanion(packId?: string): LoadedCompanion | null {
   const companions = enumerateCompanions();
   const chosen = (packId && companions.find((c) => c.packId === packId)) || companions[0];
   if (!chosen) return null;
-  return { ...chosen, sprite: `experiences/${chosen.packId}/${chosen.spritePath}` };
+  return { ...chosen, sprite: `mischief-asset://${chosen.packId}/${chosen.spritePath}` };
+}
+
+// --- Custom ("add your own image") companions ------------------------------
+
+function resolvePackAsset(packId: string, rel: string): string | null {
+  if (!isSafeSpritePath(rel)) return null;
+  const roots = [path.join(EXPERIENCE_DIR, packId), path.join(customCompanionsDir(), packId)];
+  for (const root of roots) {
+    const file = path.resolve(root, rel);
+    if (!file.startsWith(path.resolve(root) + path.sep)) continue;
+    if (fs.existsSync(file) && fs.statSync(file).isFile()) return file;
+  }
+  return null;
+}
+
+function mimeFor(file: string): string {
+  const ext = path.extname(file).toLowerCase();
+  switch (ext) {
+    case ".svg":
+      return "image/svg+xml";
+    case ".png":
+      return "image/png";
+    case ".jpg":
+    case ".jpeg":
+      return "image/jpeg";
+    case ".webp":
+      return "image/webp";
+    case ".gif":
+      return "image/gif";
+    default:
+      return "application/octet-stream";
+  }
+}
+
+function registerAssetProtocol(): void {
+  protocol.handle("mischief-asset", (request) => {
+    const url = new URL(request.url);
+    const packId = url.hostname;
+    if (!/^[a-zA-Z0-9.-]+$/.test(packId)) return new Response("bad pack id", { status: 400 });
+    const file = resolvePackAsset(packId, url.pathname.replace(/^\/+/, ""));
+    if (!file) return new Response("not found", { status: 404 });
+    return new Response(fs.readFileSync(file), {
+      headers: { "content-type": mimeFor(file) },
+    });
+  });
+}
+
+function uniqueCustomId(baseId: string): string {
+  let id = baseId;
+  let n = 2;
+  while (fs.existsSync(path.join(customCompanionsDir(), id))) {
+    id = `${baseId}-${n}`;
+    n++;
+  }
+  return id;
+}
+
+function ensureCustomCompanion(sourcePath: string): CompanionDescriptor | null {
+  const baseName = path.basename(sourcePath);
+  if (!isCustomImage(baseName)) return null;
+  const id = uniqueCustomId(slugify(baseName));
+  const dir = path.join(customCompanionsDir(), id);
+  fs.mkdirSync(path.join(dir, "images"), { recursive: true });
+  fs.mkdirSync(path.join(dir, "characters"), { recursive: true });
+
+  const imageName = storedImageName(id, baseName);
+  const displayName = displayNameFromFile(baseName);
+  fs.copyFileSync(sourcePath, path.join(dir, "images", imageName));
+  fs.writeFileSync(
+    path.join(dir, "manifest.json"),
+    JSON.stringify(buildCustomPackManifest(id, displayName, imageName), null, 2)
+  );
+  fs.writeFileSync(
+    path.join(dir, "characters", `${id}.json`),
+    JSON.stringify(buildCustomCharacter(id, displayName), null, 2)
+  );
+
+  const descriptor = tryLoadCompanionDir(dir, id, true);
+  if (!descriptor) {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+  return descriptor;
+}
+
+function removeCustomCompanion(packId: string): boolean {
+  const dir = path.join(customCompanionsDir(), packId);
+  if (!fs.existsSync(dir)) return false;
+  fs.rmSync(dir, { recursive: true, force: true });
+  if (companion?.packId === packId) {
+    swapCompanion(packId);
+  }
+  return true;
+}
+
+function companionListPayload(): Array<{
+  packId: string;
+  displayName: string;
+  species: string;
+  sprite: string;
+  custom: boolean;
+}> {
+  return enumerateCompanions().map(({ packId, displayName, species, spritePath, custom }) => ({
+    packId,
+    displayName,
+    species,
+    sprite: `mischief-asset://${packId}/${spritePath}`,
+    custom,
+  }));
 }
 
 function hardenWebContents(win: BrowserWindow): void {
@@ -534,13 +681,30 @@ ipcMain.on("mischief:pet", (_event, payload: { x: number; y: number } | undefine
 
 ipcMain.handle("mischief:settings:get", () => config);
 
-ipcMain.handle("mischief:companions:list", () =>
-  enumerateCompanions().map(({ packId, displayName, species }) => ({
-    packId,
-    displayName,
-    species,
-  }))
-);
+ipcMain.handle("mischief:companions:list", () => companionListPayload());
+
+ipcMain.handle("mischief:companions:add-image", async () => {
+  const result = await dialog.showOpenDialog({
+    title: "Choose a companion image",
+    properties: ["openFile"],
+    filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "webp", "gif"] }],
+  });
+  if (result.canceled || result.filePaths.length === 0) return null;
+  const descriptor = ensureCustomCompanion(result.filePaths[0]);
+  if (!descriptor) return null;
+  if (descriptor.packId !== config.companionId) {
+    applyConfig(sanitizeConfig({ ...config, companionId: descriptor.packId }));
+    persistConfig();
+  }
+  return companionListPayload();
+});
+
+ipcMain.handle("mischief:companions:remove", (_event, packId: unknown) => {
+  if (typeof packId !== "string") return false;
+  const removed = removeCustomCompanion(packId);
+  if (removed) persistConfig();
+  return removed;
+});
 
 ipcMain.handle("mischief:settings:set", (_event, partial: unknown) => {
   const merged =
@@ -556,6 +720,7 @@ app.setName("Mischief");
 
 app.whenReady().then(() => {
   loadConfig();
+  registerAssetProtocol();
   companion = loadCompanion(config.companionId);
   if (companion) {
     console.log(`[Mischief] Loaded companion "${companion.displayName}" (${companion.packId})`);

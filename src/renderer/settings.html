@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'"
+      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self' mischief-asset:"
     />
     <title>Mischief Settings</title>
     <style>
@@ -111,6 +111,33 @@
         font-weight: 600;
       }
 
+      button.danger {
+        border-color: #ef4444;
+        color: #f87171;
+      }
+
+      .companion-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 8px 0;
+      }
+
+      #companionPreview {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+        border-radius: 10px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+      }
+
+      .companion-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
       .hint {
         font-size: 11px;
         color: var(--muted);
@@ -124,8 +151,17 @@
 
     <div class="field">
       <label for="companion">Companion</label>
-      <select id="companion"></select>
-      <p class="hint">Which installed companion walks your desktop. Switches instantly.</p>
+      <div class="companion-row">
+        <select id="companion"></select>
+        <img id="companionPreview" alt="Companion preview" />
+      </div>
+      <p class="hint">Which companion walks your desktop. Switches instantly.</p>
+      <div class="companion-actions">
+        <button id="addImage" type="button">Add your own image…</button>
+        <button id="removeCompanion" type="button" class="danger" style="display: none">
+          Remove
+        </button>
+      </div>
     </div>
 
     <div class="field">
@@ -174,14 +210,36 @@
     <script>
       const $ = (id) => document.getElementById(id);
 
-      async function load() {
+      let companions = [];
+
+      function currentCompanion() {
+        return companions.find((c) => c.packId === $("companion").value) || null;
+      }
+
+      function updatePreview() {
+        const companion = currentCompanion();
+        const preview = $("companionPreview");
+        if (companion) {
+          preview.src = companion.sprite;
+          preview.style.display = "block";
+        } else {
+          preview.style.display = "none";
+        }
+        $("removeCompanion").style.display =
+          companion && companion.custom ? "inline-block" : "none";
+      }
+
+      async function refreshAll() {
         const config = await window.mischief.getSettings();
-        const companions = await window.mischief.listCompanions();
+        companions = await window.mischief.listCompanions();
         const select = $("companion");
+        select.innerHTML = "";
         for (const companion of companions) {
           const option = document.createElement("option");
           option.value = companion.packId;
-          option.textContent = `${companion.displayName} (${companion.species})`;
+          option.textContent = companion.custom
+            ? `${companion.displayName} (custom)`
+            : companion.displayName;
           select.appendChild(option);
         }
         if (companions.some((c) => c.packId === config.companionId)) {
@@ -191,7 +249,26 @@
         $("personality").value = config.personality;
         $("interactive").checked = config.interactive;
         $("followCursor").checked = config.followCursor;
+        updatePreview();
       }
+
+      $("companion").addEventListener("change", updatePreview);
+
+      $("addImage").addEventListener("click", async () => {
+        const list = await window.mischief.addCustomCompanion();
+        if (!list) return;
+        await refreshAll();
+      });
+
+      $("removeCompanion").addEventListener("click", async () => {
+        const companion = currentCompanion();
+        if (!companion || !companion.custom) return;
+        if (!confirm(`Remove "${companion.displayName}"? Your image is deleted locally.`)) {
+          return;
+        }
+        await window.mischief.removeCustomCompanion(companion.packId);
+        await refreshAll();
+      });
 
       $("save").addEventListener("click", async () => {
         await window.mischief.saveSettings({
@@ -206,7 +283,7 @@
 
       $("cancel").addEventListener("click", () => window.close());
 
-      load();
+      refreshAll();
     </script>
   </body>
 </html>

@@ -179,6 +179,31 @@ asset-existence checks. A pack only ships if it prints `[OK]`.
 
 ---
 
+## Adding your own image (no coding needed)
+
+Anyone can turn a photo — a pet, a person, a drawing — into a companion from
+the **Settings → Companion → Add your own image…** button:
+
+1. Pick a PNG, JPG/JPEG, WebP, or animated GIF on your computer.
+2. Mischief copies the image into its local user-data folder
+   (`~/Library/Application Support/Mischief/custom-companions/` on macOS;
+   `%APPDATA%/Mischief/custom-companions/` on Windows) and generates a safe
+   pack: id from the file name (e.g. `my-best-friend.jpg` → `my-best-friend`),
+   a friendly character persona, and the image as its sprite.
+3. It is added to the Companion dropdown instantly and becomes the active
+   companion. The image stays on your machine — nothing is uploaded.
+
+Custom companions are marked `(custom)` in the dropdown and can be **removed**
+(locally deleted) any time. A companion made from your own image behaves like
+any other: it follows your cursor, wanders, sleeps, and reacts to petting,
+using the same behavior engine.
+
+Under the hood each one is just an Experience Pack (see below), so pack
+authors get the same result by hand-writing packs and dropping them in that
+folder.
+
+---
+
 ## Loading your pack
 
 The runtime bundles every pack under `examples/experiences/` (see `PACK_ORDER`
