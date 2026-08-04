@@ -1,6 +1,7 @@
 import {
   app,
   BrowserWindow,
+  clipboard,
   dialog,
   ipcMain,
   Menu,
@@ -76,6 +77,8 @@ let overlayHitActive = false;
 let consecutiveLowIdle = 0;
 let lastActivityBurstAt: number | null = null;
 let activityPollInterval: NodeJS.Timeout | null = null;
+let lastClipboardText: string | null = null;
+let randomMischiefInterval: NodeJS.Timeout | null = null;
 let lastPetAt: number | null = null;
 let currentBehavior: BehaviorDef | null = null;
 let wanderTimer: NodeJS.Timeout | null = null;
@@ -575,7 +578,7 @@ function showBubble(text: string, durationMs: number): void {
   createBubbleWindow();
   if (bubbleWindow && !bubbleWindow.isDestroyed()) {
     positionBubble();
-    bubbleWindow.show();
+    bubbleWindow.showInactive();
     bubbleWindow.webContents.send("mischief:bubble", { text, durationMs });
   }
 }
@@ -775,12 +778,14 @@ async function captureGif(): Promise<void> {
   if (frames.length < 2) return;
   const gif = encodeGif(frames, { width: frameWidth, height: frameHeight, delayCs: 11, loop: 0 });
   await writeMomentFile(gif, "gif");
+  if (interactive) emitReaction({ kind: "screenshot" });
 }
 
 async function captureSnapshot(): Promise<void> {
   if (!overlay || overlay.isDestroyed()) return;
   const image = await overlay.webContents.capturePage();
   await writeMomentFile(image.toPNG(), "png");
+  if (interactive) emitReaction({ kind: "screenshot" });
 }
 
 async function writeMomentFile(data: Buffer, ext: "gif" | "png"): Promise<string> {
@@ -849,7 +854,7 @@ function openSettings(): void {
     return;
   }
   settingsWindow = new BrowserWindow({
-    width: 500,
+    width: 560,
     height: 700,
     resizable: false,
     title: "Mischief Settings",
@@ -967,21 +972,22 @@ function createApplicationMenu(): void {
 
 // --- IPC --------------------------------------------------------------------
 
-ipcMain.on("mischief:pet", (_event, payload: { x: number; y: number } | undefined) => {
-   lastPetAt = Date.now();
-   events.emit("CharacterClicked", {
-     characterId: companion?.packId ?? "builtin",
-     x: payload?.x ?? 0,
-     y: payload?.y ?? 0,
-   });
-   if (!interactive) return;
-   const selection = behaviorEngine.tick(collectSignals());
-   if (selection && selection.behavior !== currentBehavior) {
-     currentBehavior = selection.behavior;
-     applyBehaviorChange(selection.behavior);
-     sendBehavior(selection.behavior);
-   }
- });
+ ipcMain.on("mischief:pet", (_event, payload: { x: number; y: number } | undefined) => {
+    lastPetAt = Date.now();
+    events.emit("CharacterClicked", {
+      characterId: companion?.packId ?? "builtin",
+      x: payload?.x ?? 0,
+      y: payload?.y ?? 0,
+    });
+    if (!interactive) return;
+    emitReaction({ kind: "pet" });
+    const selection = behaviorEngine.tick(collectSignals());
+    if (selection && selection.behavior !== currentBehavior) {
+      currentBehavior = selection.behavior;
+      applyBehaviorChange(selection.behavior);
+      sendBehavior(selection.behavior);
+    }
+  });
 
 // Pixel-aware click-through: the overlay reports when the cursor is over an
 // opaque pixel of the character, and only then does the window capture input.
@@ -1168,9 +1174,30 @@ app.whenReady().then(() => {
   const hour = new Date().getHours();
   if (hour >= 5 && hour < 12) {
     emitReaction({ kind: "time-morning" });
-  } else if (hour >= 20 || hour < 5) {
+  } else if (hour >= 12 && hour < 17) {
+    emitReaction({ kind: "time-lunch" });
+  } else if (hour >= 17 && hour < 20) {
+    emitReaction({ kind: "time-evening" });
+  } else {
     emitReaction({ kind: "time-night" });
   }
+
+  // Clipboard change detection.
+  lastClipboardText = clipboard.readText();
+  setInterval(() => {
+    const current = clipboard.readText();
+    if (current !== lastClipboardText && current.length > 0) {
+      lastClipboardText = current;
+      emitReaction({ kind: "clipboard-copy" });
+    }
+  }, 2000);
+
+  // Random mischief — occasional funny bubble even without triggers.
+  randomMischiefInterval = setInterval(() => {
+    if (interactive && Math.random() < 0.3) {
+      emitReaction({ kind: "mischief-random" });
+    }
+  }, 30000);
 });
 
 app.on("before-quit", () => {
@@ -1178,6 +1205,10 @@ app.on("before-quit", () => {
   if (activityPollInterval) {
     clearInterval(activityPollInterval);
     activityPollInterval = null;
+  }
+  if (randomMischiefInterval) {
+    clearInterval(randomMischiefInterval);
+    randomMischiefInterval = null;
   }
 });
 
