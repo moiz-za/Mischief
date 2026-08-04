@@ -53,3 +53,58 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: .gitleaks.toml
+
+  # The domain test suite is pure JS, so it must pass identically on every OS
+  # we ship. Runs the same vitest suite on native Windows + macOS runners
+  # (ubuntu is covered by the `validate` job above) to catch any OS-specific
+  # behavior in the pure domain code.
+  matrix:
+    name: Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+  # Boots the real Electron app on Linux under xvfb and asserts it starts, loads
+  # a companion, and registers its IPC/protocol handlers without fatal errors.
+  # Builds alone can't verify this; this job is our closest CI proxy for a Linux
+  # runtime check without a manual test machine.
+  linux-boot:
+    name: Linux boot smoke (Electron + xvfb)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Electron runtime libs
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            xvfb libgtk-3-0 libnss3 libasound2 libxss1 libgbm1 libnotify4 libxtst6
+
+      - name: Build
+        run: npm run build
+
+      - name: Boot smoke
+        run: node scripts/boot-smoke.js

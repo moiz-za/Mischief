@@ -213,6 +213,21 @@ Mischief is a desktop app that lives on your screen, so you deserve to know exac
 - **Checksums** — every release attaches a `SHA256SUMS` manifest; verify the installer before running it (`shasum -a 256 -c SHA256SUMS`)
 - **Signed builds** — as of now, release builds are **unsigned**, so macOS Gatekeeper and Windows SmartScreen will warn on first launch. That warning is the OS being cautious about any new unsigned app, not a sign Mischief is dangerous. Code signing is planned (see [Security & Privacy](#-security--privacy)); until then, the source + checksums above are your ground truth
 
+### Platform support & testing
+
+Mischief targets macOS, Windows, and Linux, and every release ships installers
+for all three (built on native CI runners). The full test suite (pure-JS unit
+tests for cutout/motion/manifests/behavior/config) runs on **Windows, macOS,
+and Linux** in CI, and a **Linux boot smoke** boots the real Electron app under
+a virtual display on every push to confirm it starts, loads a companion, and
+registers its handlers without fatal errors.
+
+We develop and runtime-test on **macOS**, so it's the most polished. Windows
+and Linux are continuously build- and unit-test-verified, but occasional
+cosmetic differences (tray icon rendering, transparent-window behavior on some
+Linux window managers) may surface there first — report them as an issue and
+they get fixed fast.
+
 ---
 
 ## 📦 Repository Structure
