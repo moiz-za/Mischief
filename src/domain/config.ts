@@ -20,7 +20,7 @@ export const DEFAULT_CONFIG: AppConfig = {
   companionId: "cat-companion",
   intensity: "normal",
   personality: "curious",
-  interactive: false,
+  interactive: true,
   followCursor: true,
   soundEnabled: true,
 };
