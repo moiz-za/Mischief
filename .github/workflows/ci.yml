@@ -27,6 +27,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Architecture guard
+        run: npm run check:arch
+
       - name: Build
         run: npm run build
 

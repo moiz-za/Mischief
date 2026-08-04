@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "check:arch": "depcruise src",
     "validate:packs": "npm run build && node scripts/validate-packs.js",
     "dist": "npm run build && electron-builder",
     "dist:mac": "npm run build && electron-builder --mac",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "@typescript-eslint/parser": "^8.65.0",
+    "dependency-cruiser": "^18.1.1",
     "electron": "^43.2.0",
     "electron-builder": "^26.15.3",
     "eslint": "^9.39.5",
