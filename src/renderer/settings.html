@@ -29,6 +29,10 @@
         box-sizing: border-box;
       }
 
+      html {
+        height: 100%;
+      }
+
       html,
       body {
         margin: 0;
@@ -40,7 +44,8 @@
 
       body {
         width: 100%;
-        min-height: 100%;
+        height: 100%;
+        box-sizing: border-box;
         padding: 16px 20px 14px;
         display: flex;
         flex-direction: column;
@@ -413,7 +418,8 @@
         justify-content: flex-end;
         gap: 10px;
         margin-top: auto;
-        padding-top: 2px;
+        padding-top: 6px;
+        flex-shrink: 0;
       }
 
       button.btn {
@@ -669,9 +675,11 @@
           intensity: "normal",
           ...rawConfig,
         };
-        selectedId =
-          selectedId ||
-          companions.find((c) => c.packId === config.companionId)?.packId ?? companions[0]?.packId ?? "";
+        const validSelected = companions.some((c) => c.packId === selectedId);
+        if (!validSelected) {
+          selectedId =
+            companions.find((c) => c.packId === config.companionId)?.packId ?? companions[0]?.packId ?? "";
+        }
         $("version").textContent = "v" + (new URLSearchParams(location.search).get("version") ?? window.mischief.version ?? "0.2.0");
         renderTiles();
         updateHero();
