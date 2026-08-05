@@ -23,7 +23,21 @@ export interface CompanionMeta {
   face: FaceAnchor | null;
 }
 
-export type MotionState = "idle" | "walk" | "run" | "happy" | "sad" | "sleep" | "yawn" | "pet";
+export type MotionState =
+  | "idle"
+  | "walk"
+  | "run"
+  | "happy"
+  | "sad"
+  | "sleep"
+  | "yawn"
+  | "pet"
+  | "spin"
+  | "pounce"
+  | "sneak"
+  | "dance"
+  | "hide"
+  | "peek";
 
 export interface MotionFrame {
   dx: number;
@@ -57,6 +71,12 @@ export const MOTION_STATES: MotionState[] = [
   "sleep",
   "yawn",
   "pet",
+  "spin",
+  "pounce",
+  "sneak",
+  "dance",
+  "hide",
+  "peek",
 ];
 
 export const DEFAULT_COMPANION_META: CompanionMeta = { cutout: false, face: null };
@@ -142,6 +162,84 @@ export function motionFor(state: MotionState, t: number, _meta: CompanionMeta): 
       };
       pushHearts(effects, t);
       break;
+    case "spin": {
+      // Full 360° rotations, two per second.
+      const rot = (t % 1) * 360;
+      motion = {
+        dx: 0,
+        dy: 0,
+        rotate: rot,
+        scaleX: 1,
+        scaleY: 1,
+        opacity: 1,
+      };
+      break;
+    }
+    case "pounce": {
+      // Quick forward lunge with a springy recoil.
+      const p = cycle(t, 1.1);
+      const lunge = Math.sin(Math.PI * p);
+      motion = {
+        dx: lunge * 14,
+        dy: -lunge * 10,
+        rotate: lunge * 12,
+        scaleX: 1 + lunge * 0.12,
+        scaleY: 1 - lunge * 0.16,
+        opacity: 1,
+      };
+      break;
+    }
+    case "sneak": {
+      // Low, slow, wary creep.
+      motion = {
+        dx: periodic(t, 0.8) * 3,
+        dy: Math.abs(periodic(t, 0.8)) * -2 + 3,
+        rotate: periodic(t, 0.8) * 4,
+        scaleX: 1.04,
+        scaleY: 0.92 + periodic(t, 0.8) * 0.02,
+        opacity: 1,
+      };
+      break;
+    }
+    case "dance": {
+      // Bouncy side-to-side shimmy.
+      const p = cycle(t, 0.7);
+      const bounce = Math.sin(Math.PI * p);
+      motion = {
+        dx: (p < 0.5 ? -1 : 1) * 6,
+        dy: -Math.abs(bounce) * 12,
+        rotate: (p < 0.5 ? -1 : 1) * 10,
+        scaleX: 1 + bounce * 0.05,
+        scaleY: 1 - bounce * 0.1,
+        opacity: 1,
+      };
+      break;
+    }
+    case "hide": {
+      // Crouch down out of view (bold range: stays parked in a corner).
+      motion = {
+        dx: 0,
+        dy: 6 + Math.abs(periodic(t, 0.5)) * 2,
+        rotate: 0,
+        scaleX: 1.1,
+        scaleY: 0.45 + Math.abs(periodic(t, 0.5)) * 0.08,
+        opacity: 0.6,
+      };
+      break;
+    }
+    case "peek": {
+      // Pop up from hiding and glance side to side.
+      const up = Math.abs(Math.sin(TAU * 0.5 * t));
+      motion = {
+        dx: periodic(t, 1.1) * 3,
+        dy: -up * 12,
+        rotate: periodic(t, 1.1) * 6,
+        scaleX: 1 + up * 0.04,
+        scaleY: 1 - up * 0.06,
+        opacity: 0.95,
+      };
+      break;
+    }
     case "sad":
       motion = {
         dx: 0,

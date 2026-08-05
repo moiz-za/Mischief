@@ -187,6 +187,84 @@ const EXCITED: BehaviorDef = {
   manual: true,
 };
 
+// Playful system behaviors: these run for every companion, including
+// user-imported ones that have no animation weights of their own, so custom
+// characters stay lively too. Each has a long cooldown so they stay special.
+const HIDE: BehaviorDef = {
+  id: "hide",
+  anim: "hide",
+  mood: "curious",
+  kind: "system",
+  weight: 0.6,
+  minSeconds: 6,
+  maxSeconds: 12,
+  cooldownSeconds: 240,
+  requires: "calm",
+  moves: true,
+};
+const PEEK: BehaviorDef = {
+  id: "peek",
+  anim: "peek",
+  mood: "curious",
+  kind: "system",
+  weight: 0.6,
+  minSeconds: 3,
+  maxSeconds: 6,
+  cooldownSeconds: 90,
+  requires: "calm",
+  moves: false,
+};
+const SPIN: BehaviorDef = {
+  id: "spin",
+  anim: "spin",
+  mood: "playful",
+  kind: "system",
+  weight: 0.6,
+  minSeconds: 3,
+  maxSeconds: 6,
+  cooldownSeconds: 120,
+  requires: "calm",
+  moves: false,
+};
+const POUNCE: BehaviorDef = {
+  id: "pounce",
+  anim: "pounce",
+  mood: "playful",
+  kind: "system",
+  weight: 0.6,
+  minSeconds: 4,
+  maxSeconds: 8,
+  cooldownSeconds: 180,
+  requires: "playful",
+  moves: true,
+};
+const SNEAK: BehaviorDef = {
+  id: "sneak",
+  anim: "sneak",
+  mood: "curious",
+  kind: "system",
+  weight: 0.6,
+  minSeconds: 6,
+  maxSeconds: 14,
+  cooldownSeconds: 150,
+  requires: "playful",
+  moves: true,
+};
+const DANCE: BehaviorDef = {
+  id: "dance",
+  anim: "dance",
+  mood: "excited",
+  kind: "system",
+  weight: 0.6,
+  minSeconds: 4,
+  maxSeconds: 9,
+  cooldownSeconds: 150,
+  requires: "normal",
+  moves: false,
+};
+
+const SYSTEM_PLAYFUL_BEHAVIORS: BehaviorDef[] = [HIDE, PEEK, SPIN, POUNCE, SNEAK, DANCE];
+
 export class BehaviorEngine {
   private characterBehaviors: BehaviorDef[] = [];
   private intensity: Intensity;
@@ -277,8 +355,8 @@ export class BehaviorEngine {
       }
     }
 
-    // Free choice among eligible character behaviors.
-    const eligible = this.characterBehaviors.filter(
+    // Free choice among eligible character + system behaviors.
+    const eligible = [...this.characterBehaviors, ...SYSTEM_PLAYFUL_BEHAVIORS].filter(
       (b) =>
         b.weight > 0 &&
         this.intensityAllows(b.requires) &&

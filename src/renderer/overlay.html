@@ -75,6 +75,30 @@
         animation: happy 0.7s ease-in-out 5;
       }
 
+      .anim-sneak {
+        animation: sneak 1.6s ease-in-out infinite;
+      }
+
+      .anim-pounce {
+        animation: pounce 1.1s ease-in-out infinite;
+      }
+
+      .anim-spin {
+        animation: spin 0.9s linear infinite;
+      }
+
+      .anim-dance {
+        animation: dance 0.7s ease-in-out infinite;
+      }
+
+      .anim-hide {
+        animation: hide 1.2s ease-in-out infinite;
+      }
+
+      .anim-peek {
+        animation: peek 1.4s ease-in-out infinite;
+      }
+
       @keyframes bob {
         0%,
         100% {
@@ -146,6 +170,70 @@
           transform: translateY(-10px) rotate(6deg);
         }
       }
+
+      @keyframes sneak {
+        0%,
+        100% {
+          transform: translateX(-4px) translateY(3px) rotate(-3deg);
+        }
+        50% {
+          transform: translateX(4px) translateY(1px) rotate(3deg);
+        }
+      }
+
+      @keyframes pounce {
+        0%,
+        100% {
+          transform: translateX(0) translateY(0) scale(1);
+        }
+        35% {
+          transform: translateX(10px) translateY(-12px) scale(1.15, 0.9) rotate(6deg);
+        }
+        65% {
+          transform: translateX(4px) translateY(0) scale(0.95, 1.1) rotate(-4deg);
+        }
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes dance {
+        0%,
+        100% {
+          transform: translateX(-5px) rotate(-8deg);
+        }
+        50% {
+          transform: translateX(5px) translateY(-8px) rotate(8deg);
+        }
+      }
+
+      @keyframes hide {
+        0%,
+        100% {
+          transform: translateY(8px) scale(1.15, 0.5);
+          opacity: 0.7;
+        }
+        50% {
+          transform: translateY(9px) scale(1.15, 0.45);
+          opacity: 0.55;
+        }
+      }
+
+      @keyframes peek {
+        0%,
+        100% {
+          transform: translateY(6px) scale(1.05, 0.8);
+        }
+        50% {
+          transform: translateY(-4px) scale(1, 1);
+        }
+      }
     </style>
   </head>
   <body>
@@ -215,6 +303,7 @@
 
       window.addEventListener("mousemove", (event) => {
         if (!window.mischief || !window.mischief.setOverlayHit) return;
+        if (dragging) return;
         const hit = sampleHit(event.clientX, event.clientY);
         if (hit !== lastHit) {
           lastHit = hit;
@@ -251,10 +340,14 @@
         float: "anim-move",
         glide: "anim-move",
         fly: "anim-move",
-        sneak: "anim-move",
+        sneak: "anim-sneak",
         run: "anim-move",
-        pounce: "anim-move",
+        pounce: "anim-pounce",
         jump: "anim-move",
+        spin: "anim-spin",
+        dance: "anim-dance",
+        hide: "anim-hide",
+        peek: "anim-peek",
         sleep: "anim-sleep",
         yawn: "anim-yawn",
         happy: "anim-happy",
@@ -267,6 +360,12 @@
         sad: "sad",
         sleep: "sleep",
         yawn: "yawn",
+        sneak: "sneak",
+        pounce: "pounce",
+        spin: "spin",
+        dance: "dance",
+        hide: "hide",
+        peek: "peek",
       };
 
       let currentAnim = "idle";
@@ -464,10 +563,64 @@
         });
       }
 
+      // --- Drag-to-move (always available) --------------------------------
+      // The companion can be grabbed and moved at any time - even when
+      // interactive (petting) is off - so the user can relocate it if it is
+      // covering something. Native HTML image drag is suppressed so the
+      // companion moves instead of the raw image ghost.
+      let dragState = null; // { startX, startY, active, moved }
+      let lastDragMoved = false;
+      let dragging = false;
+
+      creature.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        lastDragMoved = false;
+        dragState = { startX: event.clientX, startY: event.clientY, active: false, moved: false };
+        if (window.mischief && window.mischief.startDrag) {
+          window.mischief.startDrag(event.clientX, event.clientY);
+        }
+      });
+
+      window.addEventListener("pointermove", (event) => {
+        if (!dragState) return;
+        const dx = event.clientX - dragState.startX;
+        const dy = event.clientY - dragState.startY;
+        const DRAG_THRESHOLD = 5;
+        if (!dragState.active && Math.hypot(dx, dy) > DRAG_THRESHOLD) {
+          dragState.active = true;
+          dragState.moved = true;
+          lastDragMoved = true;
+          dragging = true;
+        }
+        if (dragState.active && window.mischief && window.mischief.moveDrag) {
+          window.mischief.moveDrag(event.clientX, event.clientY);
+        }
+      });
+
+      window.addEventListener("pointerup", (event) => {
+        if (window.mischief && window.mischief.endDrag) {
+          window.mischief.endDrag();
+        }
+        dragState = null;
+        dragging = false;
+        // Re-sync click-through to the current cursor position: after dragging
+        // the companion away, the cursor often ends over transparent space.
+        if (window.mischief && window.mischief.setOverlayHit) {
+          const hit = sampleHit(event.clientX, event.clientY);
+          lastHit = hit;
+          window.mischief.setOverlayHit(hit);
+        }
+      });
+
+      // Suppress native image/HTML drag so only our custom drag runs.
+      creature.addEventListener("dragstart", (event) => event.preventDefault());
+
       creature.addEventListener("click", (event) => {
-        if (window.mischief && window.mischief.pet) {
+        // A real drag suppresses the pet reaction.
+        if (window.mischief && window.mischief.pet && !lastDragMoved) {
           window.mischief.pet(event.clientX, event.clientY);
         }
+        lastDragMoved = false;
       });
 
       if (window.mischief && window.mischief.onInteractive) {

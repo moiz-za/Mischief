@@ -627,12 +627,38 @@ function showBubble(text: string, durationMs: number): void {
   }
 }
 
+/**
+ * How long a reaction bubble must wait before the next one can appear. Scales
+ * with the intensity level so Silent/Calm modes stay quiet and only Playful/
+ * Chaos chatter frequently (ISS-030).
+ */
+function bubbleThrottleMs(): number {
+  switch (config.intensity) {
+    case "silent":
+      return 60000;
+    case "calm":
+      return 45000;
+    case "normal":
+      return 30000;
+    case "playful":
+      return 20000;
+    case "chaos":
+      return 15000;
+    default:
+      return 30000;
+  }
+}
+
 function emitReaction(signal: Signal): void {
   if (!interactive) return;
   const now = Date.now();
   // ISS-009: app-shutdown is a one-time event — bypass the throttle
   const isShutdown = signal.kind === "app-shutdown";
-  if (!isShutdown && now - lastBubbleAt < 5000) return;
+  // User-initiated reactions (petting) always respond instantly with a short
+  // anti-spam guard; ambient chatter respects the intensity-scaled throttle.
+  const isUserInitiated = signal.kind === "pet" || signal.kind === "combo-streak";
+  const throttleMs = isUserInitiated ? 1500 : bubbleThrottleMs();
+  if (!isShutdown && now - lastBubbleAt < throttleMs) return;
   const reaction = pickReaction(signal, companion?.character);
   if (!reaction.text) return;
   showBubble(reaction.text, reaction.durationMs);
@@ -729,12 +755,14 @@ function behaviorTick(): void {
 
 function applyBehaviorChange(behavior: BehaviorDef): void {
   if (behavior.moves && !wandering) {
-    wander();
-  } else if (behavior.id === "sleep") {
+    wander(behavior.id);
+  } else if (behavior.id === "sleep" || behavior.id === "hide") {
     stopWander();
     pauseFollow();
     parkInCorner();
-    events.emit("CharacterSleeping", { characterId: companion?.packId ?? "builtin" });
+    if (behavior.id === "sleep") {
+      events.emit("CharacterSleeping", { characterId: companion?.packId ?? "builtin" });
+    }
   } else {
     stopWander();
     resumeFollow();
@@ -754,7 +782,23 @@ function sendBehavior(behavior: BehaviorDef): void {
   });
 }
 
-function wander(): void {
+interface WanderProfile {
+  /** Total travel time in ms. */
+  durationMs: number;
+  /** Steps between position updates. */
+  stepMs: number;
+  /** Easing exponent (higher = snappier arrival). */
+  easePower: number;
+}
+
+const WANDER_PROFILES: Record<string, WanderProfile> = {
+  // Pounce = a fast, short dart.
+  pounce: { durationMs: 700, stepMs: 16, easePower: 2.2 },
+  // Sneak = a long, slow creep.
+  sneak: { durationMs: 12000, stepMs: 66, easePower: 1.2 },
+};
+
+function wander(behaviorId?: string): void {
   if (!overlay || overlay.isDestroyed()) return;
   pauseFollow();
   wandering = true;
@@ -767,8 +811,12 @@ function wander(): void {
   const maxY = workArea.y + workArea.height - OVERLAY_SIZE - margin;
   const targetX = Math.round(minX + Math.random() * Math.max(0, maxX - minX));
   const targetY = Math.round(minY + Math.random() * Math.max(0, maxY - minY));
-  const durationMs = Math.min(8000, Math.max(2500, (currentBehavior?.maxSeconds ?? 8) * 1000));
-  const steps = Math.max(2, Math.ceil(durationMs / 33));
+  const profile: WanderProfile = (behaviorId ? WANDER_PROFILES[behaviorId] : undefined) ?? {
+    durationMs: Math.min(8000, Math.max(2500, (currentBehavior?.maxSeconds ?? 8) * 1000)),
+    stepMs: 33,
+    easePower: 3,
+  };
+  const steps = Math.max(2, Math.ceil(profile.durationMs / profile.stepMs));
   let step = 0;
 
   if (wanderTimer) clearInterval(wanderTimer);
@@ -779,16 +827,20 @@ function wander(): void {
     }
     step++;
     const t = Math.min(1, step / steps);
-    const ease = 1 - Math.pow(1 - t, 3);
+    const ease = 1 - Math.pow(1 - t, profile.easePower);
     overlay.setPosition(
       Math.round(startX + (targetX - startX) * ease),
       Math.round(startY + (targetY - startY) * ease)
     );
+    // Keep any open speech bubble glued to the companion while it moves.
+    if (bubbleWindow && !bubbleWindow.isDestroyed()) {
+      positionBubble();
+    }
     if (step >= steps) {
       stopWander();
       resumeFollow();
     }
-  }, 33);
+  }, profile.stepMs);
 }
 
 function stopWander(): void {
@@ -1065,12 +1117,74 @@ ipcMain.on("mischief:pet", (_event, payload: { x: number; y: number } | undefine
 // Pixel-aware click-through: the overlay reports when the cursor is over an
 // opaque pixel of the character, and only then does the window capture input.
 // Transparent areas stay click-through, so the companion never blocks clicks.
+// Dragging works at all times (interactive or not) so the user can always move
+// the companion out of the way; petting remains gated to interactive mode.
 ipcMain.on("mischief:overlay:hit", (_event, active: unknown) => {
-  if (!interactive || !overlay || overlay.isDestroyed()) return;
+  if (!overlay || overlay.isDestroyed()) return;
   const wantCapture = active === true;
   if (wantCapture === overlayHitActive) return;
-  overlayHitActive = wantCapture;
-  overlay.setIgnoreMouseEvents(!wantCapture);
+  // Capture input over the character body whenever the cursor is on it, so both
+  // interactive petting and always-on dragging can receive pointer events.
+  if (wantCapture || interactive) {
+    overlayHitActive = wantCapture;
+    overlay.setIgnoreMouseEvents(!wantCapture);
+  }
+});
+
+// --- Always-on drag-to-move -----------------------------------------------
+
+interface DragState {
+  startWindow: { x: number; y: number };
+  grab: { x: number; y: number };
+}
+
+let drag: DragState | null = null;
+
+function beginDrag(x: number, y: number): void {
+  if (!overlay || overlay.isDestroyed()) return;
+  // Freeze follow/wander so the window doesn't fight the user's hand.
+  pauseFollow();
+  stopWander();
+  const [sx, sy] = overlay.getPosition();
+  drag = { startWindow: { x: sx, y: sy }, grab: { x, y } };
+}
+
+function dragTo(x: number, y: number): void {
+  if (!overlay || overlay.isDestroyed() || !drag) return;
+  const { workArea } = screen.getDisplayNearestPoint(drag.startWindow);
+  const nx = clamp(
+    drag.startWindow.x + (x - drag.grab.x),
+    workArea.x,
+    workArea.x + workArea.width - OVERLAY_SIZE
+  );
+  const ny = clamp(
+    drag.startWindow.y + (y - drag.grab.y),
+    workArea.y,
+    workArea.y + workArea.height - OVERLAY_SIZE
+  );
+  overlay.setPosition(Math.round(nx), Math.round(ny));
+  events.emit("CharacterMoved", {
+    characterId: companion?.packId ?? "builtin",
+    x: Math.round(nx),
+    y: Math.round(ny),
+  });
+}
+
+function endDrag(): void {
+  drag = null;
+  resumeFollow();
+}
+
+ipcMain.on("mischief:drag:start", (_event, payload: { x: number; y: number } | undefined) => {
+  beginDrag(payload?.x ?? 0, payload?.y ?? 0);
+});
+
+ipcMain.on("mischief:drag:move", (_event, payload: { x: number; y: number } | undefined) => {
+  dragTo(payload?.x ?? 0, payload?.y ?? 0);
+});
+
+ipcMain.on("mischief:drag:end", () => {
+  endDrag();
 });
 
 ipcMain.handle("mischief:settings:get", () => config);
@@ -1305,12 +1419,14 @@ app.whenReady().then(() => {
     }
   }, 300000);
 
-  // Random mischief — occasional funny bubble even without triggers.
+  // Random mischief — occasional funny bubble even without triggers. Deliberately
+  // sparse: fires rarely (once per ~4 minutes, ~35% of the time) so it never
+  // feels spammy next to the user-driven activity reactions (ISS-030).
   randomMischiefInterval = setInterval(() => {
-    if (interactive && Math.random() < 0.1) {
+    if (interactive && Math.random() < 0.35) {
       emitReaction({ kind: "mischief-random" });
     }
-  }, 60000);
+  }, 240000);
 
   // ISS-008: delay startup greeting so overlay + bubble windows are ready
   const greetHour = new Date().getHours();
