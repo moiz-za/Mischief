@@ -598,7 +598,7 @@ function createBubbleWindow(): void {
 function positionBubble(): void {
   if (!bubbleWindow || bubbleWindow.isDestroyed() || !overlay || overlay.isDestroyed()) return;
   const [bx, by] = overlay.getPosition();
-  const [bw, bh] = overlay.getSize();
+  const [bw] = overlay.getSize();
   const bubbleW = 220;
   const bubbleH = 100;
   const x = bx + Math.round((bw - bubbleW) / 2);

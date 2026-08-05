@@ -473,7 +473,7 @@
         <h1>Mischief</h1>
         <p class="tagline">Tune your little troublemaker.</p>
       </div>
-      <span class="version" id="version">v0.2.0</span>
+      <span class="version" id="version">v0.3.1</span>
     </header>
 
     <section>
@@ -680,7 +680,7 @@
           selectedId =
             companions.find((c) => c.packId === config.companionId)?.packId ?? companions[0]?.packId ?? "";
         }
-        $("version").textContent = "v" + (new URLSearchParams(location.search).get("version") ?? window.mischief.version ?? "0.2.0");
+        $("version").textContent = "v" + (new URLSearchParams(location.search).get("version") ?? window.mischief.version ?? "0.3.1");
         renderTiles();
         updateHero();
         renderPersonality(config.personality);

@@ -55,7 +55,7 @@ export interface ImportEditorSaveRequest {
 }
 
 contextBridge.exposeInMainWorld("mischief", {
-  version: process.env.npm_package_version ?? "0.2.0",
+  version: process.env.npm_package_version ?? "0.3.1",
   onBehavior(callback: (behavior: BehaviorMessage) => void): () => void {
     const listener = (_event: Electron.IpcRendererEvent, behavior: BehaviorMessage): void => {
       callback(behavior);
