@@ -25,6 +25,12 @@
 
 **100% offline & privacy-first.** No accounts. No telemetry. No analytics. Runs entirely on your machine.
 
+<div align="center">
+
+![Mischief in action](assets/demos/hero.gif)
+
+</div>
+
 ---
 
 </div>
@@ -32,6 +38,7 @@
 ## 📖 Table of Contents
 
 - [Features](#-features)
+- [See it in action](#-see-it-in-action)
 - [How It Works](#-how-it-works)
 - [Why Mischief](#-why-mischief)
 - [Installation](#-installation)
@@ -44,6 +51,20 @@
 - [Community & Support](#-community--support)
 - [Author & Maintainer](#-author--maintainer)
 - [License & Disclaimer](#-license--disclaimer)
+
+---
+
+## 🎬 See it in action
+
+<div align="center">
+
+|                         Spin                         |                        Dance                         |                        Hide                        |                       Idle                       |
+| :--------------------------------------------------: | :--------------------------------------------------: | :------------------------------------------------: | :----------------------------------------------: |
+| ![Whiskers spinning](assets/demos/whiskers-spin.gif) | ![Whiskers dancing](assets/demos/whiskers-dance.gif) | ![Whiskers hiding](assets/demos/whiskers-hide.gif) | ![Whiskers idle](assets/demos/whiskers-idle.gif) |
+
+</div>
+
+Every companion runs playful procedural behaviors like these — spin, dance, hide, peek, pounce, and sneak — right on your desktop.
 
 ---
 
