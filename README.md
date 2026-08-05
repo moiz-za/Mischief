@@ -8,7 +8,7 @@
 
 ### by [Moiz Solutions](https://tools.moiz.solutions)
 
-[![Version](https://img.shields.io/badge/version-0.3.0-blue?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.4.0-blue?style=flat-square)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/moiz-za/Mischief?style=flat-square&label=stars)](https://github.com/moiz-za/Mischief)
 [![Last Commit](https://img.shields.io/github/last-commit/moiz-za/Mischief?style=flat-square)](https://github.com/moiz-za/Mischief/commits/main)
@@ -61,12 +61,14 @@
 - The companion **reacts to your real work**: sleeps after inactivity, yawns when you return, wanders the desktop, perks up when you click it
 - **Interactive mode** — click your companion and watch it react (off by default; click-through preserved)
 - **Settings window** — tune intensity (Silent → Chaos) and personality live, persist your preferences
-- **14 Flagship Characters** — Zen (Red Panda), Kumo (Cyber Fox), Astra (Stardust Dragon), Barnaby (Capybara), Pippin (Penguin), Pocus (Ghostling), Byte (Vintage Bot), Nami (Sea Otter), Pixel-Rex (Pixel Dino), Lumina (Crystal Phoenix), Mochi (Shiba Baker), Voxel (Mecha Cat), Bramble (Hedgehog), Sola (Sunflower) — each with unique personality quips and dialogue
-- **Character-Specific Speech** — each companion has unique dialogue pools for petting, idle moments, power events, and more
+- **19 Flagship Characters** — Zen (Red Panda), Kumo (Cyber Fox), Astra (Stardust Dragon), Barnaby (Capybara), Pippin (Penguin), Pocus (Ghostling), Byte (Vintage Bot), Nami (Sea Otter), Pixel-Rex (Pixel Dino), Lumina (Crystal Phoenix), Mochi (Shiba Baker), Voxel (Mecha Cat), Bramble (Hedgehog), Sola (Sunflower), Whiskers (Cat), Spectra (Ghost), Sparky (Robot), Pixel (Pixel Buddy), and Bloop (Sample Creature) — each with unique species-themed dialogue
+- **Character-Specific Speech** — every companion has its own dialogue pools for petting, idle moments, power events, and more; user-imported companions get a voice that matches their personality
+- **Anti-Repeat Chatter** — a shuffled picker never repeats the same bubble twice in a row, so the companion stays fresh
+- **Behavior-Aware Reactions** — the companion comments on its own antics (hiding, peeking, spinning, pouncing, sneaking, dancing)
+- **Playful Behaviors** — six playful behaviors (hide, peek, spin, pounce, sneak, dance) run for every companion, including custom imports
 - **Combo Streaks** — consecutive pets trigger escalating reactions (Combo x2! 🎉, Super happy!)
-- **Sound Notifications** — synthesized chimes and purrs via Web Audio API (zero asset footprint), toggle on/off in Settings
 - **Developer Triggers** — IDE save, git commit, and build green reactions for your workflow
-- **Wellness Reminders** — hydration and posture check nudges during work hours
+- **Wellness Reminders** — hydration and posture check nudges during work hours, plus deep-focus and weekend greetings
 
 ### 🛡️ Safe by design
 
@@ -98,7 +100,7 @@ Mischief is a lightweight **Runtime** that loads modular **Experience Packs**. P
   2. SCHEDULE ─► events scored by priority, conditions & cooldowns
                     │ event fires
                     ▼
-  3. ACT ─────► overlay companion · window antics · cursor effects · audio · speech
+  3. ACT ─────► overlay companion · window antics · cursor effects · speech bubbles
                     │
   4. REVERT ───► every effect is reversible
                     │ intensity: Silent → Chaos
@@ -231,10 +233,10 @@ mischief/
 ├── src/                    Electron runtime
 │   ├── main.ts             tray + overlay host
 │   ├── preload.ts          secure IPC bridge
-│   ├── renderer/           overlay companion + audio renderer
+│   ├── renderer/           overlay companion (sprite + cutout canvas)
 │   └── domain/             pure, tested logic (no Electron)
 ├── examples/               starter content
-│   ├── experiences/        14 companion packs (zen, kumo, astra, …)
+│   ├── experiences/        19 companion packs (zen, kumo, astra, …)
 │   └── plugins/            plugin skeletons
 ├── docs/                   experience-pack guide + community docs
 ├── tests/                  unit tests (Vitest)
@@ -269,13 +271,15 @@ A: They're single-app pets. Mischief is a **platform**: a small runtime that loa
 
 ## 📋 Changelog
 
-| Version    | Date    | Summary                                                                                                                                                                                                                                                           |
-| ---------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **v0.3.0** | 2026-08 | Sound notifications (Web Audio API synthesized chimes/purrs, toggle in Settings), 14 character-specific speech pools with unique dialogue, combo streak tracking, developer triggers (IDE save, git commit, build green), wellness reminders (hydration, posture) |
-| **v0.2.0** | 2026-08 | Settings window (intensity/personality selectors, interactive & cursor-follow toggles, persisted), config manager with fallbacks, GIF moment capture to `~/Pictures/Mischief/`, PNG snapshot                                                                      |
-| **v0.1.3** | 2026-08 | Personality engine: event bus, intensity levels (Silent→Chaos), weighted behaviors with cooldowns, sleeps/yawns/wanders, interactive pet mode, PNG moment capture                                                                                                 |
-| **v0.1.2** | 2026-08 | Strict manifest validation (security boundary), Experience Pack loader, typed localization (`en-US`/`es`/`de`/`fr`), themes, runtime loads the Whiskers companion pack, 4 example packs + 2 plugins                                                               |
-| **v0.1.0** | 2026-08 | Initial foundation — Electron + TypeScript skeleton, overlay companion + tray, pure tested domain layer, CI (typecheck/lint/build/test/audit), gitleaks secret scanning, packaging config                                                                         |
+| Version    | Date    | Summary                                                                                                                                                                                                                                                                    |
+| ---------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v0.4.0** | 2026-08 | Playful behaviors (hide/peek/spin/pounce/sneak/dance) for every companion, always-on drag-to-move, anti-repeat + companion-specific + personality-matched speech, behavior-aware chatter, follow-cursor & quick-menu sync, spin/hide animation fixes, removed sound chimes |
+| **v0.3.1** | 2026-08 | Companion switcher, raster sprite support (PNG/JPG/WebP/GIF), custom companions, import any image with background cutout + expression anchor, import pipeline internals, settings UI layout + repository-boundary fixes                                                    |
+| **v0.3.0** | 2026-08 | 14 character-specific speech pools with unique dialogue, combo streak tracking, developer triggers (IDE save, git commit, build green), wellness reminders (hydration, posture)                                                                                            |
+| **v0.2.0** | 2026-08 | Settings window (intensity/personality selectors, interactive & cursor-follow toggles, persisted), config manager with fallbacks, GIF moment capture to `~/Pictures/Mischief/`, PNG snapshot                                                                               |
+| **v0.1.3** | 2026-08 | Personality engine: event bus, intensity levels (Silent→Chaos), weighted behaviors with cooldowns, sleeps/yawns/wanders, interactive pet mode, PNG moment capture                                                                                                          |
+| **v0.1.2** | 2026-08 | Strict manifest validation (security boundary), Experience Pack loader, typed localization (`en-US`/`es`/`de`/`fr`), themes, runtime loads the Whiskers companion pack, 4 example packs + 2 plugins                                                                        |
+| **v0.1.0** | 2026-08 | Initial foundation — Electron + TypeScript skeleton, overlay companion + tray, pure tested domain layer, CI (typecheck/lint/build/test/audit), gitleaks secret scanning, packaging config                                                                                  |
 
 See full [CHANGELOG.md](./CHANGELOG.md) for details.
 
