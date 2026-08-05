@@ -144,7 +144,9 @@ contextBridge.exposeInMainWorld("mischief", {
   getImportEditorData(): Promise<ImportEditorData | null> {
     return ipcRenderer.invoke("mischief:import-editor:get");
   },
-  previewImportEditor(request: Omit<ImportEditorSaveRequest, "face">): Promise<ImportEditorPreview | null> {
+  previewImportEditor(
+    request: Omit<ImportEditorSaveRequest, "face">
+  ): Promise<ImportEditorPreview | null> {
     return ipcRenderer.invoke("mischief:import-editor:preview", request);
   },
   saveImportEditor(request: ImportEditorSaveRequest): Promise<CompanionInfo[] | null> {

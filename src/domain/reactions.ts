@@ -104,12 +104,12 @@ const POOLS: Record<string, Reaction[]> = {
     { text: "Nice copy!", durationMs: 2500 },
     { text: "Got it.", durationMs: 2500 },
   ],
-  "screenshot": [
+  screenshot: [
     { text: "Screenshot!", durationMs: 3000 },
     { text: "Capture!", durationMs: 2500 },
     { text: "Preserved.", durationMs: 3000 },
   ],
-  "pet": [
+  pet: [
     { text: "Pffft!", durationMs: 2500 },
     { text: "Hehe!", durationMs: 2500 },
     { text: "Nice!", durationMs: 2500 },
@@ -140,7 +140,7 @@ const POOLS: Record<string, Reaction[]> = {
     { text: "Tests passing!", durationMs: 2500 },
     { text: "Ship it! 🚀", durationMs: 3000 },
   ],
-  "hydrate": [
+  hydrate: [
     { text: "Time to drink water! 💧", durationMs: 3500 },
     { text: "Drink some water! 💧", durationMs: 3500 },
     { text: "Stay hydrated! 🥤", durationMs: 3000 },
@@ -173,13 +173,13 @@ const WEIGHTS: Record<string, number[]> = {
   "time-evening": [3, 2, 1],
   "time-night": [3, 2, 1],
   "clipboard-copy": [3, 2, 1],
-  "screenshot": [3, 2, 1],
-  "pet": [4, 3, 2, 1, 1],
+  screenshot: [3, 2, 1],
+  pet: [4, 3, 2, 1, 1],
   "mischief-random": [3, 2, 1, 1, 1, 1],
   "ide-save": [3, 2, 1],
   "git-commit": [3, 2, 1],
   "build-green": [3, 2, 1],
-  "hydrate": [3, 2, 1],
+  hydrate: [3, 2, 1],
   "posture-check": [3, 2, 1],
   "combo-streak": [4, 3, 2, 1],
 };
@@ -199,7 +199,12 @@ export function pickReaction(signal: Signal, character?: CharacterManifest | nul
   // ISS-012: combo-streak uses the actual comboCount to build dynamic text
   if (key === "combo-streak" && "comboCount" in signal) {
     const count = (signal as { kind: "combo-streak"; comboCount: number }).comboCount;
-    const text = count >= 10 ? `Combo x${count}! 🔥` : count >= 5 ? `Combo x${count}! 🎉` : `Combo x${count}! 🎉`;
+    const text =
+      count >= 10
+        ? `Combo x${count}! 🔥`
+        : count >= 5
+          ? `Combo x${count}! 🎉`
+          : `Combo x${count}! 🎉`;
     return { text, durationMs: 2500 };
   }
   const charPool = character?.speech?.[key];

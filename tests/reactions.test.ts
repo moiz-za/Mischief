@@ -34,8 +34,6 @@ const ZEN_CHARACTER: CharacterManifest = {
   },
 };
 
-
-
 describe("pickReaction", () => {
   it("falls back to global pool when no character is provided", () => {
     const result = pickReaction({ kind: "pet" });
@@ -70,10 +68,7 @@ describe("pickReaction", () => {
   });
 
   it("returns empty reaction for unknown signal kind even with character", () => {
-    const result = pickReaction(
-      { kind: "unknown" } as unknown as Signal,
-      ZEN_CHARACTER
-    );
+    const result = pickReaction({ kind: "unknown" } as unknown as Signal, ZEN_CHARACTER);
     expect(result.text).toBe("");
     expect(result.durationMs).toBe(0);
   });

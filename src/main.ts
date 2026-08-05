@@ -158,7 +158,11 @@ function createDirReader(baseDir: string): PackReader {
   };
 }
 
-function tryLoadCompanionDir(dir: string, packId: string, custom: boolean): CompanionDescriptor | null {
+function tryLoadCompanionDir(
+  dir: string,
+  packId: string,
+  custom: boolean
+): CompanionDescriptor | null {
   const result = loadExperiencePack(createDirReader(dir));
   if (!result.pack) return null;
   const character = result.pack.characters[0];
@@ -320,14 +324,16 @@ function companionListPayload(): Array<{
   custom: boolean;
   meta: CompanionMeta;
 }> {
-  return enumerateCompanions().map(({ packId, displayName, species, spritePath, custom, meta }) => ({
-    packId,
-    displayName,
-    species,
-    sprite: `mischief-asset://${packId}/${spritePath}`,
-    custom,
-    meta,
-  }));
+  return enumerateCompanions().map(
+    ({ packId, displayName, species, spritePath, custom, meta }) => ({
+      packId,
+      displayName,
+      species,
+      sprite: `mischief-asset://${packId}/${spritePath}`,
+      custom,
+      meta,
+    })
+  );
 }
 
 // --- Custom image import pipeline --------------------------------------------
@@ -402,10 +408,13 @@ function decodeRaster(file: string): Raster | null {
 function encodeRasterPng(raster: Raster): Buffer | null {
   const premultiplied = premultiplyCopy(raster);
   const bgra = rgbaToBgra(premultiplied);
-  const image = nativeImage.createFromBuffer(Buffer.from(bgra.buffer, bgra.byteOffset, bgra.byteLength), {
-    width: raster.width,
-    height: raster.height,
-  });
+  const image = nativeImage.createFromBuffer(
+    Buffer.from(bgra.buffer, bgra.byteOffset, bgra.byteLength),
+    {
+      width: raster.width,
+      height: raster.height,
+    }
+  );
   if (image.isEmpty()) return null;
   return image.toPNG();
 }
@@ -548,7 +557,10 @@ function createOverlay(): void {
       overlay.webContents.send("mischief:interactive", interactive);
       overlay.webContents.send("mischief:muted", !config.soundEnabled);
       if (companion) {
-        overlay.webContents.send("mischief:sprite", { url: companion.sprite, meta: companion.meta });
+        overlay.webContents.send("mischief:sprite", {
+          url: companion.sprite,
+          meta: companion.meta,
+        });
       }
     }
   });
@@ -562,7 +574,7 @@ function createOverlay(): void {
     overlay = null;
   });
 
-   events.emit("CharacterSpawned", { characterId: companion?.packId ?? "builtin" });
+  events.emit("CharacterSpawned", { characterId: companion?.packId ?? "builtin" });
 }
 
 // --- Reaction bubbles -------------------------------------------------------
@@ -1023,32 +1035,32 @@ function createApplicationMenu(): void {
 
 // --- IPC --------------------------------------------------------------------
 
-  ipcMain.on("mischief:pet", (_event, payload: { x: number; y: number } | undefined) => {
-    const now = Date.now();
-    lastPetAt = now;
-    if (lastPetComboAt !== null && now - lastPetComboAt <= 5000) {
-      petComboCount++;
-    } else {
-      petComboCount = 1;
-    }
-    lastPetComboAt = now;
-    events.emit("CharacterClicked", {
-      characterId: companion?.packId ?? "builtin",
-      x: payload?.x ?? 0,
-      y: payload?.y ?? 0,
-    });
-    if (!interactive) return;
-    emitReaction({ kind: "pet" });
-    if (petComboCount >= 2) {
-      emitReaction({ kind: "combo-streak", comboCount: petComboCount });
-    }
-    const selection = behaviorEngine.tick(collectSignals());
-    if (selection && selection.behavior !== currentBehavior) {
-      currentBehavior = selection.behavior;
-      applyBehaviorChange(selection.behavior);
-      sendBehavior(selection.behavior);
-    }
+ipcMain.on("mischief:pet", (_event, payload: { x: number; y: number } | undefined) => {
+  const now = Date.now();
+  lastPetAt = now;
+  if (lastPetComboAt !== null && now - lastPetComboAt <= 5000) {
+    petComboCount++;
+  } else {
+    petComboCount = 1;
+  }
+  lastPetComboAt = now;
+  events.emit("CharacterClicked", {
+    characterId: companion?.packId ?? "builtin",
+    x: payload?.x ?? 0,
+    y: payload?.y ?? 0,
   });
+  if (!interactive) return;
+  emitReaction({ kind: "pet" });
+  if (petComboCount >= 2) {
+    emitReaction({ kind: "combo-streak", comboCount: petComboCount });
+  }
+  const selection = behaviorEngine.tick(collectSignals());
+  if (selection && selection.behavior !== currentBehavior) {
+    currentBehavior = selection.behavior;
+    applyBehaviorChange(selection.behavior);
+    sendBehavior(selection.behavior);
+  }
+});
 
 // Pixel-aware click-through: the overlay reports when the cursor is over an
 // opaque pixel of the character, and only then does the window capture input.
@@ -1240,7 +1252,6 @@ app.whenReady().then(() => {
   // Activity burst detection (proxy for fast typing / heavy mouse use).
   activityPollInterval = setInterval(detectActivityBurst, 1000);
 
-
   // Clipboard change detection.
   lastClipboardText = clipboard.readText();
   // ISS-010: store handle so we can clear it on quit
@@ -1318,16 +1329,59 @@ app.on("before-quit", () => {
   emitReaction({ kind: "app-shutdown" });
   // ISS-010: clear all stored interval handles
   for (const [ref, setter] of [
-    [activityPollInterval, (v: NodeJS.Timeout | null) => { activityPollInterval = v; }],
-    [clipboardInterval,    (v: NodeJS.Timeout | null) => { clipboardInterval = v; }],
-    [ideSaveInterval,      (v: NodeJS.Timeout | null) => { ideSaveInterval = v; }],
-    [gitCommitInterval,    (v: NodeJS.Timeout | null) => { gitCommitInterval = v; }],
-    [buildGreenInterval,   (v: NodeJS.Timeout | null) => { buildGreenInterval = v; }],
-    [hydrateInterval,      (v: NodeJS.Timeout | null) => { hydrateInterval = v; }],
-    [postureInterval,      (v: NodeJS.Timeout | null) => { postureInterval = v; }],
-    [randomMischiefInterval, (v: NodeJS.Timeout | null) => { randomMischiefInterval = v; }],
+    [
+      activityPollInterval,
+      (v: NodeJS.Timeout | null) => {
+        activityPollInterval = v;
+      },
+    ],
+    [
+      clipboardInterval,
+      (v: NodeJS.Timeout | null) => {
+        clipboardInterval = v;
+      },
+    ],
+    [
+      ideSaveInterval,
+      (v: NodeJS.Timeout | null) => {
+        ideSaveInterval = v;
+      },
+    ],
+    [
+      gitCommitInterval,
+      (v: NodeJS.Timeout | null) => {
+        gitCommitInterval = v;
+      },
+    ],
+    [
+      buildGreenInterval,
+      (v: NodeJS.Timeout | null) => {
+        buildGreenInterval = v;
+      },
+    ],
+    [
+      hydrateInterval,
+      (v: NodeJS.Timeout | null) => {
+        hydrateInterval = v;
+      },
+    ],
+    [
+      postureInterval,
+      (v: NodeJS.Timeout | null) => {
+        postureInterval = v;
+      },
+    ],
+    [
+      randomMischiefInterval,
+      (v: NodeJS.Timeout | null) => {
+        randomMischiefInterval = v;
+      },
+    ],
   ] as Array<[NodeJS.Timeout | null, (v: NodeJS.Timeout | null) => void]>) {
-    if (ref) { clearInterval(ref); setter(null); }
+    if (ref) {
+      clearInterval(ref);
+      setter(null);
+    }
   }
 });
 

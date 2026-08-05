@@ -23,15 +23,7 @@ export interface CompanionMeta {
   face: FaceAnchor | null;
 }
 
-export type MotionState =
-  | "idle"
-  | "walk"
-  | "run"
-  | "happy"
-  | "sad"
-  | "sleep"
-  | "yawn"
-  | "pet";
+export type MotionState = "idle" | "walk" | "run" | "happy" | "sad" | "sleep" | "yawn" | "pet";
 
 export interface MotionFrame {
   dx: number;
@@ -96,7 +88,7 @@ function periodic(t: number, hz: number, phase = 0): number {
 }
 
 function cycle(t: number, seconds: number): number {
-  return ((t % seconds) + seconds) % seconds / seconds;
+  return (((t % seconds) + seconds) % seconds) / seconds;
 }
 
 /**

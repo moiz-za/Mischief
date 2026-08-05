@@ -105,7 +105,9 @@ function finish(ok) {
   }
   const fatal = FATAL_PATTERNS.filter((pattern) => pattern.test(output));
   if (fatal.length > 0) {
-    console.error(`[boot-smoke] FAIL: fatal error patterns matched: ${fatal.map(String).join(", ")}`);
+    console.error(
+      `[boot-smoke] FAIL: fatal error patterns matched: ${fatal.map(String).join(", ")}`
+    );
     dumpTail();
     process.exit(1);
   }

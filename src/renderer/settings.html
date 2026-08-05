@@ -68,14 +68,41 @@
         animation: twinkle 3.2s ease-in-out infinite;
         pointer-events: none;
       }
-      .sparkle.s1 { top: 12%; left: 8%; animation-delay: 0s; }
-      .sparkle.s2 { top: 22%; right: 10%; animation-delay: 1.1s; font-size: 8px; }
-      .sparkle.s3 { bottom: 26%; left: 14%; animation-delay: 2s; font-size: 9px; }
-      .sparkle.s4 { top: 8%; right: 34%; animation-delay: 0.6s; font-size: 6px; color: var(--mint); }
+      .sparkle.s1 {
+        top: 12%;
+        left: 8%;
+        animation-delay: 0s;
+      }
+      .sparkle.s2 {
+        top: 22%;
+        right: 10%;
+        animation-delay: 1.1s;
+        font-size: 8px;
+      }
+      .sparkle.s3 {
+        bottom: 26%;
+        left: 14%;
+        animation-delay: 2s;
+        font-size: 9px;
+      }
+      .sparkle.s4 {
+        top: 8%;
+        right: 34%;
+        animation-delay: 0.6s;
+        font-size: 6px;
+        color: var(--mint);
+      }
 
       @keyframes twinkle {
-        0%, 100% { opacity: 0.15; transform: scale(0.8); }
-        50% { opacity: 0.9; transform: scale(1.15); }
+        0%,
+        100% {
+          opacity: 0.15;
+          transform: scale(0.8);
+        }
+        50% {
+          opacity: 0.9;
+          transform: scale(1.15);
+        }
       }
 
       /* Header */
@@ -94,11 +121,18 @@
       }
 
       @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-4px); }
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-4px);
+        }
       }
 
-      .title-wrap { min-width: 0; }
+      .title-wrap {
+        min-width: 0;
+      }
 
       h1 {
         margin: 0;
@@ -167,7 +201,9 @@
         box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.15);
       }
 
-      .hero .meta { min-width: 0; }
+      .hero .meta {
+        min-width: 0;
+      }
 
       .hero .name {
         font-size: 14px;
@@ -204,9 +240,14 @@
         border-radius: 999px;
         padding: 5px 12px;
         cursor: pointer;
-        transition: background 0.15s ease, color 0.15s ease;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
       }
-      .remove:hover { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
+      .remove:hover {
+        background: rgba(244, 63, 94, 0.15);
+        color: #fb7185;
+      }
 
       /* Companion tiles */
       .tiles {
@@ -246,7 +287,10 @@
         background: var(--surface);
         cursor: pointer;
         overflow: hidden;
-        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease,
+          border-color 0.15s ease;
       }
 
       .tile img {
@@ -255,11 +299,16 @@
         object-fit: contain;
       }
 
-      .tile:hover { transform: translateY(-2px); border-color: rgba(110, 231, 183, 0.5); }
+      .tile:hover {
+        transform: translateY(-2px);
+        border-color: rgba(110, 231, 183, 0.5);
+      }
 
       .tile.selected {
         border-color: transparent;
-        box-shadow: 0 0 0 2px var(--emerald), 0 0 18px rgba(52, 211, 153, 0.35);
+        box-shadow:
+          0 0 0 2px var(--emerald),
+          0 0 18px rgba(52, 211, 153, 0.35);
       }
 
       .tile.selected::after {
@@ -287,7 +336,10 @@
         color: var(--mint);
         font-size: 20px;
         font-weight: 400;
-        transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        transition:
+          background 0.15s ease,
+          border-color 0.15s ease,
+          box-shadow 0.15s ease;
       }
       .tile.add:hover {
         border-color: var(--emerald);
@@ -321,10 +373,16 @@
         border: 1px solid var(--border);
         border-radius: 12px;
         cursor: pointer;
-        transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+        transition:
+          color 0.15s ease,
+          border-color 0.15s ease,
+          background 0.15s ease;
       }
 
-      .chip:hover { color: var(--foreground); border-color: rgba(110, 231, 183, 0.5); }
+      .chip:hover {
+        color: var(--foreground);
+        border-color: rgba(110, 231, 183, 0.5);
+      }
 
       .chip.selected {
         color: #052e16;
@@ -353,10 +411,14 @@
         border: 0;
         border-radius: 9px;
         cursor: pointer;
-        transition: color 0.15s ease, background 0.15s ease;
+        transition:
+          color 0.15s ease,
+          background 0.15s ease;
       }
 
-      .seg:hover { color: var(--foreground); }
+      .seg:hover {
+        color: var(--foreground);
+      }
 
       .seg.selected {
         color: #052e16;
@@ -382,12 +444,29 @@
         border: 1px solid var(--border);
       }
 
-      .toggle-row .t-label { font-size: 13px; font-weight: 600; }
-      .toggle-row .t-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+      .toggle-row .t-label {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .toggle-row .t-desc {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
 
-      .switch { position: relative; display: inline-block; width: 42px; height: 24px; flex: 0 0 auto; }
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 42px;
+        height: 24px;
+        flex: 0 0 auto;
+      }
 
-      .switch input { opacity: 0; width: 0; height: 0; }
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
 
       .track {
         position: absolute;
@@ -409,8 +488,13 @@
         transition: transform 0.2s ease;
       }
 
-      .switch input:checked + .track { background: var(--grad); }
-      .switch input:checked + .track::before { transform: translateX(18px); background: #ffffff; }
+      .switch input:checked + .track {
+        background: var(--grad);
+      }
+      .switch input:checked + .track::before {
+        transform: translateX(18px);
+        background: #ffffff;
+      }
 
       /* Footer */
       .actions {
@@ -431,17 +515,23 @@
         border: 1px solid var(--border);
         background: var(--surface-strong);
         color: var(--foreground);
-        transition: transform 0.1s ease, filter 0.15s ease;
+        transition:
+          transform 0.1s ease,
+          filter 0.15s ease;
       }
 
-      button.btn:active { transform: scale(0.97); }
+      button.btn:active {
+        transform: scale(0.97);
+      }
 
       button.btn.primary {
         border: 0;
         background: var(--grad);
         color: #052e16;
       }
-      button.btn.primary:hover { filter: brightness(1.08); }
+      button.btn.primary:hover {
+        filter: brightness(1.08);
+      }
     </style>
   </head>
   <body>
@@ -459,14 +549,29 @@
             <stop offset="100%" stop-color="#06B6D4" />
           </linearGradient>
         </defs>
-        <path d="M 120 185 C 100 110, 155 90, 185 150 C 165 170, 140 185, 120 185 Z" fill="url(#mascot-grad)" />
-        <path d="M 392 185 C 412 110, 357 90, 327 150 C 347 170, 372 185, 392 185 Z" fill="url(#mascot-grad)" />
-        <path d="M 112 250 C 112 165, 400 165, 400 250 C 400 350, 350 395, 256 395 C 162 395, 112 350, 112 250 Z" fill="url(#mascot-grad)" />
+        <path
+          d="M 120 185 C 100 110, 155 90, 185 150 C 165 170, 140 185, 120 185 Z"
+          fill="url(#mascot-grad)"
+        />
+        <path
+          d="M 392 185 C 412 110, 357 90, 327 150 C 347 170, 372 185, 392 185 Z"
+          fill="url(#mascot-grad)"
+        />
+        <path
+          d="M 112 250 C 112 165, 400 165, 400 250 C 400 350, 350 395, 256 395 C 162 395, 112 350, 112 250 Z"
+          fill="url(#mascot-grad)"
+        />
         <ellipse cx="195" cy="265" rx="28" ry="34" fill="#0F172A" />
         <circle cx="205" cy="253" r="10" fill="#FFFFFF" />
         <ellipse cx="317" cy="265" rx="28" ry="34" fill="#0F172A" />
         <circle cx="327" cy="253" r="10" fill="#FFFFFF" />
-        <path d="M 220 315 Q 256 350 292 315" fill="none" stroke="#0F172A" stroke-width="7" stroke-linecap="round" />
+        <path
+          d="M 220 315 Q 256 350 292 315"
+          fill="none"
+          stroke="#0F172A"
+          stroke-width="7"
+          stroke-linecap="round"
+        />
         <path d="M 242 331 Q 256 344 270 331 Z" fill="#F43F5E" />
       </svg>
       <div class="title-wrap">
@@ -490,8 +595,8 @@
       </div>
       <div class="tiles" id="tiles"></div>
       <p class="hint" id="companionHint">
-        Any image can join the desktop — a pet, a person, a logo, a plant, anything. Cut it out of its
-        background and it moves on its own.
+        Any image can join the desktop — a pet, a person, a logo, a plant, anything. Cut it out of
+        its background and it moves on its own.
       </p>
     </section>
 
@@ -503,7 +608,9 @@
     <section>
       <div class="section-label">Mischief intensity</div>
       <div class="segments" id="intensity"></div>
-      <p class="hint">Silent keeps to itself. Chaos is still safe — always reversible, always just playful.</p>
+      <p class="hint">
+        Silent keeps to itself. Chaos is still safe — always reversible, always just playful.
+      </p>
     </section>
 
     <section>
@@ -514,21 +621,27 @@
             <div class="t-label">Interactive mode</div>
             <div class="t-desc">Click the companion to pet it</div>
           </div>
-          <span class="switch"><input type="checkbox" id="interactive" /><span class="track"></span></span>
+          <span class="switch"
+            ><input type="checkbox" id="interactive" /><span class="track"></span
+          ></span>
         </label>
         <label class="toggle-row">
           <div>
             <div class="t-label">Follow cursor</div>
             <div class="t-desc">Trail along when you're idle</div>
           </div>
-          <span class="switch"><input type="checkbox" id="followCursor" /><span class="track"></span></span>
+          <span class="switch"
+            ><input type="checkbox" id="followCursor" /><span class="track"></span
+          ></span>
         </label>
         <label class="toggle-row">
           <div>
             <div class="t-label">Sound effects</div>
             <div class="t-desc">Play gentle chimes when petted or reacting</div>
           </div>
-          <span class="switch"><input type="checkbox" id="soundEnabled" /><span class="track"></span></span>
+          <span class="switch"
+            ><input type="checkbox" id="soundEnabled" /><span class="track"></span
+          ></span>
         </label>
       </div>
     </section>
@@ -582,7 +695,8 @@
           preview.removeAttribute("src");
           preview.style.visibility = "hidden";
         }
-        $("removeCompanion").style.display = companion && companion.custom ? "inline-block" : "none";
+        $("removeCompanion").style.display =
+          companion && companion.custom ? "inline-block" : "none";
       }
 
       function renderTiles() {
@@ -678,9 +792,15 @@
         const validSelected = companions.some((c) => c.packId === selectedId);
         if (!validSelected) {
           selectedId =
-            companions.find((c) => c.packId === config.companionId)?.packId ?? companions[0]?.packId ?? "";
+            companions.find((c) => c.packId === config.companionId)?.packId ??
+            companions[0]?.packId ??
+            "";
         }
-        $("version").textContent = "v" + (new URLSearchParams(location.search).get("version") ?? window.mischief.version ?? "0.3.1");
+        $("version").textContent =
+          "v" +
+          (new URLSearchParams(location.search).get("version") ??
+            window.mischief.version ??
+            "0.3.1");
         renderTiles();
         updateHero();
         renderPersonality(config.personality);

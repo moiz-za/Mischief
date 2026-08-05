@@ -269,13 +269,13 @@ A: They're single-app pets. Mischief is a **platform**: a small runtime that loa
 
 ## 📋 Changelog
 
-| Version    | Date    | Summary                                                                                                                                                                                             |
-| ---------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Version    | Date    | Summary                                                                                                                                                                                                                                                           |
+| ---------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **v0.3.0** | 2026-08 | Sound notifications (Web Audio API synthesized chimes/purrs, toggle in Settings), 14 character-specific speech pools with unique dialogue, combo streak tracking, developer triggers (IDE save, git commit, build green), wellness reminders (hydration, posture) |
-| **v0.2.0** | 2026-08 | Settings window (intensity/personality selectors, interactive & cursor-follow toggles, persisted), config manager with fallbacks, GIF moment capture to `~/Pictures/Mischief/`, PNG snapshot        |
-| **v0.1.3** | 2026-08 | Personality engine: event bus, intensity levels (Silent→Chaos), weighted behaviors with cooldowns, sleeps/yawns/wanders, interactive pet mode, PNG moment capture                                   |
-| **v0.1.2** | 2026-08 | Strict manifest validation (security boundary), Experience Pack loader, typed localization (`en-US`/`es`/`de`/`fr`), themes, runtime loads the Whiskers companion pack, 4 example packs + 2 plugins |
-| **v0.1.0** | 2026-08 | Initial foundation — Electron + TypeScript skeleton, overlay companion + tray, pure tested domain layer, CI (typecheck/lint/build/test/audit), gitleaks secret scanning, packaging config           |
+| **v0.2.0** | 2026-08 | Settings window (intensity/personality selectors, interactive & cursor-follow toggles, persisted), config manager with fallbacks, GIF moment capture to `~/Pictures/Mischief/`, PNG snapshot                                                                      |
+| **v0.1.3** | 2026-08 | Personality engine: event bus, intensity levels (Silent→Chaos), weighted behaviors with cooldowns, sleeps/yawns/wanders, interactive pet mode, PNG moment capture                                                                                                 |
+| **v0.1.2** | 2026-08 | Strict manifest validation (security boundary), Experience Pack loader, typed localization (`en-US`/`es`/`de`/`fr`), themes, runtime loads the Whiskers companion pack, 4 example packs + 2 plugins                                                               |
+| **v0.1.0** | 2026-08 | Initial foundation — Electron + TypeScript skeleton, overlay companion + tray, pure tested domain layer, CI (typecheck/lint/build/test/audit), gitleaks secret scanning, packaging config                                                                         |
 
 See full [CHANGELOG.md](./CHANGELOG.md) for details.
 

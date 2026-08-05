@@ -17,8 +17,10 @@ describe("audio.renderer.js", () => {
       state: "running",
     }));
 
-    (global as unknown as Record<string, unknown>).AudioContext = mockAudioContext as unknown as typeof AudioContext;
-    (global as unknown as Record<string, unknown>).webkitAudioContext = mockAudioContext as unknown as typeof AudioContext;
+    (global as unknown as Record<string, unknown>).AudioContext =
+      mockAudioContext as unknown as typeof AudioContext;
+    (global as unknown as Record<string, unknown>).webkitAudioContext =
+      mockAudioContext as unknown as typeof AudioContext;
 
     vi.spyOn(console, "error").mockImplementation(() => {});
   });

@@ -56,9 +56,7 @@ describe("displayNameFromFile", () => {
 
 describe("storedImageName", () => {
   it("names the stored sprite after the pack id with the source extension", () => {
-    expect(storedImageName("my-best-friend", "My Best Friend.jpg")).toBe(
-      "my-best-friend.jpg"
-    );
+    expect(storedImageName("my-best-friend", "My Best Friend.jpg")).toBe("my-best-friend.jpg");
     expect(storedImageName("buddy", "buddy.png")).toBe("buddy.png");
   });
 });

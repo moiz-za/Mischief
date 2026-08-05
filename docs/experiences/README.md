@@ -22,7 +22,7 @@ Experience Packs contain no executable code and cannot access the filesystem or 
 
 2. Edit `manifest.json` and `characters/*.json` (see the references below).
 3. Drop in a sprite at `images/…` and reference it from `assets` (SVG, PNG,
-   JPG/JPEG, WebP, or animated GIF — see *Supported sprite formats* below).
+   JPG/JPEG, WebP, or animated GIF — see _Supported sprite formats_ below).
 4. Validate against the same strict loader the runtime uses:
 
    ```bash
@@ -56,23 +56,23 @@ file must **exist on disk** — the loader verifies this at load time.
 Fields are validated strictly: **unknown fields are rejected**, ids must be
 kebab-case, and versions must be semantic version strings.
 
-| Field                   | Type     | Rule                                                                                       |
-| :---------------------- | :------- | :----------------------------------------------------------------------------------------- |
-| `id`                    | string   | Required, kebab-case (`my-companion`)                                                      |
-| `name`                  | string   | Required, non-empty                                                                        |
-| `version`               | string   | Required, semver (`0.1.0`)                                                                 |
-| `category`              | string   | Required, non-empty (e.g. `animals`, `fantasy`, `tech`)                                    |
-| `author`                | string   | Required, non-empty                                                                        |
-| `license`               | string   | Required, non-empty (e.g. `MIT`)                                                           |
-| `description`           | string   | Required, non-empty                                                                        |
-| `tags`                  | string[] | Required (may be empty)                                                                    |
-| `minimumRuntimeVersion` | string   | Required, semver                                                                           |
+| Field                   | Type     | Rule                                                                                                                                 |
+| :---------------------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                    | string   | Required, kebab-case (`my-companion`)                                                                                                |
+| `name`                  | string   | Required, non-empty                                                                                                                  |
+| `version`               | string   | Required, semver (`0.1.0`)                                                                                                           |
+| `category`              | string   | Required, non-empty (e.g. `animals`, `fantasy`, `tech`)                                                                              |
+| `author`                | string   | Required, non-empty                                                                                                                  |
+| `license`               | string   | Required, non-empty (e.g. `MIT`)                                                                                                     |
+| `description`           | string   | Required, non-empty                                                                                                                  |
+| `tags`                  | string[] | Required (may be empty)                                                                                                              |
+| `minimumRuntimeVersion` | string   | Required, semver                                                                                                                     |
 | `assets`                | string[] | Required. Paths must exist; the first supported sprite is used as the overlay sprite (SVG/PNG/JPG/JPEG/WebP/GIF, safe relative path) |
-| `characters`            | string[] | Required. Paths must exist and contain valid character manifests                           |
-| `animations`            | string[] | Required (may be empty)                                                                    |
-| `audio`                 | string[] | Required (may be empty)                                                                    |
-| `configuration`         | object   | Required. Free-form per-pack settings (e.g. `idleTimeoutMs`)                               |
-| `compatibility`         | object   | Required. `{ "platforms": ["windows","macos","linux"] }` — non-empty subset of those three |
+| `characters`            | string[] | Required. Paths must exist and contain valid character manifests                                                                     |
+| `animations`            | string[] | Required (may be empty)                                                                                                              |
+| `audio`                 | string[] | Required (may be empty)                                                                                                              |
+| `configuration`         | object   | Required. Free-form per-pack settings (e.g. `idleTimeoutMs`)                                                                         |
+| `compatibility`         | object   | Required. `{ "platforms": ["windows","macos","linux"] }` — non-empty subset of those three                                           |
 
 ### Supported sprite formats
 

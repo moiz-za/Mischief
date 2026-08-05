@@ -29,9 +29,7 @@ describe("sanitizeConfig", () => {
   });
 
   it("accepts any non-empty companionId (installed packs resolve at runtime)", () => {
-    expect(sanitizeConfig({ companionId: "robot-companion" }).companionId).toBe(
-      "robot-companion"
-    );
+    expect(sanitizeConfig({ companionId: "robot-companion" }).companionId).toBe("robot-companion");
   });
 
   it("accepts all intensity and personality values", () => {

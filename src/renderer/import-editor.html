@@ -144,8 +144,8 @@
   <body>
     <h1>Import Companion</h1>
     <p class="subtitle">
-      Cut your subject out of its background (or keep it as-is), then pin where its
-      expressions should appear. All processing stays on this device.
+      Cut your subject out of its background (or keep it as-is), then pin where its expressions
+      should appear. All processing stays on this device.
     </p>
 
     <div class="canvas-wrap"><canvas id="preview" width="512" height="512"></canvas></div>
@@ -155,8 +155,8 @@
 
     <div class="row">
       <span class="check"
-        ><input type="checkbox" id="cutToggle" checked /> Cut out the background — the subject
-        moves freely on its own</span
+        ><input type="checkbox" id="cutToggle" checked /> Cut out the background — the subject moves
+        freely on its own</span
       >
     </div>
 
@@ -210,7 +210,13 @@
       let currentImage = null;
 
       function modeFromId(id) {
-        return id === "modeRemove" ? "remove" : id === "modeKeep" ? "keep" : id === "modePin" ? "pin" : "none";
+        return id === "modeRemove"
+          ? "remove"
+          : id === "modeKeep"
+            ? "keep"
+            : id === "modePin"
+              ? "pin"
+              : "none";
       }
 
       function setMode(mode) {
@@ -303,7 +309,8 @@
         const percent = Math.round(state.ratio * 100);
         $("ratioStatus").textContent = `Kept ${percent}% of the image.`;
         if (!state.cut) {
-          $("statusHint").textContent = "Background removal is off — the original image will be used.";
+          $("statusHint").textContent =
+            "Background removal is off — the original image will be used.";
         } else if (state.ratio < 0.08) {
           $("statusHint").textContent =
             "Cutout removed almost everything; the original image will be kept as-is.";

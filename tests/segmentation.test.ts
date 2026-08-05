@@ -22,7 +22,11 @@ function solid(width: number, height: number, r: number, g: number, b: number, a
   return { width, height, rgba };
 }
 
-function pixel(raster: Raster, x: number, y: number): { r: number; g: number; b: number; a: number } {
+function pixel(
+  raster: Raster,
+  x: number,
+  y: number
+): { r: number; g: number; b: number; a: number } {
   const i = (y * raster.width + x) * 4;
   return { r: raster.rgba[i], g: raster.rgba[i + 1], b: raster.rgba[i + 2], a: raster.rgba[i + 3] };
 }
@@ -131,11 +135,7 @@ describe("cutout", () => {
 
 describe("connectedComponents", () => {
   it("finds two disconnected foreground islands", () => {
-    const components = connectedComponents(
-      10,
-      10,
-      (i) => (i === 5 * 10 + 5) || (i === 8 * 10 + 8)
-    );
+    const components = connectedComponents(10, 10, (i) => i === 5 * 10 + 5 || i === 8 * 10 + 8);
     expect(components).toHaveLength(2);
     expect(components[0].indices).toHaveLength(1);
     expect(components[1].indices).toHaveLength(1);
@@ -194,14 +194,22 @@ describe("applyTrim", () => {
 
 describe("alpha format helpers", () => {
   it("premultiplies straight alpha", () => {
-    const raster: Raster = { width: 1, height: 1, rgba: new Uint8ClampedArray([200, 100, 50, 128]) };
+    const raster: Raster = {
+      width: 1,
+      height: 1,
+      rgba: new Uint8ClampedArray([200, 100, 50, 128]),
+    };
     const pre = premultiplyCopy(raster);
     expect(pre.rgba[0]).toBe(Math.round(200 * 0.5));
     expect(pre.rgba[3]).toBe(128);
   });
 
   it("leaves opaque and fully transparent pixels untouched", () => {
-    const raster: Raster = { width: 2, height: 1, rgba: new Uint8ClampedArray([1, 2, 3, 255, 9, 9, 9, 0]) };
+    const raster: Raster = {
+      width: 2,
+      height: 1,
+      rgba: new Uint8ClampedArray([1, 2, 3, 255, 9, 9, 9, 0]),
+    };
     const pre = premultiplyCopy(raster);
     expect(pre.rgba[0]).toBe(1);
     expect(pre.rgba[7]).toBe(0);

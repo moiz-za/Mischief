@@ -25,7 +25,10 @@
     osc.type = type || "sine";
     osc.frequency.setValueAtTime(freq, c.currentTime);
     gain.gain.setValueAtTime(volume || 0.15, c.currentTime + (attack || 0.01));
-    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + (attack || 0.01) + (decay || duration));
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      c.currentTime + (attack || 0.01) + (decay || duration)
+    );
     osc.connect(gain);
     gain.connect(c.destination);
     osc.start(c.currentTime + (attack || 0.01));
