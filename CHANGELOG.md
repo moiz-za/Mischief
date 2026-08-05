@@ -2,6 +2,12 @@
 
 All notable changes to Mischief are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/).
 
+## [0.4.1] - 2026-08-05
+
+### Changed
+
+- **CI tooling** — bumped all GitHub Actions to their Node 24 majors (`actions/checkout@v5`, `actions/setup-node@v5`, `actions/upload-artifact@v5`, `actions/download-artifact@v5`, `gitleaks/gitleaks-action@v3`, `softprops/action-gh-release@v3`) and fixed the invalid `overwrite` → `overwrite_files` input in the release checksums job. No app behavior changes.
+
 ## [0.4.0] - 2026-08-05
 
 ### Added
