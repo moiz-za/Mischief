@@ -317,6 +317,57 @@ export const POOLS: Record<string, Reaction[]> = {
   ],
 };
 
+// Personality-flavored generic pools for companions that don't ship their own
+// speech (e.g. user-imported custom companions). `pickReaction` uses these
+// before the neutral generic pool so a custom companion still talks in a voice
+// that matches its personality setting.
+export const PERSONALITY_POOLS: Record<string, Record<string, string[]>> = {
+  friendly: {
+    pet: ["Happy friend vibes!", "You're the best!", "Awww, thanks!", "Pal approved!"],
+    "mischief-random": ["A friendly trick!", "Boop!", "Just a happy nudge~"],
+    "idle-long": [
+      "Waiting for my buddy~",
+      "You're my favorite person.",
+      "Thinking happy thoughts.",
+    ],
+    "activity-burst": ["Whoa, superstar!", "So busy! Impressive!", "You go, friend!"],
+    "clipboard-copy": ["Nice grab!", "Copied, pal!", "Good one!"],
+    screenshot: ["Smile, friend!", "Great shot!"],
+  },
+  curious: {
+    pet: ["Ooh, what's this?", "Fascinating!", "Tell me more!", "Intriguing~"],
+    "mischief-random": ["What does this button do?", "Ooh, shiny!", "Let me inspect this~"],
+    "idle-long": ["Wondering what's next...", "So many questions!", "Investigating..."],
+    "activity-burst": ["Wow, so much happening!", "Interesting!", "What's going on?"],
+    "clipboard-copy": ["Ooh, what did I copy?", "Curious data!", "Let me peek~"],
+    screenshot: ["Ooh, a moment to study!", "How curious!"],
+  },
+  lazy: {
+    pet: ["Mmm, ok...", "A pet. Fine.", "Comfy... don't stop.", "Yawn... nice."],
+    "mischief-random": ["A lazy prank... or a nap.", "Eh, I'll just lounge.", "Maybe later."],
+    "idle-long": ["Napping... zzz.", "So comfy here.", "I could stay forever."],
+    "activity-burst": ["So much work... for you.", "I'll rest after this.", "Phew, busy day."],
+    "clipboard-copy": ["Copied... lazily.", "Fine, I saved it.", "Meh, whatever."],
+    screenshot: ["Smile... eventually.", "Slow capture~"],
+  },
+  energetic: {
+    pet: ["YES! More!", "Let's go!", "Energy!", "Woohoo!"],
+    "mischief-random": ["Zoomies!", "Let's bounce!", "Wheee!"],
+    "idle-long": ["Rest? No way!", "Let's do something!", "I'm ready to go!"],
+    "activity-burst": ["WOW so fast!", "I can keep up!", "This is amazing!"],
+    "clipboard-copy": ["Zap! Copied fast!", "Boom, done!", "Speedy grab!"],
+    screenshot: ["Say cheese! Action!", "Wahoo, captured!"],
+  },
+  mischievous: {
+    pet: ["Hehe, that tickles!", "A sneaky pet!", "You fell for it!", "Ooh, fun!"],
+    "mischief-random": ["I did a thing~", "Hehe, watch this!", "Oops, did I do that?"],
+    "idle-long": ["Plotting mischief...", "Scheming something.", "What can I prank?"],
+    "activity-burst": ["Hehe, so fast!", "I'm causing trouble!", "Tee hee!"],
+    "clipboard-copy": ["Sneaky copy!", "I stole that~", "Hehe, got it!"],
+    screenshot: ["Say cheese... not!", "Caught red-handed!"],
+  },
+};
+
 // --- Anti-repeat picking ---------------------------------------------------
 // Each pool keeps a recent-history of previously shown indexes so the same
 // line (or the same few lines) doesn't pop up over and over. We only reuse a
@@ -381,6 +432,20 @@ function pickReaction(signal: Signal, character?: CharacterManifest | null): Rea
     );
     recordRecent(`char:${character.id}:${poolKey}`, idx);
     return { text: (charSpeech as string[])[idx], durationMs: 3000 };
+  }
+
+  // Personality-flavored fallback: companions without their own speech (e.g.
+  // custom imports) still talk in a voice matching their personality.
+  const personalityKey = character?.personality ?? "";
+  const personalityPool = PERSONALITY_POOLS[personalityKey]?.[poolKey];
+  if (personalityPool && personalityPool.length > 0) {
+    const idx = pickVariantIndex(
+      `personality:${personalityKey}:${poolKey}`,
+      personalityPool.length,
+      Math.random
+    );
+    recordRecent(`personality:${personalityKey}:${poolKey}`, idx);
+    return { text: personalityPool[idx], durationMs: 3000 };
   }
 
   const pool = POOLS[poolKey];

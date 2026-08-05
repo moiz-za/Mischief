@@ -1,7 +1,13 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it, beforeEach } from "vitest";
-import { POOLS, pickReaction, reset, type Signal } from "../src/domain/reactions";
+import {
+  POOLS,
+  PERSONALITY_POOLS,
+  pickReaction,
+  reset,
+  type Signal,
+} from "../src/domain/reactions";
 import type { CharacterManifest } from "../src/domain/manifest";
 
 const ZEN_CHARACTER: CharacterManifest = {
@@ -227,5 +233,63 @@ describe("speech species-safety", () => {
       }
     }
     expect(checked).toBeGreaterThanOrEqual(19);
+  });
+});
+
+describe("personality speech", () => {
+  beforeEach(() => reset());
+
+  it("all five personalities have pools for the common signals", () => {
+    for (const personality of ["friendly", "curious", "lazy", "energetic", "mischievous"]) {
+      for (const signal of ["pet", "mischief-random", "idle-long", "activity-burst"]) {
+        const pool = PERSONALITY_POOLS[personality]?.[signal];
+        expect(pool, `${personality}/${signal} should have a pool`).toBeTruthy();
+        expect(pool!.length).toBeGreaterThanOrEqual(2);
+      }
+    }
+  });
+
+  it("custom companion without speech gets personality-flavored lines", () => {
+    const character: CharacterManifest = {
+      id: "my-pet",
+      species: "custom-imported",
+      displayName: "My Pet",
+      author: "You",
+      animations: {
+        idle: { fps: 8, duration: 1200, loop: true },
+      },
+      behavior: { weightedDecision: true, idleWeight: 1 },
+      personality: "mischievous",
+      voice: { enabled: false },
+      sounds: [],
+      // no `speech` — falls back to personality pools
+    };
+    for (let i = 0; i < 20; i++) {
+      const result = pickReaction({ kind: "pet" }, character);
+      expect(PERSONALITY_POOLS.mischievous.pet).toContain(result.text);
+    }
+  });
+
+  it("built-in companion speech still takes precedence over personality pools", () => {
+    const result = pickReaction({ kind: "pet" }, ZEN_CHARACTER);
+    expect(ZEN_CHARACTER.speech!.pet!.includes(result.text)).toBe(true);
+  });
+
+  it("unknown personality falls back to the neutral generic pool", () => {
+    const character: CharacterManifest = {
+      id: "odd",
+      species: "custom-imported",
+      displayName: "Odd",
+      author: "You",
+      animations: {
+        idle: { fps: 8, duration: 1200, loop: true },
+      },
+      behavior: { weightedDecision: true, idleWeight: 1 },
+      personality: "nonexistent",
+      voice: { enabled: false },
+      sounds: [],
+    };
+    const result = pickReaction({ kind: "pet" }, character);
+    expect(POOLS.pet.map((r) => r.text)).toContain(result.text);
   });
 });

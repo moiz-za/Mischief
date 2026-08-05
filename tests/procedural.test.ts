@@ -97,10 +97,13 @@ describe("motionFor", () => {
     expect(Math.abs(end.dx)).toBeLessThan(2);
   });
 
-  it("hide crouches low and drops opacity", () => {
+  it("hide ducks down behind the bottom edge instead of squashing flat", () => {
     const frame = motionFor("hide", 0.2, META);
-    expect(frame.motion.scaleY).toBeLessThan(0.7);
-    expect(frame.motion.opacity).toBeLessThan(0.9);
+    // Slides the sprite down to tuck out of view (large positive dy), keeps it
+    // mostly opaque, and only mildly compresses — not a flat squash + fade.
+    expect(frame.motion.dy).toBeGreaterThan(25);
+    expect(frame.motion.scaleY).toBeGreaterThan(0.7);
+    expect(frame.motion.opacity).toBeGreaterThan(0.8);
   });
 
   it("sneak keeps a low crouched profile", () => {

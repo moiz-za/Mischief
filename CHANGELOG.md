@@ -6,6 +6,7 @@ All notable changes to Mischief are documented here. Format follows [Keep a Chan
 
 ### Added
 
+- **Personality-flavored speech for custom companions** — user-imported companions (which have no species-themed dialogue) now talk in a voice that matches their personality setting (friendly / curious / lazy / energetic / mischievous), covering petting, mischief, idle, activity, clipboard, and screenshot moments.
 - **Anti-repeat bubbles** — the reaction picker never shows the same line twice in a row and prefers lines not recently shown, so the companion's chatter stops feeling repetitive.
 - **Behavior-aware bubbles** — the companion now comments on what it is doing: hiding, peeking, spinning, pouncing, sneaking, dancing, and sleeping each have their own lines (generic + per-companion themed).
 - **More reaction signals** — `deep-focus` (fires after ~10 minutes of continuous focus) and `weekend` (weekend greeting) add new moments of chatter.
@@ -16,8 +17,9 @@ All notable changes to Mischief are documented here. Format follows [Keep a Chan
 
 ### Fixed
 
+- **Spin/roll no longer clipped by a box** — the spin animation now rotates about the sprite's center (fixed a CSS specificity bug where `#creature`'s bottom-origin rule overrode the spin override) and scales to 0.75 so its corners stay inside the overlay window. Applied to both the sprite CSS path and the cutout canvas path.
+- **Hide animation redesigned** — hiding now ducks the companion down behind the window's bottom edge instead of squashing it flat and fading it, so every companion (including custom imports) hides naturally.
 - **Quick menu / settings now stay in sync** — toggling "Follow cursor" or "Interactive (pet me)" in either the tray quick menu or the Settings window updates the other surface and persists immediately.
-- **Spin/roll no longer clipped by a box** — the spin animation rotates about the sprite's center and scales slightly so its corners stay inside the overlay window instead of being cut off by the transparent frame (fixed for both sprite and cutout canvas paths).
 - **Speech bubbles now match the companion** — the generic fallback pools were neutralized (removed a stray "My paws can't keep up!" that a ghost could say), and each companion provides its own species-appropriate dialogue via the existing `speech` manifest field.
 - **Speech bubble now follows the companion** while it wanders, sneaks, pounces, or hides — previously the bubble lagged behind any movement.
 - **Bubble spam** — the reaction-bubble throttle now scales with intensity (Silent ~60s → Chaos ~15s) instead of a flat 5s; random mischief fires only ~every 4 minutes; user-initiated pet reactions keep a short 1.5s anti-spam guard so pets still respond instantly.
