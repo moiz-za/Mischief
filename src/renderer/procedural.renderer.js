@@ -109,8 +109,8 @@
           dx: 0,
           dy: 0,
           rotate: rot,
-          scaleX: 1,
-          scaleY: 1,
+          scaleX: 0.8,
+          scaleY: 0.8,
           opacity: 1,
         };
         break;

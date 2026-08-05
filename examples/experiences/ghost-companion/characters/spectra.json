@@ -69,6 +69,12 @@
     "power-resume": ["I returned from the void!", "Back among the living!"],
     "unlock-screen": ["Fresh souls to haunt! I mean, greet.", "Ahh, human space again."],
     "hydrate": ["Drink up or you'll be a spirit too soon!", "Hydrate, living one."],
-    "on-ac": ["Charging my ectoplasm!", "Power surge. Very spooky."]
+    "on-ac": ["Charging my ectoplasm!", "Power surge. Very spooky."],
+    "behavior:hide": ["Oooh, I've vanished!", "Can't find the ghost~", "Hiding in the walls!"],
+    "behavior:peek": ["Boo! Peek!", "I see you through the void~"],
+    "behavior:spin": ["Spinning through the veil!", "Oooh, dizzy spirits!"],
+    "behavior:pounce": ["Boo! Gotcha!", "A ghostly pounce!"],
+    "behavior:sneak": ["Sneaking through walls...", "Silent as a spirit."],
+    "behavior:dance": ["A ghostly jig!", "Dancing with the dead~"]
   }
 }

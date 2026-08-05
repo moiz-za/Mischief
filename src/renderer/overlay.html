@@ -8,7 +8,6 @@
     />
     <title>Mischief</title>
     <script src="procedural.renderer.js"></script>
-    <script src="audio.renderer.js"></script>
     <style>
       html,
       body {
@@ -85,6 +84,9 @@
 
       .anim-spin {
         animation: spin 0.9s linear infinite;
+        /* Rotate about the center and shrink so the corners never exceed the
+           window bounds and get clipped by the transparent frame. */
+        transform-origin: 50% 50%;
       }
 
       .anim-dance {
@@ -196,10 +198,10 @@
 
       @keyframes spin {
         from {
-          transform: rotate(0deg);
+          transform: rotate(0deg) scale(0.8);
         }
         to {
-          transform: rotate(360deg);
+          transform: rotate(360deg) scale(0.8);
         }
       }
 
@@ -457,7 +459,8 @@
         ctx.clearRect(0, 0, W, H);
         ctx.globalAlpha = frame.motion.opacity;
         ctx.save();
-        ctx.translate(W / 2 + frame.motion.dx, H * 0.92 + frame.motion.dy);
+        const pivotY = motionState === "spin" ? H * 0.5 : H * 0.92;
+        ctx.translate(W / 2 + frame.motion.dx, pivotY + frame.motion.dy);
         ctx.rotate((frame.motion.rotate * Math.PI) / 180);
         ctx.scale(frame.motion.scaleX, frame.motion.scaleY);
         const iw = motionImage.naturalWidth;

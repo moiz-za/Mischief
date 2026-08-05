@@ -88,6 +88,12 @@
     "power-resume": ["Reignited! Back online!", "My glow is restored!"],
     "unlock-screen": ["Light! Fresh space to shine!", "Welcome back to the brightness!"],
     "hydrate": ["Stay hydrated, stay luminous!", "Water keeps the glow!"],
-    "on-ac": ["Charging with sunlight energy!", "A glowing power-up!"]
+    "on-ac": ["Charging with sunlight energy!", "A glowing power-up!"],
+    "behavior:hide": ["Glowing dimly... hiding!", "Soft as embers."],
+    "behavior:peek": ["Peek-a-boo! Glow!", "A spark of me!"],
+    "behavior:spin": ["A spinning light!", "Ember swirl!"],
+    "behavior:pounce": ["Pounce of light!", "A warm leap!"],
+    "behavior:sneak": ["Gliding silently...", "A quiet shimmer."],
+    "behavior:dance": ["A radiant dance!", "Dancing in light!"]
   }
 }

@@ -71,6 +71,12 @@
     "power-resume": ["Power on! Blip!", "Back to the game world!"],
     "unlock-screen": ["New area unlocked!", "Welcome to the next level!"],
     "hydrate": ["Hydrate for extra lives!", "Drink water, stay alive!"],
-    "on-ac": ["Charging! Extra lives! +1!", "Power up! Beep!"]
+    "on-ac": ["Charging! Extra lives! +1!", "Power up! Beep!"],
+    "behavior:hide": ["Blip! Hidden!", "Sprite vanished!"],
+    "behavior:peek": ["Peek-a-boop!", "8-bit surprise!"],
+    "behavior:spin": ["Sprite spin! Beep!", "Pixel twirl!"],
+    "behavior:pounce": ["Pounce! Blip blip!", "8-bit leap!"],
+    "behavior:sneak": ["Stealth sprite...", "Sneaking in pixels."],
+    "behavior:dance": ["8-bit dance party!", "Boogie blip!"]
   }
 }

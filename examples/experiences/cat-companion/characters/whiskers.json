@@ -70,6 +70,12 @@
     "power-resume": ["Awake. Where's the food?", "Recharged and ready to pounce."],
     "unlock-screen": ["A new room! I must explore it!", "Open door! Let me in!"],
     "hydrate": ["Drink water, then feed me.", "Hydrate, hooman."],
-    "on-ac": ["Warm spot. Staying here forever.", "Charging up for chaos."]
+    "on-ac": ["Warm spot. Staying here forever.", "Charging up for chaos."],
+    "behavior:hide": ["Hidden! Purrfectly.", "Shh, I'm hunting."],
+    "behavior:peek": ["Peek-a-boo! Meow!", "Found you!"],
+    "behavior:spin": ["Chasing my tail!", "Meow, dizzy!"],
+    "behavior:pounce": ["Pounce! Got the mouse!", "Cat leap!"],
+    "behavior:sneak": ["Sneaking... meow.", "Silent paws."],
+    "behavior:dance": ["Cat dance! Meow!", "Twirl and purr!"]
   }
 }

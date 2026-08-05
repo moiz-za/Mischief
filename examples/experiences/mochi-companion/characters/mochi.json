@@ -92,6 +92,12 @@
     "power-resume": ["Awake... reluctantly. Hello.", "Recharged for the next flop."],
     "unlock-screen": ["Oh. It's you. Good.", "The couch calls again."],
     "hydrate": ["Hydrate. Then nap. Ideal.", "Water is important. Drink up."],
-    "on-ac": ["Warm charger. Best nap spot.", "Charging up for sleep."]
+    "on-ac": ["Warm charger. Best nap spot.", "Charging up for sleep."],
+    "behavior:hide": ["Too comfy to hide... but ok.", "Hidden. Yawn."],
+    "behavior:peek": ["Peek... meh, hi.", "A slow peek."],
+    "behavior:spin": ["A lazy spin...", "Wheee... slowly."],
+    "behavior:pounce": ["Pounce... maybe.", "A soft flop."],
+    "behavior:sneak": ["Sneaking... napping actually.", "Stealth nap."],
+    "behavior:dance": ["A gentle waddle dance!", "Boogie... lazily."]
   }
 }

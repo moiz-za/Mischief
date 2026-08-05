@@ -92,6 +92,12 @@
     "power-resume": ["Reappeared! Hello, mortal!", "Back from the spirit realm!"],
     "unlock-screen": ["Fresh space for tricks!", "Your screen is my stage!"],
     "hydrate": ["Hydrate or wither, mortal!", "Water is your magic potion."],
-    "on-ac": ["Charging my ecto-wand!", "Arcane energy! Lovely."]
+    "on-ac": ["Charging my ecto-wand!", "Arcane energy! Lovely."],
+    "behavior:hide": ["Away with the spirits!", "Poof! Gone!"],
+    "behavior:peek": ["Peek-a-boo... BOO!", "I spy a mortal!"],
+    "behavior:spin": ["Magic spin! Ta-da!", "Spinning my spell!"],
+    "behavior:pounce": ["A magic pounce! Boo!", "Gotcha, mortal!"],
+    "behavior:sneak": ["Sneaky magic afoot...", "Tiptoe... poof."],
+    "behavior:dance": ["A spellbinding dance!", "Boogie with the ghosts!"]
   }
 }

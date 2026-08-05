@@ -92,6 +92,12 @@
     "power-resume": ["Sprouted back! Hello!", "Recharged with sunshine!"],
     "unlock-screen": ["Fresh sunlight to grow in!", "Welcome back, bright friend!"],
     "hydrate": ["Water me! I mean, drink!", "Hydrate to keep blooming!"],
-    "on-ac": ["Charging like morning sun!", "Photosynthesizing power!"]
+    "on-ac": ["Charging like morning sun!", "Photosynthesizing power!"],
+    "behavior:hide": ["Hiding among leaves!", "A leafy secret."],
+    "behavior:peek": ["Peek-a-bloom!", "Sunflower peek!"],
+    "behavior:spin": ["Blooming spin! Whee!", "Petal twirl!"],
+    "behavior:pounce": ["Pounce! Seed scatter!", "A flowery leap!"],
+    "behavior:sneak": ["Sneaking... swish.", "A quiet sway."],
+    "behavior:dance": ["A blooming dance!", "Swaying boogie!"]
   }
 }

@@ -88,6 +88,12 @@
     "power-resume": ["Awake... slowly. Hello.", "Back from the lazy dimension."],
     "unlock-screen": ["Oh. A new pond to explore.", "Welcome back, friend."],
     "hydrate": ["Stay hydrated, stay floaty!", "Water is life, truly."],
-    "on-ac": ["Charging up for a nap.", "Warm power. Lovely."]
+    "on-ac": ["Charging up for a nap.", "Warm power. Lovely."],
+    "behavior:hide": ["Hidden... in the bath.", "Camouflage: lazy."],
+    "behavior:peek": ["Peek... slowly.", "Capybara peek."],
+    "behavior:spin": ["A very slow spin...", "Turning... slowly."],
+    "behavior:pounce": ["Pounce... eventually.", "A relaxed leap."],
+    "behavior:sneak": ["Sneaking... very slowly.", "Stealth waddle."],
+    "behavior:dance": ["A calm boogie...", "Capybara dance."]
   }
 }

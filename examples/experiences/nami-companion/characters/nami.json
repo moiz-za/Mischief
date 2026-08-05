@@ -92,6 +92,12 @@
     "power-resume": ["Back afloat! Hello!", "Recharged from the stream."],
     "unlock-screen": ["A new river to explore!", "Welcome back, swim friend!"],
     "hydrate": ["Stay hydrated, swimmer!", "Water is my world. Drink!"],
-    "on-ac": ["Charging like a sun-warm rock!", "Toasty power. Lovely!"]
+    "on-ac": ["Charging like a sun-warm rock!", "Toasty power. Lovely!"],
+    "behavior:hide": ["Hiding under a rock!", "Splash! Gone!"],
+    "behavior:peek": ["Peek-a-boo! Splash!", "Otter peek!"],
+    "behavior:spin": ["Spinning like a current!", "Wheee, splish splash!"],
+    "behavior:pounce": ["Otter pounce!", "Slippery leap!"],
+    "behavior:sneak": ["Sneaking through the waves...", "Silent swim."],
+    "behavior:dance": ["Otter boogie! Splash!", "Dance on the rocks!"]
   }
 }

@@ -88,6 +88,12 @@
     "power-resume": ["Back online! Tail wagging!", "Reconnected to the grid!"],
     "unlock-screen": ["A fresh network to sniff!", "Welcome back to the datastream!"],
     "hydrate": ["Hydrate or buffer underflow!", "Sip water, fox friend."],
-    "on-ac": ["Charging the lithium tail!", "Power cell full. Time to play!"]
+    "on-ac": ["Charging the lithium tail!", "Power cell full. Time to play!"],
+    "behavior:hide": ["Hiding in the datastream!", "Cyber-stealth!"],
+    "behavior:peek": ["Peek-a-boo! Yip!", "Found you in the network!"],
+    "behavior:spin": ["Foxy spin! Zip!", "Digital whirl!"],
+    "behavior:pounce": ["Cyber pounce! Yip!", "Zap! Gotcha!"],
+    "behavior:sneak": ["Sneaking through fiber...", "Stealth yip."],
+    "behavior:dance": ["Foxy dance! Zip zip!", "Cyber boogie!"]
   }
 }

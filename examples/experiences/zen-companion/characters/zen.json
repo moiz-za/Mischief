@@ -88,6 +88,12 @@
     "power-resume": ["Awake... gently. Hello.", "Recharged, now at peace."],
     "unlock-screen": ["Ah. You're here. Balance restored.", "A familiar, calm space."],
     "hydrate": ["Sip water, like tea.", "Stay centered. Hydrate."],
-    "on-ac": ["Charging by the warm window.", "Stillness, powered."]
+    "on-ac": ["Charging by the warm window.", "Stillness, powered."],
+    "behavior:hide": ["Hidden. At peace.", "Serene stealth."],
+    "behavior:peek": ["Peek... calm.", "A gentle peek."],
+    "behavior:spin": ["A slow, centered spin...", "Balanced twirl."],
+    "behavior:pounce": ["A calm pounce...", "Mindful leap."],
+    "behavior:sneak": ["Sneaking... quietly.", "Stealth bamboo."],
+    "behavior:dance": ["A gentle dance...", "Peaceful boogie."]
   }
 }

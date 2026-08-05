@@ -88,6 +88,12 @@
     "power-resume": ["Back on the ice! Waddle!", "Recharged and slide-ready!"],
     "unlock-screen": ["Fresh snow to explore!", "Welcome back to the colony!"],
     "hydrate": ["Sip water, and stay cool!", "Hydrated like a penguin."],
-    "on-ac": ["Charging in the cold!", "Power stored like a snowball."]
+    "on-ac": ["Charging in the cold!", "Power stored like a snowball."],
+    "behavior:hide": ["Hiding on the ice floe!", "Slipped away!"],
+    "behavior:peek": ["Peek-a-boo! Squawk!", "Penguin peek!"],
+    "behavior:spin": ["Ice spin! Whee!", "Spinning like a top!"],
+    "behavior:pounce": ["Pounce! Splash!", "Waddle leap!"],
+    "behavior:sneak": ["Sneaking... waddle waddle.", "Stealth slide."],
+    "behavior:dance": ["Penguin boogie!", "Ice dance!"]
   }
 }

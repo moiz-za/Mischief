@@ -69,6 +69,12 @@
     "power-resume": ["REBOOTED! Here I come!", "Power surge! Wheee!"],
     "unlock-screen": ["Fresh circuit! Charge in!", "Welcome back to the grid!"],
     "hydrate": ["Cool down! Drink water!", "Avoid overheating, friend!"],
-    "on-ac": ["Charging to full bolt!", "Juice up! Sparks incoming!"]
+    "on-ac": ["Charging to full bolt!", "Juice up! Sparks incoming!"],
+    "behavior:hide": ["Hidden! Sparks off!", "Shhh, too quiet!"],
+    "behavior:peek": ["Peek-a-boo! Zap!", "Surprise!"],
+    "behavior:spin": ["MAXIMUM SPIN!", "Wheee! Sparks fly!"],
+    "behavior:pounce": ["Pounce! Zap zap!", "Hyper leap!"],
+    "behavior:sneak": ["Sneaking... beep beep.", "Stealth... barely."],
+    "behavior:dance": ["DANCE PARTY!", "Boogie! Sparks everywhere!"]
   }
 }

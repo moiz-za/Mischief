@@ -55,6 +55,12 @@
     "power-resume": ["Re-blooped! Hello!", "Back from the goo dimension!"],
     "unlock-screen": ["Fresh space to splat!", "Welcome back, friend!"],
     "hydrate": ["Hydrate to stay squishy!", "Water keeps the wobble!"],
-    "on-ac": ["Charging my gel core!", "Powering the wobble."]
+    "on-ac": ["Charging my gel core!", "Powering the wobble."],
+    "behavior:hide": ["Bloop! Hidden!", "Squishy stealth!"],
+    "behavior:peek": ["Bloop peek!", "Squish surprise!"],
+    "behavior:spin": ["Jiggly spin! Bloop!", "Wobbly twirl!"],
+    "behavior:pounce": ["Bloop pounce! Splat!", "Squishy leap!"],
+    "behavior:sneak": ["Sneaking... bloop bloop.", "Gooey stealth."],
+    "behavior:dance": ["Bloop boogie!", "Wobbly dance!"]
   }
 }

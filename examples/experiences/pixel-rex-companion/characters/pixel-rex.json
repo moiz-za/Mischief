@@ -92,6 +92,12 @@
     "power-resume": ["Back from extinction! Rawr!", "Recharged like a comet."],
     "unlock-screen": ["New terrain! Stomp time!", "Welcome back to the jungle!"],
     "hydrate": ["Hydrate or go extinct!", "Water for the dino-fueled you!"],
-    "on-ac": ["Charging like volcanic power!", "Energy: jurassic."]
+    "on-ac": ["Charging like volcanic power!", "Energy: jurassic."],
+    "behavior:hide": ["Rawr... hidden!", "Dino stealth!"],
+    "behavior:peek": ["Peek-a-rawr!", "Dino peek!"],
+    "behavior:spin": ["Dino spin! Stomp!", "Rawr whee!"],
+    "behavior:pounce": ["Dino pounce! Chomp!", "Raptor leap!"],
+    "behavior:sneak": ["Sneaking... stomp stomp.", "Silent... rawr."],
+    "behavior:dance": ["Dino dance! Chomp!", "Stomping boogie!"]
   }
 }

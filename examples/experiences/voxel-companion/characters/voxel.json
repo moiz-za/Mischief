@@ -92,6 +92,12 @@
     "power-resume": ["Recomputed! Back online!", "Render restarted!"],
     "unlock-screen": ["Fresh scene loaded!", "Welcome to the blocky world!"],
     "hydrate": ["Hydrate or get low-poly!", "Water keeps you high-res!"],
-    "on-ac": ["Charging the render core!", "Shading complete. Full power!"]
+    "on-ac": ["Charging the render core!", "Shading complete. Full power!"],
+    "behavior:hide": ["Voxelized into hiding!", "Stealth mesh engaged."],
+    "behavior:peek": ["Peek-a-boop!", "Scanning... found you!"],
+    "behavior:spin": ["Rendering spin! Whee!", "Voxel vortex!"],
+    "behavior:pounce": ["Pounce.exe! Boop!", "Tackle mode."],
+    "behavior:sneak": ["Sneaking... low poly.", "Stealth mesh active."],
+    "behavior:dance": ["Voxel boogie!", "Dance render in progress!"]
   }
 }

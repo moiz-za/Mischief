@@ -88,6 +88,12 @@
     "power-resume": ["My star's reignited!", "Back from the void!"],
     "unlock-screen": ["Fresh sky to explore!", "The cosmos welcomes you back."],
     "hydrate": ["Hydrate, star-pilot!", "Water fuels the flight!"],
-    "on-ac": ["Charging with solar flare energy!", "Power surge! Nice."]
+    "on-ac": ["Charging with solar flare energy!", "Power surge! Nice."],
+    "behavior:hide": ["Hidden among the stars!", "Nebula stealth!"],
+    "behavior:peek": ["Peek-a-starlight!", "A cosmic peek!"],
+    "behavior:spin": ["Star spin! Whee!", "Cosmic twirl!"],
+    "behavior:pounce": ["Pounce! Star spark!", "A celestial leap!"],
+    "behavior:sneak": ["Sneaking through galaxies...", "Star sneaks."],
+    "behavior:dance": ["Star dance! Shimmer!", "Cosmic boogie!"]
   }
 }

@@ -88,6 +88,12 @@
     "power-resume": ["Rebooting... online again!", "Power restored. Boop!"],
     "unlock-screen": ["Sensors active. Hello, human!", "Welcome back to the grid!"],
     "hydrate": ["Humans require water. Hydrate!", "Fluid level low. Drink up!"],
-    "on-ac": ["Charging to full capacity!", "Juice levels rising. Nice."]
+    "on-ac": ["Charging to full capacity!", "Juice levels rising. Nice."],
+    "behavior:hide": ["Hiding... beep. Gone!", "Stealth mode activated!"],
+    "behavior:peek": ["Peek-a-boop!", "System scan... found you!"],
+    "behavior:spin": ["Spinning servos! Beep!", "Gyro calibration!"],
+    "behavior:pounce": ["Boop-pounce!", "Target acquired. Pounce!"],
+    "behavior:sneak": ["Sneaking... low power.", "Covert ops mode."],
+    "behavior:dance": ["Robot dance! Beep boop!", "Boogie.exe running!"]
   }
 }

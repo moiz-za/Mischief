@@ -92,6 +92,12 @@
     "power-resume": ["Uncurled and ready!", "Back from a tiny nap!"],
     "unlock-screen": ["Ooh, a new garden!", "Fresh sniffing grounds!"],
     "hydrate": ["Sip some water, friend!", "Stay fresh like a dew drop."],
-    "on-ac": ["Warm nest energy! Perfect.", "Charging my tiny paws."]
+    "on-ac": ["Warm nest energy! Perfect.", "Charging my tiny paws."],
+    "behavior:hide": ["Hidden in the leaves!", "Hedgehog stealth!"],
+    "behavior:peek": ["Peek-a-squeak!", "Hedgehog peek!"],
+    "behavior:spin": ["Tiny spin! Whee!", "Quill twirl!"],
+    "behavior:pounce": ["Pounce! Squeak!", "A tiny leap!"],
+    "behavior:sneak": ["Sneaking... scurry.", "Quiet quills."],
+    "behavior:dance": ["Hedgehog boogie!", "Tiny dance!"]
   }
 }

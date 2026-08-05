@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
-import { POOLS, pickReaction, type Signal } from "../src/domain/reactions";
+import { describe, expect, it, beforeEach } from "vitest";
+import { POOLS, pickReaction, reset, type Signal } from "../src/domain/reactions";
 import type { CharacterManifest } from "../src/domain/manifest";
 
 const ZEN_CHARACTER: CharacterManifest = {
@@ -37,6 +37,8 @@ const ZEN_CHARACTER: CharacterManifest = {
 };
 
 describe("pickReaction", () => {
+  beforeEach(() => reset());
+
   it("falls back to global pool when no character is provided", () => {
     const result = pickReaction({ kind: "pet" });
     expect(result.text).toBeTruthy();
@@ -104,6 +106,59 @@ describe("pickReaction", () => {
 
   it("returns a valid reaction from global pool for signals with no character speech", () => {
     const result = pickReaction({ kind: "clipboard-copy" }, ZEN_CHARACTER);
+    expect(result.text).toBeTruthy();
+    expect(result.durationMs).toBeGreaterThan(0);
+  });
+
+  it("anti-repeat: consecutive picks never repeat the same line", () => {
+    let prev = "";
+    for (let i = 0; i < 60; i++) {
+      const result = pickReaction({ kind: "pet" });
+      expect(result.text).not.toBe(prev);
+      prev = result.text;
+    }
+  });
+
+  it("anti-repeat: no consecutive repeat holds over many picks", () => {
+    // The strongest guarantee the picker makes: never the same line twice in a
+    // row, even across many picks and pool cycles.
+    let prev = "";
+    for (let i = 0; i < 100; i++) {
+      const result = pickReaction({ kind: "pet" });
+      expect(result.text).not.toBe(prev);
+      prev = result.text;
+    }
+  });
+
+  it("anti-repeat: character speech also avoids immediate repeats", () => {
+    let prev = "";
+    for (let i = 0; i < 30; i++) {
+      const result = pickReaction({ kind: "pet" }, ZEN_CHARACTER);
+      expect(result.text).not.toBe(prev);
+      prev = result.text;
+    }
+  });
+
+  it("behavior signal resolves to a behavior-specific pool", () => {
+    const result = pickReaction({ kind: "behavior", behavior: "spin" });
+    expect(result.text).toBeTruthy();
+    const spinPool = POOLS["behavior:spin"].map((r) => r.text);
+    expect(spinPool).toContain(result.text);
+  });
+
+  it("behavior signal falls back to empty for unknown behavior", () => {
+    const result = pickReaction({ kind: "behavior", behavior: "dance" });
+    expect(result.text).toBeTruthy();
+  });
+
+  it("deep-focus signal has non-empty reactions", () => {
+    const result = pickReaction({ kind: "deep-focus" });
+    expect(result.text).toBeTruthy();
+    expect(result.durationMs).toBeGreaterThan(0);
+  });
+
+  it("weekend signal has non-empty reactions", () => {
+    const result = pickReaction({ kind: "weekend" });
     expect(result.text).toBeTruthy();
     expect(result.durationMs).toBeGreaterThan(0);
   });
