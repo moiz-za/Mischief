@@ -2,6 +2,12 @@
 
 All notable changes to Mischief are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Removed
+
+- **Unused localization & theme scaffolding** — removed the `i18n` module + locale data and the `theme` module + theme samples, which were never wired into the app (only covered by their own tests). Also removed one-off marketing/icon generator scripts. The repo now contains only app, CI, release, and security tooling.
+
 ## [0.4.1] - 2026-08-05
 
 ### Changed

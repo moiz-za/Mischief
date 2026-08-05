@@ -5,7 +5,6 @@ import {
   validateCharacterManifest,
   validateExperienceManifest,
   validatePluginManifest,
-  validateThemeManifest,
 } from "../src/domain/manifest";
 
 const FIXTURES = path.join(__dirname, "fixtures");
@@ -67,23 +66,6 @@ describe("validateExperienceManifest", () => {
   it("rejects a non-kebab-case id", () => {
     const manifest = readJson("valid-character-pack.json") as Record<string, unknown>;
     expect(validateExperienceManifest({ ...manifest, id: "Not Kebab!" }).ok).toBe(false);
-  });
-});
-
-describe("validateThemeManifest", () => {
-  it("accepts the delivered theme samples", () => {
-    const samples = path.join(__dirname, "..", "samples", "themes");
-    for (const file of fs.readdirSync(samples).filter((f) => f.endsWith(".json"))) {
-      const theme = JSON.parse(fs.readFileSync(path.join(samples, file), "utf8"));
-      expect(validateThemeManifest(theme).ok, file).toBe(true);
-    }
-  });
-
-  it("rejects a theme with a non-string token", () => {
-    expect(
-      validateThemeManifest({ id: "bad-theme", name: "Bad", author: "x", tokens: { accent: 123 } })
-        .ok
-    ).toBe(false);
   });
 });
 
