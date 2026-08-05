@@ -14,11 +14,11 @@ jobs:
     name: Security gate (audit + secrets)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -30,7 +30,7 @@ jobs:
         run: npm audit --omit=dev
 
       - name: Secret scan (gitleaks)
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: .gitleaks.toml
@@ -40,9 +40,9 @@ jobs:
     runs-on: macos-latest
     needs: security
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -62,13 +62,13 @@ jobs:
         run: node scripts/generate-checksums.js
 
       - name: Upload per-platform checksums
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: checksums-mac
           path: release/SHA256SUMS
 
       - name: Attach to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             release/*.dmg
@@ -80,9 +80,9 @@ jobs:
     runs-on: windows-latest
     needs: security
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -102,13 +102,13 @@ jobs:
         run: node scripts/generate-checksums.js
 
       - name: Upload per-platform checksums
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: checksums-windows
           path: release/SHA256SUMS
 
       - name: Attach to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             release/*.exe
@@ -120,9 +120,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: security
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -142,13 +142,13 @@ jobs:
         run: node scripts/generate-checksums.js
 
       - name: Upload per-platform checksums
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: checksums-linux
           path: release/SHA256SUMS
 
       - name: Attach to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             release/*.AppImage
@@ -160,7 +160,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [mac, windows, linux]
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           path: checksums
           pattern: checksums-*
@@ -171,7 +171,7 @@ jobs:
           echo "Attaching checksums for $(wc -l < SHA256SUMS) file(s)."
 
       - name: Attach SHA256SUMS
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: SHA256SUMS
-          overwrite: true
+          overwrite_files: true
