@@ -8,7 +8,7 @@
 
 ### by [Moiz Solutions](https://tools.moiz.solutions)
 
-[![Version](https://img.shields.io/badge/version-0.4.0-blue?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.4.1-blue?style=flat-square)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/moiz-za/Mischief?style=flat-square&label=stars)](https://github.com/moiz-za/Mischief)
 [![Last Commit](https://img.shields.io/github/last-commit/moiz-za/Mischief?style=flat-square)](https://github.com/moiz-za/Mischief/commits/main)
@@ -273,6 +273,7 @@ A: They're single-app pets. Mischief is a **platform**: a small runtime that loa
 
 | Version    | Date    | Summary                                                                                                                                                                                                                                                                    |
 | ---------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v0.4.1** | 2026-08 | Patch release: CI tooling updated to Node 24 GitHub Action majors (no app changes)                                                                                                                                                                                         |
 | **v0.4.0** | 2026-08 | Playful behaviors (hide/peek/spin/pounce/sneak/dance) for every companion, always-on drag-to-move, anti-repeat + companion-specific + personality-matched speech, behavior-aware chatter, follow-cursor & quick-menu sync, spin/hide animation fixes, removed sound chimes |
 | **v0.3.1** | 2026-08 | Companion switcher, raster sprite support (PNG/JPG/WebP/GIF), custom companions, import any image with background cutout + expression anchor, import pipeline internals, settings UI layout + repository-boundary fixes                                                    |
 | **v0.3.0** | 2026-08 | 14 character-specific speech pools with unique dialogue, combo streak tracking, developer triggers (IDE save, git commit, build green), wellness reminders (hydration, posture)                                                                                            |
