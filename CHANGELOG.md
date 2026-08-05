@@ -6,17 +6,29 @@ All notable changes to Mischief are documented here. Format follows [Keep a Chan
 
 ### Added
 
+- **Anti-repeat bubbles** — the reaction picker never shows the same line twice in a row and prefers lines not recently shown, so the companion's chatter stops feeling repetitive.
+- **Behavior-aware bubbles** — the companion now comments on what it is doing: hiding, peeking, spinning, pouncing, sneaking, dancing, and sleeping each have their own lines (generic + per-companion themed).
+- **More reaction signals** — `deep-focus` (fires after ~10 minutes of continuous focus) and `weekend` (weekend greeting) add new moments of chatter.
+- **Bigger speech pools** — every generic reaction pool now holds 5–10+ varied lines instead of 3–4, so variety lasts far longer.
+- **Companion-specific speech** — every built-in companion now speaks in a voice that matches its species. Each of the 19 companion packs carries its own themed `speech` pools (ghost → "_Boo!_", robot → "_Beep boop~_", cat → "_Purrr~_", etc.) for 15 reaction signals (pet, mischief, idle, activity, clipboard, screenshot, time-of-day, dev triggers, power, hydration) plus 6 behavior pools.
 - **Playful behaviors** — six system-level behaviors (hide, peek, spin, pounce, sneak, dance) now run for every companion, including imported custom images. Each has its own intensity gate and long cooldown; `hide` parks the companion in a screen corner, `pounce` is a fast dart, `sneak` a slow creep. Cutout companions get matching procedural canvas motion (`spin`/`pounce`/`sneak`/`dance`/`hide`/`peek` states) and sprites get matching CSS animations.
 - **Always-on drag-to-move** — grab the companion at any time (interactive mode or not) and drag it anywhere; native image ghost-drag is suppressed, a 5px threshold separates click-to-pet from drag-to-move, and follow/wander pause while dragging.
 
 ### Fixed
 
+- **Quick menu / settings now stay in sync** — toggling "Follow cursor" or "Interactive (pet me)" in either the tray quick menu or the Settings window updates the other surface and persists immediately.
+- **Spin/roll no longer clipped by a box** — the spin animation rotates about the sprite's center and scales slightly so its corners stay inside the overlay window instead of being cut off by the transparent frame (fixed for both sprite and cutout canvas paths).
+- **Speech bubbles now match the companion** — the generic fallback pools were neutralized (removed a stray "My paws can't keep up!" that a ghost could say), and each companion provides its own species-appropriate dialogue via the existing `speech` manifest field.
 - **Speech bubble now follows the companion** while it wanders, sneaks, pounces, or hides — previously the bubble lagged behind any movement.
 - **Bubble spam** — the reaction-bubble throttle now scales with intensity (Silent ~60s → Chaos ~15s) instead of a flat 5s; random mischief fires only ~every 4 minutes; user-initiated pet reactions keep a short 1.5s anti-spam guard so pets still respond instantly.
 - **Funnier bubbles** — expanded `reactions.ts` pools with playful, mischievous one-liners for clipboard, activity, screenshots, random mischief, and dev triggers.
 - **Follow-cursor no longer covers the pointer** — the companion places itself on the side of the cursor with the most room (held a full size + gap away) instead of centering on it, so the cursor and the UI underneath stay clickable.
 
 - **Code health** — removed unused `bh` destructure in `positionBubble()` and updated stale `v0.2.0` version fallbacks to `0.3.1` in `settings.html` and `preload.ts`.
+
+### Removed
+
+- **Sound notification chimes** — removed the synthesized Web Audio notification sounds (plus their `mischief:play-sound`/`mischief:muted` IPC, preload hooks, `soundEnabled` setting, and the "Sound effects" toggle). Companion chatter is now purely visual.
 
 ## [0.3.1] - 2026-08-04
 

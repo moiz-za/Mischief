@@ -4,13 +4,41 @@
   "displayName": "Pocus",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 8, "duration": 1200, "loop": true },
-    "walk": { "fps": 10, "duration": 600, "loop": true },
-    "run": { "fps": 14, "duration": 350, "loop": true },
-    "happy": { "fps": 10, "duration": 500, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 8,
+      "duration": 1200,
+      "loop": true
+    },
+    "walk": {
+      "fps": 10,
+      "duration": 600,
+      "loop": true
+    },
+    "run": {
+      "fps": 14,
+      "duration": 350,
+      "loop": true
+    },
+    "happy": {
+      "fps": 10,
+      "duration": 500,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,54 @@
     "sleepWeight": 0.03
   },
   "personality": "mischievous",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["Peek-a-boo! 👻", "Spooky soft floating~", "Boo!"],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "Eek! A living touch!",
+      "I felt that through the veil!",
+      "Boo-ty pats! Hehe.",
+      "You can feel me?! Wow."
+    ],
+    "mischief-random": [
+      "Abracadabra! Your mouse is gone!",
+      "A poltergeist prank!",
+      "I swapped two of your files!",
+      "Hocus pocus, watch this!"
+    ],
+    "idle-long": [
+      "Practicing levitation...",
+      "Floating on pure mischief.",
+      "Plotting my next trick."
+    ],
+    "activity-burst": [
+      "Whoa! So fast I got dizzy!",
+      "Spinning through the walls!",
+      "Too quick for a ghost!",
+      "Chaos speed! Woohoo!"
+    ],
+    "clipboard-copy": [
+      "A copy... vanished and returned!",
+      "I made your clipboard levitate!",
+      "Presto: stolen data!"
+    ],
+    "screenshot": ["Say cheese... POOF!", "Captured! But can you see me?"],
+    "time-morning": ["Rise, sleepy mortal!", "Morning magic begins!"],
+    "time-night": ["The perfect time for tricks!", "Night magic. Excellent."],
+    "ide-save": ["Saved... now, vanish! Kidding.", "A spell locks the file."],
+    "git-commit": ["A magic commit! Fwoosh!", "Pushed with a wand tap!"],
+    "build-green": ["Green! My spell worked!", "No curses in this build!"],
+    "power-resume": ["Reappeared! Hello, mortal!", "Back from the spirit realm!"],
+    "unlock-screen": ["Fresh space for tricks!", "Your screen is my stage!"],
+    "hydrate": ["Hydrate or wither, mortal!", "Water is your magic potion."],
+    "on-ac": ["Charging my ecto-wand!", "Arcane energy! Lovely."],
+    "behavior:hide": ["Away with the spirits!", "Poof! Gone!"],
+    "behavior:peek": ["Peek-a-boo... BOO!", "I spy a mortal!"],
+    "behavior:spin": ["Magic spin! Ta-da!", "Spinning my spell!"],
+    "behavior:pounce": ["A magic pounce! Boo!", "Gotcha, mortal!"],
+    "behavior:sneak": ["Sneaky magic afoot...", "Tiptoe... poof."],
+    "behavior:dance": ["A spellbinding dance!", "Boogie with the ghosts!"]
   }
 }

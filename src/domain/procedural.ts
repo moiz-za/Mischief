@@ -163,14 +163,16 @@ export function motionFor(state: MotionState, t: number, _meta: CompanionMeta): 
       pushHearts(effects, t);
       break;
     case "spin": {
-      // Full 360° rotations, two per second.
+      // Full 360° rotations, two per second. Keep the sprite modestly scaled
+      // and rotate about the canvas center (see `centerPivot` below) so the
+      // corners never swing outside the overlay window and get clipped.
       const rot = (t % 1) * 360;
       motion = {
         dx: 0,
         dy: 0,
         rotate: rot,
-        scaleX: 1,
-        scaleY: 1,
+        scaleX: 0.8,
+        scaleY: 0.8,
         opacity: 1,
       };
       break;

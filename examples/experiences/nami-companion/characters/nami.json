@@ -4,13 +4,41 @@
   "displayName": "Nami",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 8, "duration": 1200, "loop": true },
-    "walk": { "fps": 10, "duration": 600, "loop": true },
-    "run": { "fps": 14, "duration": 350, "loop": true },
-    "happy": { "fps": 10, "duration": 500, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 8,
+      "duration": 1200,
+      "loop": true
+    },
+    "walk": {
+      "fps": 10,
+      "duration": 600,
+      "loop": true
+    },
+    "run": {
+      "fps": 14,
+      "duration": 350,
+      "loop": true
+    },
+    "happy": {
+      "fps": 10,
+      "duration": 500,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,54 @@
     "sleepWeight": 0.03
   },
   "personality": "friendly",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["Floating on a wave 🌊", "Check out my sea pebble!", "Splash!"],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "A happy little chirp!",
+      "Splish-splash of joy!",
+      "You're my favorite rock.",
+      "Otter cuddle approved!"
+    ],
+    "mischief-random": [
+      "I swiped a pebble!",
+      "A belly-slip across the floor!",
+      "Watch me spin a shell!",
+      "I hid your pen in my den."
+    ],
+    "idle-long": [
+      "Floating on my back...",
+      "Warming up on a rock.",
+      "Holding hands with a pebble."
+    ],
+    "activity-burst": [
+      "So fast! My flippers!",
+      "Sliding through this like water!",
+      "Wheee! Tumbling zoomies!",
+      "Can't hold all this action!"
+    ],
+    "clipboard-copy": [
+      "A shiny new pebble of data!",
+      "Copied that shell!",
+      "Snagged it like a fish!"
+    ],
+    "screenshot": ["Say cheese! Splash!", "A wave of a moment!"],
+    "time-morning": ["Fresh water, fresh day!", "Morning float time!"],
+    "time-night": ["Rock, stars, and calm water.", "Night current. Peaceful."],
+    "ide-save": ["Saved under my favorite rock!", "Another fish stored away."],
+    "git-commit": ["A smooth commit! Like a slide!", "Pushed into the tide."],
+    "build-green": ["Green! Perfectly buoyant!", "No ripples in the build!"],
+    "power-resume": ["Back afloat! Hello!", "Recharged from the stream."],
+    "unlock-screen": ["A new river to explore!", "Welcome back, swim friend!"],
+    "hydrate": ["Stay hydrated, swimmer!", "Water is my world. Drink!"],
+    "on-ac": ["Charging like a sun-warm rock!", "Toasty power. Lovely!"],
+    "behavior:hide": ["Hiding under a rock!", "Splash! Gone!"],
+    "behavior:peek": ["Peek-a-boo! Splash!", "Otter peek!"],
+    "behavior:spin": ["Spinning like a current!", "Wheee, splish splash!"],
+    "behavior:pounce": ["Otter pounce!", "Slippery leap!"],
+    "behavior:sneak": ["Sneaking through the waves...", "Silent swim."],
+    "behavior:dance": ["Otter boogie! Splash!", "Dance on the rocks!"]
   }
 }

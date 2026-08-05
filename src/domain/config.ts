@@ -13,7 +13,6 @@ export interface AppConfig {
   personality: Personality;
   interactive: boolean;
   followCursor: boolean;
-  soundEnabled: boolean;
 }
 
 export const DEFAULT_CONFIG: AppConfig = {
@@ -22,7 +21,6 @@ export const DEFAULT_CONFIG: AppConfig = {
   personality: "curious",
   interactive: true,
   followCursor: true,
-  soundEnabled: true,
 };
 
 export function sanitizeConfig(input: unknown): AppConfig {
@@ -42,10 +40,6 @@ export function sanitizeConfig(input: unknown): AppConfig {
       typeof partial.followCursor === "boolean"
         ? partial.followCursor
         : DEFAULT_CONFIG.followCursor,
-    soundEnabled:
-      typeof partial.soundEnabled === "boolean"
-        ? partial.soundEnabled
-        : DEFAULT_CONFIG.soundEnabled,
   };
 }
 

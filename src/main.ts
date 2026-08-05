@@ -76,6 +76,7 @@ let overlayHitActive = false;
 /** Activity-burst detection: consecutive polls where idle < 1 s. */
 let consecutiveLowIdle = 0;
 let lastActivityBurstAt: number | null = null;
+let lastDeepFocusAt: number | null = null;
 let activityPollInterval: NodeJS.Timeout | null = null;
 let clipboardInterval: NodeJS.Timeout | null = null;
 let ideSaveInterval: NodeJS.Timeout | null = null;
@@ -555,7 +556,6 @@ function createOverlay(): void {
   overlay.webContents.once("did-finish-load", () => {
     if (overlay && !overlay.isDestroyed()) {
       overlay.webContents.send("mischief:interactive", interactive);
-      overlay.webContents.send("mischief:muted", !config.soundEnabled);
       if (companion) {
         overlay.webContents.send("mischief:sprite", {
           url: companion.sprite,
@@ -663,9 +663,6 @@ function emitReaction(signal: Signal): void {
   if (!reaction.text) return;
   showBubble(reaction.text, reaction.durationMs);
   lastBubbleAt = now;
-  if (config.soundEnabled && overlay && !overlay.isDestroyed()) {
-    overlay.webContents.send("mischief:play-sound", { soundType: signal.kind });
-  }
 }
 
 function detectActivityBurst(): void {
@@ -681,6 +678,15 @@ function detectActivityBurst(): void {
       if (lastActivityBurstAt === null || now - lastActivityBurstAt > 8000) {
         lastActivityBurstAt = now;
         emitReaction({ kind: "activity-burst" });
+      }
+    }
+    // ISS-037: sustained focus — ~10 minutes of continuous activity — earns
+    // the companion a deep-focus cheer.
+    if (consecutiveLowIdle >= 600) {
+      const now = Date.now();
+      if (lastDeepFocusAt === null || now - lastDeepFocusAt > 900000) {
+        lastDeepFocusAt = now;
+        emitReaction({ kind: "deep-focus" });
       }
     }
   } else {
@@ -715,6 +721,12 @@ function applyFollow(): void {
 function setFollowEnabled(enabled: boolean): void {
   followEnabled = enabled;
   applyFollow();
+  // Keep the persisted settings + settings window in sync with the quick menu.
+  if (config.followCursor !== enabled) {
+    config = sanitizeConfig({ ...config, followCursor: enabled });
+    persistConfig();
+  }
+  refreshTray();
 }
 
 function pauseFollow(): void {
@@ -780,6 +792,15 @@ function sendBehavior(behavior: BehaviorDef): void {
     anim: behavior.anim,
     mood: behavior.mood,
   });
+  // ISS-036: let the companion comment on what it is doing so playful
+  // behaviors (hide/peek/spin/pounce/sneak/dance) feel alive with words too.
+  const chattyBehaviors = new Set(["sleep", "hide", "peek", "spin", "pounce", "sneak", "dance"]);
+  if (chattyBehaviors.has(behavior.id)) {
+    emitReaction({
+      kind: "behavior",
+      behavior: behavior.id as "sleep" | "hide" | "peek" | "spin" | "pounce" | "sneak" | "dance",
+    });
+  }
 }
 
 interface WanderProfile {
@@ -939,9 +960,6 @@ function applyConfig(next: AppConfig): void {
   if (interactive !== next.interactive) setInteractive(next.interactive);
   if (followEnabled !== next.followCursor) setFollowEnabled(next.followCursor);
   if (companionChanged) swapCompanion(next.companionId);
-  if (overlay && !overlay.isDestroyed()) {
-    overlay.webContents.send("mischief:muted", !next.soundEnabled);
-  }
 }
 
 function swapCompanion(packId: string): void {
@@ -997,6 +1015,14 @@ function createTray(): void {
   tray.setToolTip(
     companion ? `${companion.displayName} (${companion.species}) - Mischief` : "Mischief"
   );
+  refreshTray();
+}
+
+// Rebuild the tray context menu so checkbox states always reflect the current
+// settings — whether they were changed here or from the settings window. This
+// keeps the quick menu and the settings panel in sync (ISS-038).
+function refreshTray(): void {
+  if (!tray) return;
   tray.setContextMenu(
     Menu.buildFromTemplate([
       {
@@ -1053,6 +1079,12 @@ function setInteractive(enabled: boolean): void {
     overlay.setIgnoreMouseEvents(true, { forward: true });
     overlay.webContents.send("mischief:interactive", interactive);
   }
+  // Keep the persisted settings + settings window in sync with the quick menu.
+  if (config.interactive !== enabled) {
+    config = sanitizeConfig({ ...config, interactive: enabled });
+    persistConfig();
+  }
+  refreshTray();
 }
 
 function createApplicationMenu(): void {
@@ -1429,9 +1461,12 @@ app.whenReady().then(() => {
   }, 240000);
 
   // ISS-008: delay startup greeting so overlay + bubble windows are ready
-  const greetHour = new Date().getHours();
-  const greetSignal: Signal =
-    greetHour >= 5 && greetHour < 12
+  const now = new Date();
+  const greetHour = now.getHours();
+  const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+  const greetSignal: Signal = isWeekend
+    ? { kind: "weekend" }
+    : greetHour >= 5 && greetHour < 12
       ? { kind: "time-morning" }
       : greetHour >= 12 && greetHour < 17
         ? { kind: "time-lunch" }

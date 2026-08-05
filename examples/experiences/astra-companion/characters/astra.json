@@ -4,13 +4,41 @@
   "displayName": "Astra",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 8, "duration": 1200, "loop": true },
-    "walk": { "fps": 10, "duration": 600, "loop": true },
-    "run": { "fps": 14, "duration": 350, "loop": true },
-    "happy": { "fps": 10, "duration": 500, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 8,
+      "duration": 1200,
+      "loop": true
+    },
+    "walk": {
+      "fps": 10,
+      "duration": 600,
+      "loop": true
+    },
+    "run": {
+      "fps": 14,
+      "duration": 350,
+      "loop": true
+    },
+    "happy": {
+      "fps": 10,
+      "duration": 500,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,50 @@
     "sleepWeight": 0.05
   },
   "personality": "mischievous",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["Starlight shining 🌌", "Constellations aligned!", "Cosmic sneeze coming..."],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "Your touch feels like stardust~",
+      "A dragon's rumble of joy!",
+      "I shimmer when you pat me.",
+      "Nuzzle accepted!"
+    ],
+    "mischief-random": [
+      "I hid your stardust... just kidding!",
+      "Watch me flap across the sky!",
+      "A tiny star heist!",
+      "I scattered some glimmer."
+    ],
+    "idle-long": ["Counting stars...", "Dozing in the nebula.", "Dreaming of galaxies."],
+    "activity-burst": [
+      "So fast! My wings!",
+      "You're moving at warp speed!",
+      "Whew, cosmic zoomies!",
+      "The stars are spinning!"
+    ],
+    "clipboard-copy": [
+      "A star fragment copied!",
+      "Ooh, shiny new text.",
+      "Snatched a glimmer of data."
+    ],
+    "screenshot": ["Say cheese to the cosmos!", "A moment, frozen in starlight!"],
+    "time-morning": ["The sun's up! Stretch those wings!", "Morning stardust to you!"],
+    "time-night": ["The stars are out—my time!", "Nebula skies are calling."],
+    "ide-save": ["Saved among the stars!", "Another gem locked in."],
+    "git-commit": ["A comet of code committed!", "Changes launched into orbit."],
+    "build-green": ["Green! The galaxy approves!", "Not a single fallen star."],
+    "power-resume": ["My star's reignited!", "Back from the void!"],
+    "unlock-screen": ["Fresh sky to explore!", "The cosmos welcomes you back."],
+    "hydrate": ["Hydrate, star-pilot!", "Water fuels the flight!"],
+    "on-ac": ["Charging with solar flare energy!", "Power surge! Nice."],
+    "behavior:hide": ["Hidden among the stars!", "Nebula stealth!"],
+    "behavior:peek": ["Peek-a-starlight!", "A cosmic peek!"],
+    "behavior:spin": ["Star spin! Whee!", "Cosmic twirl!"],
+    "behavior:pounce": ["Pounce! Star spark!", "A celestial leap!"],
+    "behavior:sneak": ["Sneaking through galaxies...", "Star sneaks."],
+    "behavior:dance": ["Star dance! Shimmer!", "Cosmic boogie!"]
   }
 }

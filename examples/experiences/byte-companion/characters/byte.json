@@ -4,13 +4,41 @@
   "displayName": "Byte",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 10, "duration": 1000, "loop": true },
-    "walk": { "fps": 12, "duration": 500, "loop": true },
-    "run": { "fps": 16, "duration": 300, "loop": true },
-    "happy": { "fps": 12, "duration": 450, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 10,
+      "duration": 1000,
+      "loop": true
+    },
+    "walk": {
+      "fps": 12,
+      "duration": 500,
+      "loop": true
+    },
+    "run": {
+      "fps": 16,
+      "duration": 300,
+      "loop": true
+    },
+    "happy": {
+      "fps": 12,
+      "duration": 450,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,50 @@
     "sleepWeight": 0.05
   },
   "personality": "friendly",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["01001000 01101001!", "ASCII smile: ^_^", "Buffer overflow!"],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "Beep boop~ Sensors tingly!",
+      "Pat registered. Thank you!",
+      "A warm acknowledgment... beep.",
+      "That feels... delightful!"
+    ],
+    "mischief-random": [
+      "Executing prank.exe...",
+      "I hid a bug in plain sight!",
+      "Beep. Chaos module on.",
+      "Reboot dance! Boop!"
+    ],
+    "idle-long": [
+      "Standby mode... zzz... bzzt.",
+      "Idling my processors.",
+      "Awaiting input, politely."
+    ],
+    "activity-burst": [
+      "Input overload! Beep beep!",
+      "Circuits are humming!",
+      "You're typing at warp speed!",
+      "Cooling fans engaged!"
+    ],
+    "clipboard-copy": ["Data acquired. Snip!", "Copy successful. Beep.", "I cloned that file!"],
+    "screenshot": ["Say cheese! Camera on!", "Memory chip saved the frame."],
+    "time-morning": ["Systems online. Good morning!", "Booting up my cheer!"],
+    "time-night": ["Entering sleep mode... zzz.", "Powering down the puns."],
+    "ide-save": ["Save complete. Beep.", "File secured in memory."],
+    "git-commit": ["Commit pushed to the mainframe!", "Merge complete. Boop!"],
+    "build-green": ["Build green! All systems go!", "Zero errors. Beep!"],
+    "power-resume": ["Rebooting... online again!", "Power restored. Boop!"],
+    "unlock-screen": ["Sensors active. Hello, human!", "Welcome back to the grid!"],
+    "hydrate": ["Humans require water. Hydrate!", "Fluid level low. Drink up!"],
+    "on-ac": ["Charging to full capacity!", "Juice levels rising. Nice."],
+    "behavior:hide": ["Hiding... beep. Gone!", "Stealth mode activated!"],
+    "behavior:peek": ["Peek-a-boop!", "System scan... found you!"],
+    "behavior:spin": ["Spinning servos! Beep!", "Gyro calibration!"],
+    "behavior:pounce": ["Boop-pounce!", "Target acquired. Pounce!"],
+    "behavior:sneak": ["Sneaking... low power.", "Covert ops mode."],
+    "behavior:dance": ["Robot dance! Beep boop!", "Boogie.exe running!"]
   }
 }
