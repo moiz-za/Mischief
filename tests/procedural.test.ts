@@ -37,7 +37,8 @@ describe("motionFor", () => {
           const value = frame.motion[key];
           expect(Number.isFinite(value), `${state}@${t} ${key}`).toBe(true);
           expect(value).toBeGreaterThan(-100);
-          expect(value).toBeLessThan(100);
+          // rotate is a degree angle (spin performs full 360° turns).
+          expect(value).toBeLessThan(key === "rotate" ? 361 : 100);
         }
       }
     }
@@ -79,5 +80,46 @@ describe("motionFor", () => {
   it("works without companion metadata (non-cutout fallback)", () => {
     const frame = motionFor("idle", 0.5, DEFAULT_COMPANION_META);
     expect(Number.isFinite(frame.motion.dy)).toBe(true);
+  });
+
+  it("spin rotates through a full turn", () => {
+    expect(motionFor("spin", 0, META).motion.rotate).toBe(0);
+    expect(motionFor("spin", 0.5, META).motion.rotate).toBeGreaterThan(100);
+  });
+
+  it("pounce lunges forward and returns", () => {
+    const start = motionFor("pounce", 0, META).motion;
+    expect(Math.abs(start.dx)).toBeLessThan(1);
+    const mid = motionFor("pounce", 0.3, META).motion;
+    expect(mid.dx).toBeGreaterThan(2);
+    // End of the lunge cycle settles back to near-zero displacement.
+    const end = motionFor("pounce", 1.05, META).motion;
+    expect(Math.abs(end.dx)).toBeLessThan(2);
+  });
+
+  it("hide crouches low and drops opacity", () => {
+    const frame = motionFor("hide", 0.2, META);
+    expect(frame.motion.scaleY).toBeLessThan(0.7);
+    expect(frame.motion.opacity).toBeLessThan(0.9);
+  });
+
+  it("sneak keeps a low crouched profile", () => {
+    for (const t of [0.1, 0.4, 0.7, 1.0]) {
+      const { scaleY, dy } = motionFor("sneak", t, META).motion;
+      expect(scaleY).toBeLessThan(1);
+      expect(dy).toBeGreaterThan(0);
+    }
+  });
+
+  it("dance bounces vertically with side-to-side sway", () => {
+    const a = motionFor("dance", 0.05, META).motion;
+    const b = motionFor("dance", 0.4, META).motion;
+    expect(a.dy).toBeLessThan(0);
+    expect(Math.sign(a.dx)).not.toBe(Math.sign(b.dx));
+  });
+
+  it("peek rises above its resting height", () => {
+    const frame = motionFor("peek", 0.25, META).motion;
+    expect(frame.dy).toBeLessThan(0);
   });
 });
