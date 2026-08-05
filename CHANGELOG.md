@@ -4,7 +4,17 @@ All notable changes to Mischief are documented here. Format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- **Playful behaviors** — six system-level behaviors (hide, peek, spin, pounce, sneak, dance) now run for every companion, including imported custom images. Each has its own intensity gate and long cooldown; `hide` parks the companion in a screen corner, `pounce` is a fast dart, `sneak` a slow creep. Cutout companions get matching procedural canvas motion (`spin`/`pounce`/`sneak`/`dance`/`hide`/`peek` states) and sprites get matching CSS animations.
+- **Always-on drag-to-move** — grab the companion at any time (interactive mode or not) and drag it anywhere; native image ghost-drag is suppressed, a 5px threshold separates click-to-pet from drag-to-move, and follow/wander pause while dragging.
+
 ### Fixed
+
+- **Speech bubble now follows the companion** while it wanders, sneaks, pounces, or hides — previously the bubble lagged behind any movement.
+- **Bubble spam** — the reaction-bubble throttle now scales with intensity (Silent ~60s → Chaos ~15s) instead of a flat 5s; random mischief fires only ~every 4 minutes; user-initiated pet reactions keep a short 1.5s anti-spam guard so pets still respond instantly.
+- **Funnier bubbles** — expanded `reactions.ts` pools with playful, mischievous one-liners for clipboard, activity, screenshots, random mischief, and dev triggers.
+- **Follow-cursor no longer covers the pointer** — the companion places itself on the side of the cursor with the most room (held a full size + gap away) instead of centering on it, so the cursor and the UI underneath stay clickable.
 
 - **Code health** — removed unused `bh` destructure in `positionBubble()` and updated stale `v0.2.0` version fallbacks to `0.3.1` in `settings.html` and `preload.ts`.
 
