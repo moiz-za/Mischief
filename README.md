@@ -183,7 +183,7 @@ examples/plugins/hello-plugin/          # a minimal plugin skeleton
 - [Experience Pack docs](docs/experiences/README.md)
 - [Plugin skeletons](examples/plugins/hello-plugin/)
 
-New to the project? Browse the [`good first issue`](https://github.com/moiz-za/Mischief/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) list — icons, localization, and manifest validation are great starting points.
+New to the project? Browse the [`good first issue`](https://github.com/moiz-za/Mischief/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) list — icons and manifest validation are great starting points.
 
 ---
 
@@ -261,8 +261,7 @@ mischief/
 │   └── plugins/            plugin skeletons
 ├── docs/                   experience-pack guide + community docs
 ├── tests/                  unit tests (Vitest)
-├── localization/           locale data
-├── assets/                 branding + icons
+├── assets/                 branding, demos, and icons
 └── scripts/                build + hook tooling
 ```
 

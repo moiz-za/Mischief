@@ -50,13 +50,6 @@ export interface PluginManifest {
   tags: string[];
 }
 
-export interface ThemeManifest {
-  id: string;
-  name: string;
-  author: string;
-  tokens: Record<string, string>;
-}
-
 export interface AnimationDecl {
   fps: number;
   duration: number;
@@ -121,8 +114,6 @@ const PLUGIN_KEYS = new Set([
   "checksum",
   "signature",
 ]);
-
-const THEME_KEYS = new Set(["id", "name", "author", "tokens"]);
 
 const CHARACTER_KEYS = new Set([
   "id",
@@ -197,29 +188,6 @@ export function validatePluginManifest(input: unknown): ValidationResult {
   return result(issues);
 }
 
-export function validateThemeManifest(input: unknown): ValidationResult {
-  const issues: ValidationIssue[] = [];
-  const obj = requireRecord(input, "theme", issues);
-  if (obj) {
-    rejectUnknownKeys(obj, THEME_KEYS, "", issues);
-    expectKebabId(obj.id, "id", issues);
-    expectNonEmptyString(obj.name, "name", issues);
-    expectNonEmptyString(obj.author, "author", issues);
-    const tokens = requireRecord(obj.tokens, "tokens", issues);
-    if (tokens) {
-      for (const [name, value] of Object.entries(tokens)) {
-        if (typeof value !== "string") {
-          issues.push({
-            path: `tokens.${name}`,
-            message: `Expected a string color token, got ${describe(value)}`,
-          });
-        }
-      }
-    }
-  }
-  return result(issues);
-}
-
 export function validateCharacterManifest(input: unknown): ValidationResult {
   const issues: ValidationIssue[] = [];
   const obj = requireRecord(input, "character", issues);
@@ -257,10 +225,6 @@ export function parseExperienceManifest(input: unknown): ExperienceManifest | nu
 
 export function parsePluginManifest(input: unknown): PluginManifest | null {
   return validatePluginManifest(input).ok ? (input as PluginManifest) : null;
-}
-
-export function parseThemeManifest(input: unknown): ThemeManifest | null {
-  return validateThemeManifest(input).ok ? (input as ThemeManifest) : null;
 }
 
 export function parseCharacterManifest(input: unknown): CharacterManifest | null {
