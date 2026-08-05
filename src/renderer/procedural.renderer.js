@@ -103,6 +103,74 @@
         };
         pushHearts(effects, t);
         break;
+      case "spin": {
+        var rot = (t % 1) * 360;
+        motion = {
+          dx: 0,
+          dy: 0,
+          rotate: rot,
+          scaleX: 1,
+          scaleY: 1,
+          opacity: 1,
+        };
+        break;
+      }
+      case "pounce": {
+        var p = cycle(t, 1.1);
+        var lunge = Math.sin(Math.PI * p);
+        motion = {
+          dx: lunge * 14,
+          dy: -lunge * 10,
+          rotate: lunge * 12,
+          scaleX: 1 + lunge * 0.12,
+          scaleY: 1 - lunge * 0.16,
+          opacity: 1,
+        };
+        break;
+      }
+      case "sneak":
+        motion = {
+          dx: periodic(t, 0.8) * 3,
+          dy: Math.abs(periodic(t, 0.8)) * -2 + 3,
+          rotate: periodic(t, 0.8) * 4,
+          scaleX: 1.04,
+          scaleY: 0.92 + periodic(t, 0.8) * 0.02,
+          opacity: 1,
+        };
+        break;
+      case "dance": {
+        var dP = cycle(t, 0.7);
+        var dRebound = Math.sin(Math.PI * dP);
+        motion = {
+          dx: (dP < 0.5 ? -1 : 1) * 6,
+          dy: -Math.abs(dRebound) * 12,
+          rotate: (dP < 0.5 ? -1 : 1) * 10,
+          scaleX: 1 + dRebound * 0.05,
+          scaleY: 1 - dRebound * 0.1,
+          opacity: 1,
+        };
+        break;
+      }
+      case "hide":
+        motion = {
+          dx: 0,
+          dy: 6 + Math.abs(periodic(t, 0.5)) * 2,
+          rotate: 0,
+          scaleX: 1.1,
+          scaleY: 0.45 + Math.abs(periodic(t, 0.5)) * 0.08,
+          opacity: 0.6,
+        };
+        break;
+      case "peek":
+        motion = {
+          dx: periodic(t, 1.1) * 3,
+          dy: -Math.abs(Math.sin(TAU * 0.5 * t)) * 12,
+          rotate: periodic(t, 1.1) * 6,
+          scaleX: 1 + Math.abs(Math.sin(TAU * 0.5 * t)) * 0.04,
+          scaleY: 1 - Math.abs(Math.sin(TAU * 0.5 * t)) * 0.06,
+          opacity: 0.95,
+        };
+        break;
       case "sad":
         motion = {
           dx: 0,
@@ -165,6 +233,21 @@
   window.MischiefProcedural = {
     motionFor: motionFor,
     sanitizeCompanionMeta: sanitizeCompanionMeta,
-    MOTION_STATES: ["idle", "walk", "run", "happy", "sad", "sleep", "yawn", "pet"],
+    MOTION_STATES: [
+      "idle",
+      "walk",
+      "run",
+      "happy",
+      "sad",
+      "sleep",
+      "yawn",
+      "pet",
+      "spin",
+      "pounce",
+      "sneak",
+      "dance",
+      "hide",
+      "peek",
+    ],
   };
 })();

@@ -162,9 +162,14 @@ describe("BehaviorEngine", () => {
     expect(second?.behavior.id).toBe(behaviorId);
   });
 
-  it("returns null with no character and no context", () => {
-    const engine = new BehaviorEngine({ character: null, random: seededRandom(1) });
-    expect(engine.tick(signals())).toBeNull();
+  it("runs playful system behaviors even with no character and no context", () => {
+    const engine = new BehaviorEngine({
+      character: null,
+      intensity: "normal",
+      random: seededRandom(1),
+    });
+    // Free choice can now pick from the system playful set.
+    expect(engine.tick(signals({ userJustActive: false, idleSeconds: 0 }))).not.toBeNull();
   });
 
   it("moodFor reflects context", () => {
@@ -182,5 +187,74 @@ describe("BehaviorEngine", () => {
     engine.setCharacter(null);
     expect(engine.activeBehavior).toBeNull();
     expect(engine.availableBehaviors).toEqual([]);
+  });
+
+  it("playful system behaviors work for companions with no animations", () => {
+    const engine = new BehaviorEngine({
+      character: null,
+      intensity: "playful",
+      random: seededRandom(3),
+    });
+    const picks = new Set<string>();
+    for (let i = 0; i < 500; i++) {
+      const selection = engine.tick(
+        signals({ now: 20_000_000 + i * 60_000, idleSeconds: 0, userJustActive: false })
+      );
+      if (selection) picks.add(selection.behavior.id);
+    }
+    // Custom/imported companions have no character behavior weights, so the
+    // system playful set is the only thing that can move them.
+    for (const id of ["hide", "peek", "spin", "pounce", "sneak", "dance"]) {
+      expect(picks.has(id), `expected ${id} in ${[...picks]}`).toBe(true);
+    }
+  });
+
+  it("high-energy playful behaviors need the playful/chaos intensity", () => {
+    const normal = new BehaviorEngine({
+      character: null,
+      intensity: "normal",
+      random: seededRandom(4),
+    });
+    const playful = new BehaviorEngine({
+      character: null,
+      intensity: "playful",
+      random: seededRandom(4),
+    });
+    for (let i = 0; i < 400; i++) {
+      normal.tick(signals({ now: 30_000_000 + i * 60_000, idleSeconds: 0, userJustActive: false }));
+      playful.tick(
+        signals({ now: 30_000_000 + i * 60_000, idleSeconds: 0, userJustActive: false })
+      );
+    }
+    expect(normal.activeBehavior?.id).not.toBe("pounce");
+    expect(normal.activeBehavior?.id).not.toBe("sneak");
+    expect(["pounce", "sneak"]).toContain(playful.activeBehavior?.id);
+  });
+
+  it("playful behaviors appear but none dominates", () => {
+    const engine = new BehaviorEngine({
+      character: null,
+      intensity: "chaos",
+      random: seededRandom(6),
+    });
+    const seen = new Map<string, number>();
+    let total = 0;
+    for (let i = 0; i < 800; i++) {
+      const selection = engine.tick(
+        signals({ now: 40_000_000 + i * 30_000, idleSeconds: 0, userJustActive: false })
+      );
+      if (selection) {
+        seen.set(selection.behavior.id, (seen.get(selection.behavior.id) ?? 0) + 1);
+        total++;
+      }
+    }
+    // Every playful behavior is reachable…
+    for (const id of ["hide", "peek", "spin", "pounce", "sneak", "dance"]) {
+      expect(seen.get(id) ?? 0, `${id} never selected`).toBeGreaterThan(0);
+    }
+    // …but cooldowns keep any single one from dominating the session.
+    for (const [id, count] of seen) {
+      expect(count, `${id} dominated`).toBeLessThanOrEqual(total * 0.3);
+    }
   });
 });

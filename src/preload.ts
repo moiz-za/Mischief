@@ -81,6 +81,18 @@ contextBridge.exposeInMainWorld("mischief", {
   setOverlayHit(active: boolean): void {
     ipcRenderer.send("mischief:overlay:hit", active === true);
   },
+  /** Overlay: begin a drag at the given cursor offset within the window. */
+  startDrag(x: number, y: number): void {
+    ipcRenderer.send("mischief:drag:start", { x, y });
+  },
+  /** Overlay: continue a drag to the given cursor position (client coords). */
+  moveDrag(x: number, y: number): void {
+    ipcRenderer.send("mischief:drag:move", { x, y });
+  },
+  /** Overlay: end the current drag. */
+  endDrag(): void {
+    ipcRenderer.send("mischief:drag:end");
+  },
   onInteractive(callback: (enabled: boolean) => void): () => void {
     const listener = (_event: Electron.IpcRendererEvent, enabled: boolean): void => {
       callback(enabled);
