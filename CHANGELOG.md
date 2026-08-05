@@ -4,6 +4,10 @@ All notable changes to Mischief are documented here. Format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Fixed
+
+- **Code health** — removed unused `bh` destructure in `positionBubble()` and updated stale `v0.2.0` version fallbacks to `0.3.1` in `settings.html` and `preload.ts`.
+
 ## [0.3.1] - 2026-08-04
 
 ### Added
