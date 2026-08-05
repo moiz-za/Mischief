@@ -154,11 +154,11 @@
       case "hide":
         motion = {
           dx: 0,
-          dy: 6 + Math.abs(periodic(t, 0.5)) * 2,
+          dy: 34 + Math.abs(periodic(t, 0.5)) * 3,
           rotate: 0,
-          scaleX: 1.1,
-          scaleY: 0.45 + Math.abs(periodic(t, 0.5)) * 0.08,
-          opacity: 0.6,
+          scaleX: 1,
+          scaleY: 0.92,
+          opacity: 0.95,
         };
         break;
       case "peek":
