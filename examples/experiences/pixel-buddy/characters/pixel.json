@@ -4,10 +4,26 @@
   "displayName": "Pixel",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 8, "duration": 1000, "loop": true },
-    "walk": { "fps": 10, "duration": 600, "loop": true },
-    "yawn": { "fps": 6, "duration": 2200, "loop": false },
-    "sleep": { "fps": 4, "duration": 3000, "loop": true }
+    "idle": {
+      "fps": 8,
+      "duration": 1000,
+      "loop": true
+    },
+    "walk": {
+      "fps": 10,
+      "duration": 600,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 6,
+      "duration": 2200,
+      "loop": false
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 3000,
+      "loop": true
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -17,6 +33,44 @@
     "sleepWeight": 0.1
   },
   "personality": "curious",
-  "voice": { "enabled": false },
-  "sounds": []
+  "voice": {
+    "enabled": false
+  },
+  "sounds": [],
+  "speech": {
+    "pet": [
+      "Pixel-purr! Blip!",
+      "A happy 8-bit chirp!",
+      "Yes! More! Beep!",
+      "Loading joy... done!"
+    ],
+    "mischief-random": [
+      "I glitched your cursor! Blip!",
+      "A screen tear! My bad!",
+      "Pixel storm! Go go go!",
+      "I hid a sprite. Find it!"
+    ],
+    "idle-long": ["Rendering a nap...", "Idle animation loop...", "Pixel dust floating by."],
+    "activity-burst": [
+      "Blip blip blip! Too fast!",
+      "8-bit speed! Beep beep!",
+      "Sprite flicker! Zoom!",
+      "Game over... for your pace!"
+    ],
+    "clipboard-copy": [
+      "Copied. New sprite!",
+      "A block of data secured!",
+      "Pixel-for-pixel, stolen!"
+    ],
+    "screenshot": ["Say cheese! Save frame!", "A moment, captured in pixels!"],
+    "time-morning": ["New day! New sprite!", "Morning! Render mode on!"],
+    "time-night": ["Night palette: stars!", "Sleep mode. 8-bit dreams."],
+    "ide-save": ["Saved to cartridge!", "File locked in memory."],
+    "git-commit": ["Committed! Level up!", "Pushed to the main world!"],
+    "build-green": ["Green! No game overs!", "Build complete! Insert coin!"],
+    "power-resume": ["Power on! Blip!", "Back to the game world!"],
+    "unlock-screen": ["New area unlocked!", "Welcome to the next level!"],
+    "hydrate": ["Hydrate for extra lives!", "Drink water, stay alive!"],
+    "on-ac": ["Charging! Extra lives! +1!", "Power up! Beep!"]
+  }
 }

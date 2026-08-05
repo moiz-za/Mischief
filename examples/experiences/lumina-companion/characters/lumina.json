@@ -4,13 +4,41 @@
   "displayName": "Lumina",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 10, "duration": 1100, "loop": true },
-    "walk": { "fps": 12, "duration": 500, "loop": true },
-    "run": { "fps": 16, "duration": 300, "loop": true },
-    "happy": { "fps": 12, "duration": 450, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 10,
+      "duration": 1100,
+      "loop": true
+    },
+    "walk": {
+      "fps": 12,
+      "duration": 500,
+      "loop": true
+    },
+    "run": {
+      "fps": 16,
+      "duration": 300,
+      "loop": true
+    },
+    "happy": {
+      "fps": 12,
+      "duration": 450,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,44 @@
     "sleepWeight": 0.03
   },
   "personality": "curious",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["Prism light refract! 💎", "Shimmering bright ✨", "Rainbow flare!"],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "A shimmer of feathers!",
+      "You warm my crystals!",
+      "A soft phoenix trill~",
+      "Radiant approval!"
+    ],
+    "mischief-random": [
+      "A spark! Did I do that?",
+      "I scattered some glow!",
+      "Ember mischief! Oops~",
+      "A little light show!"
+    ],
+    "idle-long": ["Catching the light...", "Reflecting the sun.", "A calm, warm glow."],
+    "activity-burst": [
+      "So fast! My light flickers!",
+      "Glowing brighter with all this speed!",
+      "Dazzling zoomies!",
+      "I'm overheating with excitement!"
+    ],
+    "clipboard-copy": [
+      "I captured a spark of it!",
+      "Stole a sunbeam of data!",
+      "A bright copy! Lovely."
+    ],
+    "screenshot": ["Say cheese! Flash!", "A luminous moment, captured!"],
+    "time-morning": ["Rise with the light!", "Morning radiance to you!"],
+    "time-night": ["A soft glow in the dark.", "Guiding light in the night."],
+    "ide-save": ["Saved, bathed in light!", "Another glowing achievement."],
+    "git-commit": ["A radiant commit!", "Pushed, shimmering brightly."],
+    "build-green": ["Green! All is bright!", "No shadows in the build."],
+    "power-resume": ["Reignited! Back online!", "My glow is restored!"],
+    "unlock-screen": ["Light! Fresh space to shine!", "Welcome back to the brightness!"],
+    "hydrate": ["Stay hydrated, stay luminous!", "Water keeps the glow!"],
+    "on-ac": ["Charging with sunlight energy!", "A glowing power-up!"]
   }
 }

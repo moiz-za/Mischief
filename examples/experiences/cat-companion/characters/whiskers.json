@@ -4,10 +4,26 @@
   "displayName": "Whiskers",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 6, "duration": 1200, "loop": true },
-    "walk": { "fps": 10, "duration": 600, "loop": true },
-    "sneak": { "fps": 8, "duration": 800, "loop": true },
-    "pounce": { "fps": 12, "duration": 400, "loop": false }
+    "idle": {
+      "fps": 6,
+      "duration": 1200,
+      "loop": true
+    },
+    "walk": {
+      "fps": 10,
+      "duration": 600,
+      "loop": true
+    },
+    "sneak": {
+      "fps": 8,
+      "duration": 800,
+      "loop": true
+    },
+    "pounce": {
+      "fps": 12,
+      "duration": 400,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -16,6 +32,44 @@
     "sneakWeight": 0.2
   },
   "personality": "curious",
-  "voice": { "enabled": false },
-  "sounds": []
+  "voice": {
+    "enabled": false
+  },
+  "sounds": [],
+  "speech": {
+    "pet": [
+      "Purrrr~ yes right there.",
+      "Again! Again!",
+      "You found my favorite spot!",
+      "Meow. Approved."
+    ],
+    "mischief-random": [
+      "I knocked over the cursor!",
+      "Zoomies! Watch out!",
+      "Something moved. I must hunt it!",
+      "The red dot is mine!"
+    ],
+    "idle-long": ["Basking in the sun...", "Contemplating the window.", "Catnap in progress. Shh."],
+    "activity-burst": [
+      "So much motion! I must pounce!",
+      "Meow! Frenzy mode!",
+      "Feather brain! Go go go!",
+      "Too fast even for me!"
+    ],
+    "clipboard-copy": [
+      "I batted that across the desk!",
+      "A copy. Mine now.",
+      "Stole that with a flick."
+    ],
+    "screenshot": ["Say cheese... I'll blink anyway.", "Captured mid-lick!"],
+    "time-morning": ["Feed me? Now?", "Morning sunbeam. Perfect spot."],
+    "time-night": ["Night hunt begins.", "Prowling the dark halls."],
+    "ide-save": ["I sat on the save key.", "File saved. Now nap."],
+    "git-commit": ["A cat-commit! Historical.", "Pushed, then inspected it closely."],
+    "build-green": ["Green! I'll nap on that.", "No bugs to chase today."],
+    "power-resume": ["Awake. Where's the food?", "Recharged and ready to pounce."],
+    "unlock-screen": ["A new room! I must explore it!", "Open door! Let me in!"],
+    "hydrate": ["Drink water, then feed me.", "Hydrate, hooman."],
+    "on-ac": ["Warm spot. Staying here forever.", "Charging up for chaos."]
+  }
 }

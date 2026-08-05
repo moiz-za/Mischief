@@ -4,13 +4,41 @@
   "displayName": "Kumo",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 10, "duration": 1000, "loop": true },
-    "walk": { "fps": 12, "duration": 500, "loop": true },
-    "run": { "fps": 16, "duration": 300, "loop": true },
-    "happy": { "fps": 12, "duration": 450, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 10,
+      "duration": 1000,
+      "loop": true
+    },
+    "walk": {
+      "fps": 12,
+      "duration": 500,
+      "loop": true
+    },
+    "run": {
+      "fps": 16,
+      "duration": 300,
+      "loop": true
+    },
+    "happy": {
+      "fps": 12,
+      "duration": 450,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,44 @@
     "sleepWeight": 0.05
   },
   "personality": "curious",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["System status: Nominal ⚡", "Glitching forward!", "Compiling neon pixels..."],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "A cyber-purr! Fzzzt.",
+      "Tail flickers with joy!",
+      "This is nice. Nuzzles your hand.",
+      "Foxy approval!"
+    ],
+    "mischief-random": [
+      "I zapped a glitch your way!",
+      "A data heist! Yip!",
+      "Flickering pixels... my doing.",
+      "Zoomies through the fiber!"
+    ],
+    "idle-long": ["Chasing a digital rabbit...", "Watching datastreams.", "Downloading a nap."],
+    "activity-burst": [
+      "Whoa! So many packets!",
+      "My paws can't keep up!",
+      "Data storm! Zoom zoom!",
+      "Yipping through the buffer!"
+    ],
+    "clipboard-copy": [
+      "A byte for the den!",
+      "Snatched that data packet!",
+      "Copied and encrypted with flair."
+    ],
+    "screenshot": ["Say cheese! Sayonara!", "A pixel-perfect capture!"],
+    "time-morning": ["Rise and byte! Good morning!", "Morning datastream is flowing!"],
+    "time-night": ["Night protocol: sneak mode.", "The fiber is quiet. Perfect hunting."],
+    "ide-save": ["Saved into the cloud den!", "Another file for the pack."],
+    "git-commit": ["Committed! The pack approves!", "Pushed up the data mountain!"],
+    "build-green": ["Green build! All packets home!", "No dropped bytes. Impressive!"],
+    "power-resume": ["Back online! Tail wagging!", "Reconnected to the grid!"],
+    "unlock-screen": ["A fresh network to sniff!", "Welcome back to the datastream!"],
+    "hydrate": ["Hydrate or buffer underflow!", "Sip water, fox friend."],
+    "on-ac": ["Charging the lithium tail!", "Power cell full. Time to play!"]
   }
 }

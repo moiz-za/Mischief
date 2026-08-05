@@ -4,13 +4,41 @@
   "displayName": "Pixel-Rex",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 10, "duration": 1000, "loop": true },
-    "walk": { "fps": 12, "duration": 450, "loop": true },
-    "run": { "fps": 16, "duration": 300, "loop": true },
-    "happy": { "fps": 12, "duration": 400, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 10,
+      "duration": 1000,
+      "loop": true
+    },
+    "walk": {
+      "fps": 12,
+      "duration": 450,
+      "loop": true
+    },
+    "run": {
+      "fps": 16,
+      "duration": 300,
+      "loop": true
+    },
+    "happy": {
+      "fps": 12,
+      "duration": 400,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,48 @@
     "sleepWeight": 0.02
   },
   "personality": "energetic",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["RAWR! (8-bit)", "Stomp stomp 🦖", "Obstacle jumped!"],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "A tiny dino rumble!",
+      "Raaar... softly. I like this.",
+      "Tail wag in 8-bit!",
+      "Gr-r-reat pats!"
+    ],
+    "mischief-random": [
+      "I ran a stampede!",
+      "A pixel meteor! Watch out!",
+      "Rawr at your cursor!",
+      "I buried a bone in your files."
+    ],
+    "idle-long": [
+      "Chewing virtual ferns...",
+      "A statue-like dino pause.",
+      "Hunting pixel butterflies."
+    ],
+    "activity-burst": [
+      "RAAAR! Dino dash!",
+      "Stomping at full speed!",
+      "Jurassic zoomies!",
+      "Can't catch me, T-rex arms!"
+    ],
+    "clipboard-copy": [
+      "I swiped that with my tail!",
+      "A fossil of data copied!",
+      "Dino snatch! Rawr!"
+    ],
+    "screenshot": ["Say cheese! Chomp!", "A roaring moment, frozen!"],
+    "time-morning": ["Morning! The hunt begins!", "Sunrise. Time to stomp!"],
+    "time-night": ["Dino sleep mode. Rawr... zzz.", "Resting after the stampede."],
+    "ide-save": ["Saved in the tar pit!", "File buried safely."],
+    "git-commit": ["Committed like a meteor!", "Pushed with a roar!"],
+    "build-green": ["Green! No extinction today!", "The herd survives!"],
+    "power-resume": ["Back from extinction! Rawr!", "Recharged like a comet."],
+    "unlock-screen": ["New terrain! Stomp time!", "Welcome back to the jungle!"],
+    "hydrate": ["Hydrate or go extinct!", "Water for the dino-fueled you!"],
+    "on-ac": ["Charging like volcanic power!", "Energy: jurassic."]
   }
 }

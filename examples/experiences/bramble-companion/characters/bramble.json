@@ -4,13 +4,41 @@
   "displayName": "Bramble",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 8, "duration": 1200, "loop": true },
-    "walk": { "fps": 10, "duration": 600, "loop": true },
-    "run": { "fps": 14, "duration": 350, "loop": true },
-    "happy": { "fps": 10, "duration": 500, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 8,
+      "duration": 1200,
+      "loop": true
+    },
+    "walk": {
+      "fps": 10,
+      "duration": 600,
+      "loop": true
+    },
+    "run": {
+      "fps": 14,
+      "duration": 350,
+      "loop": true
+    },
+    "happy": {
+      "fps": 10,
+      "duration": 500,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,48 @@
     "sleepWeight": 0.02
   },
   "personality": "curious",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["Nose wiggle 🦔", "Clover leaf sprouting 🌱", "Curled into a ball!"],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "A happy little squeak!",
+      "Careful of my quills!",
+      "You found the safe spot!",
+      "Squeak squeak!"
+    ],
+    "mischief-random": [
+      "I rolled a berry your way!",
+      "Darting under the leaf!",
+      "A tiny hedgehog sneak!",
+      "Look! A shiny thing!"
+    ],
+    "idle-long": [
+      "Sniffing the ground for treats...",
+      "Curled up, just in case.",
+      "Waiting for a worm."
+    ],
+    "activity-burst": [
+      "So fast! My legs are tiny!",
+      "Scuttle scuttle scuttle!",
+      "I'm rolling after you!",
+      "Phew, leafy zoomies!"
+    ],
+    "clipboard-copy": [
+      "I stashed that in my nest!",
+      "A tasty bit of data!",
+      "Nibbled a copy of that."
+    ],
+    "screenshot": ["Cheese! Wait, I'm a hedgehog.", "A tiny moment captured!"],
+    "time-morning": ["Morning! Time to forage!", "The dew is fresh. Yum."],
+    "time-night": ["Curling up for the night.", "Sweet hedgehog dreams."],
+    "ide-save": ["Saved into my burrow!", "Another seed stored away."],
+    "git-commit": ["Buried a commit!", "Pushed into the undergrowth."],
+    "build-green": ["Green! All berries safe!", "Nothing rolled off the edge."],
+    "power-resume": ["Uncurled and ready!", "Back from a tiny nap!"],
+    "unlock-screen": ["Ooh, a new garden!", "Fresh sniffing grounds!"],
+    "hydrate": ["Sip some water, friend!", "Stay fresh like a dew drop."],
+    "on-ac": ["Warm nest energy! Perfect.", "Charging my tiny paws."]
   }
 }

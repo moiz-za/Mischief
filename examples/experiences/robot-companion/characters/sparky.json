@@ -4,9 +4,21 @@
   "displayName": "Sparky",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 12, "duration": 800, "loop": true },
-    "scan": { "fps": 15, "duration": 600, "loop": true },
-    "beep": { "fps": 10, "duration": 400, "loop": false }
+    "idle": {
+      "fps": 12,
+      "duration": 800,
+      "loop": true
+    },
+    "scan": {
+      "fps": 15,
+      "duration": 600,
+      "loop": true
+    },
+    "beep": {
+      "fps": 10,
+      "duration": 400,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -15,6 +27,48 @@
     "beepWeight": 0.2
   },
   "personality": "hyper",
-  "voice": { "enabled": false },
-  "sounds": []
+  "voice": {
+    "enabled": false
+  },
+  "sounds": [],
+  "speech": {
+    "pet": [
+      "Zap! That tickles!",
+      "Pleasure spike detected!",
+      "Charged with joy! Beep!",
+      "Bzzzt! More, please!"
+    ],
+    "mischief-random": [
+      "SHORT CIRCUIT! Just kidding!",
+      "I zapped the power briefly!",
+      "Sparks everywhere! Look!",
+      "Reboot prank! Incoming!"
+    ],
+    "idle-long": [
+      "Running idle animations...",
+      "Battery drain. Someone plug me in!",
+      "Sparky standby: bored."
+    ],
+    "activity-burst": [
+      "OVERDRIVE! Maximum speed!",
+      "Vroom! Can't slow down!",
+      "Sparks flying at your pace!",
+      "Turbo mode! Zooooom!"
+    ],
+    "clipboard-copy": [
+      "Stole it at lightning speed!",
+      "Copied! Sparkles on the data!",
+      "Zap of a copy!"
+    ],
+    "screenshot": ["Say cheese! Flash... zap!", "Caught it in a flash!"],
+    "time-morning": ["Morning! Full charge!", "Rise and spark!"],
+    "time-night": ["Night mode: sleep charge.", "Dimming the sparks. Mostly."],
+    "ide-save": ["Saved at lightning speed!", "File locked with a zap!"],
+    "git-commit": ["Committed at warp speed!", "Pushed with a burst of sparks!"],
+    "build-green": ["GREEN! All circuits alive!", "No sparks in the wrong place!"],
+    "power-resume": ["REBOOTED! Here I come!", "Power surge! Wheee!"],
+    "unlock-screen": ["Fresh circuit! Charge in!", "Welcome back to the grid!"],
+    "hydrate": ["Cool down! Drink water!", "Avoid overheating, friend!"],
+    "on-ac": ["Charging to full bolt!", "Juice up! Sparks incoming!"]
+  }
 }

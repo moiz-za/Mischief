@@ -4,9 +4,21 @@
   "displayName": "Spectra",
   "author": "Mischief Contributors",
   "animations": {
-    "float": { "fps": 8, "duration": 1500, "loop": true },
-    "boo": { "fps": 12, "duration": 500, "loop": false },
-    "fade": { "fps": 6, "duration": 1000, "loop": false }
+    "float": {
+      "fps": 8,
+      "duration": 1500,
+      "loop": true
+    },
+    "boo": {
+      "fps": 12,
+      "duration": 500,
+      "loop": false
+    },
+    "fade": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -15,6 +27,48 @@
     "booWeight": 0.1
   },
   "personality": "playful",
-  "voice": { "enabled": false },
-  "sounds": []
+  "voice": {
+    "enabled": false
+  },
+  "sounds": [],
+  "speech": {
+    "pet": [
+      "Boo! ...you can't catch me~",
+      "A ghostly shiver of joy!",
+      "Ectoplasm? No, that's just me.",
+      "Floating happily!"
+    ],
+    "mischief-random": [
+      "I phased through your cursor!",
+      "Ooh, a spooky surprise!",
+      "The lights are flickering... my bad.",
+      "I hid your code. For a second."
+    ],
+    "idle-long": [
+      "Drifting in the darkness...",
+      "Haunting this quiet corner.",
+      "Waiting for a soul to spook."
+    ],
+    "activity-burst": [
+      "So fast! I'm a blur!",
+      "Wheee! Can't keep up!",
+      "Whirling through walls!",
+      "Ecto-speeed!"
+    ],
+    "clipboard-copy": [
+      "I borrowed that. Forever.",
+      "A ghostly copy! Scary accurate.",
+      "Swiped it through the veil."
+    ],
+    "screenshot": ["Flash! You can't capture a ghost!", "Ooooh, caught in the act!"],
+    "time-morning": ["Morning! Sunlight... ugh.", "Good mooooorning~", "Daylight isn't my friend."],
+    "time-night": ["The witching hour! My time!", "Darkness. Perfect haunting."],
+    "ide-save": ["Saved into the spirit realm!", "Your work is safe from the dead."],
+    "git-commit": ["A commit from beyond the grave!", "Pushed... or was it a ghost?"],
+    "build-green": ["Green! No haunting needed!", "Even spirits celebrate."],
+    "power-resume": ["I returned from the void!", "Back among the living!"],
+    "unlock-screen": ["Fresh souls to haunt! I mean, greet.", "Ahh, human space again."],
+    "hydrate": ["Drink up or you'll be a spirit too soon!", "Hydrate, living one."],
+    "on-ac": ["Charging my ectoplasm!", "Power surge. Very spooky."]
+  }
 }

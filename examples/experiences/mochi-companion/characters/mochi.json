@@ -4,13 +4,41 @@
   "displayName": "Mochi",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 8, "duration": 1300, "loop": true },
-    "walk": { "fps": 10, "duration": 650, "loop": true },
-    "run": { "fps": 14, "duration": 400, "loop": true },
-    "happy": { "fps": 10, "duration": 500, "loop": true },
-    "sad": { "fps": 5, "duration": 1200, "loop": true },
-    "sleep": { "fps": 4, "duration": 1800, "loop": true },
-    "yawn": { "fps": 6, "duration": 1000, "loop": false }
+    "idle": {
+      "fps": 8,
+      "duration": 1300,
+      "loop": true
+    },
+    "walk": {
+      "fps": 10,
+      "duration": 650,
+      "loop": true
+    },
+    "run": {
+      "fps": 14,
+      "duration": 400,
+      "loop": true
+    },
+    "happy": {
+      "fps": 10,
+      "duration": 500,
+      "loop": true
+    },
+    "sad": {
+      "fps": 5,
+      "duration": 1200,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1800,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,48 @@
     "sleepWeight": 0.02
   },
   "personality": "lazy",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["Smells like fresh melonpan 🍞", "Fresh croissant roll!", "Chef hat ON 👨‍🍳"],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "Mmm... soft pats. Keep going.",
+      "A happy, low-energy tail wag!",
+      "Yawn... yes, I like that.",
+      "Shiba approval. Slow blink."
+    ],
+    "mischief-random": [
+      "I rolled off the couch. Felt like it.",
+      "A slow, deliberate shuffle.",
+      "I stole your spot. Snoozing now.",
+      "Looked at the cat. Judging."
+    ],
+    "idle-long": [
+      "Zzz... too comfy to move.",
+      "Flopped. This is the life.",
+      "Staring out the window. Or sleeping. Both."
+    ],
+    "activity-burst": [
+      "Too much moving... I'll pass.",
+      "You go. I'll guard the couch.",
+      "Whoa! Let me nap after this.",
+      "Very energetic. For you."
+    ],
+    "clipboard-copy": [
+      "Copied. Then yawned.",
+      "I saved that for later. Maybe.",
+      "A lazy copy. On the floor."
+    ],
+    "screenshot": ["Smile... after a stretch.", "Captured mid-yawn. Perfect."],
+    "time-morning": ["Morning. Is it food time?", "Slowly accepting the new day."],
+    "time-night": ["Night. Best sleep incoming.", "Pancake position: engaged."],
+    "ide-save": ["Saved. Good. Now flop.", "Stored it in the pillow fort."],
+    "git-commit": ["Committed. Small effort, fine.", "Pushed. Now back to napping."],
+    "build-green": ["Green. Acceptable. Nap now.", "All good. Yawn. Great."],
+    "power-resume": ["Awake... reluctantly. Hello.", "Recharged for the next flop."],
+    "unlock-screen": ["Oh. It's you. Good.", "The couch calls again."],
+    "hydrate": ["Hydrate. Then nap. Ideal.", "Water is important. Drink up."],
+    "on-ac": ["Warm charger. Best nap spot.", "Charging up for sleep."]
   }
 }

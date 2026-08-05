@@ -4,8 +4,16 @@
   "displayName": "Bloop",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 8, "duration": 1000, "loop": true },
-    "walk": { "fps": 10, "duration": 500, "loop": true }
+    "idle": {
+      "fps": 8,
+      "duration": 1000,
+      "loop": true
+    },
+    "walk": {
+      "fps": 10,
+      "duration": 500,
+      "loop": true
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -13,6 +21,40 @@
     "walkWeight": 0.3
   },
   "personality": "friendly",
-  "voice": { "enabled": false },
-  "sounds": []
+  "voice": {
+    "enabled": false
+  },
+  "sounds": [],
+  "speech": {
+    "pet": [
+      "Blooop! Happy squish!",
+      "A wobbly joy!",
+      "You squish me! I love it!",
+      "Bloop-bloop approval!"
+    ],
+    "mischief-random": [
+      "I splatted across the screen!",
+      "A gooey surprise!",
+      "Watch me jiggle away!",
+      "Splat! Oops, my bad."
+    ],
+    "idle-long": ["Gelatinous nap...", "Wobbling in place.", "Staring at nothing. Content."],
+    "activity-burst": [
+      "BLERP! So fast!",
+      "Jiggling at top speed!",
+      "Splat splat splat!",
+      "Wobbly zoomies!"
+    ],
+    "clipboard-copy": ["I absorbed that data!", "A gooey copy! Gloop!", "Sucked it right in!"],
+    "screenshot": ["Say cheese! Bloop!", "Captured mid-wobble!"],
+    "time-morning": ["Fresh day to bloop!", "Morning jiggle!"],
+    "time-night": ["Night bloop. Melting into rest.", "Settling like jelly."],
+    "ide-save": ["Saved! Then jiggled.", "Stored in my goo!"],
+    "git-commit": ["Committed! Bloop bloop!", "Pushed a gelatinous merge!"],
+    "build-green": ["Green! No splats!", "Solid as jelly today!"],
+    "power-resume": ["Re-blooped! Hello!", "Back from the goo dimension!"],
+    "unlock-screen": ["Fresh space to splat!", "Welcome back, friend!"],
+    "hydrate": ["Hydrate to stay squishy!", "Water keeps the wobble!"],
+    "on-ac": ["Charging my gel core!", "Powering the wobble."]
+  }
 }

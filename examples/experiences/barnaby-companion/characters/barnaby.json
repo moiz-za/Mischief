@@ -4,13 +4,41 @@
   "displayName": "Barnaby",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 6, "duration": 1500, "loop": true },
-    "walk": { "fps": 8, "duration": 800, "loop": true },
-    "run": { "fps": 10, "duration": 600, "loop": true },
-    "happy": { "fps": 8, "duration": 600, "loop": true },
-    "sad": { "fps": 5, "duration": 1200, "loop": true },
-    "sleep": { "fps": 4, "duration": 1800, "loop": true },
-    "yawn": { "fps": 6, "duration": 1000, "loop": false }
+    "idle": {
+      "fps": 6,
+      "duration": 1500,
+      "loop": true
+    },
+    "walk": {
+      "fps": 8,
+      "duration": 800,
+      "loop": true
+    },
+    "run": {
+      "fps": 10,
+      "duration": 600,
+      "loop": true
+    },
+    "happy": {
+      "fps": 8,
+      "duration": 600,
+      "loop": true
+    },
+    "sad": {
+      "fps": 5,
+      "duration": 1200,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1800,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,44 @@
     "sleepWeight": 0.03
   },
   "personality": "lazy",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["Unbothered. Moisturized.", "Coffee mug balanced ☕", "Zero stress."],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "A slow, happy munch~",
+      "Capybara zen achieved.",
+      "That's the spot... zzz.",
+      "Content in the water."
+    ],
+    "mischief-random": [
+      "I moved your cursor... nah, too lazy.",
+      "Waddling to the other corner.",
+      "A very slow prank!",
+      "I lounged in your way."
+    ],
+    "idle-long": ["Soaking in the bath...", "Zzz... don't mind me.", "The warm spot is perfect."],
+    "activity-burst": [
+      "So much energy... for you.",
+      "I'll just float here.",
+      "Whew. Nap time after this.",
+      "You're going full capybara pace!"
+    ],
+    "clipboard-copy": [
+      "Copied with calm vibes.",
+      "Slow and steady copy.",
+      "I retrieved that gently."
+    ],
+    "screenshot": ["Smile... eventually.", "A serene capture!"],
+    "time-morning": ["A new sunny day to soak.", "Morning, fellow sunbather!"],
+    "time-night": ["Night float in the pool.", "Time to rest the whiskers."],
+    "ide-save": ["Saved... then a yawn.", "Floated the file away safely."],
+    "git-commit": ["Committed with calm.", "Pushed gently upstream."],
+    "build-green": ["Green build. Very relaxing.", "All calm in the water."],
+    "power-resume": ["Awake... slowly. Hello.", "Back from the lazy dimension."],
+    "unlock-screen": ["Oh. A new pond to explore.", "Welcome back, friend."],
+    "hydrate": ["Stay hydrated, stay floaty!", "Water is life, truly."],
+    "on-ac": ["Charging up for a nap.", "Warm power. Lovely."]
   }
 }

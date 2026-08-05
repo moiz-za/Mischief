@@ -30,7 +30,7 @@ export type Signal =
   | { kind: "posture-check" }
   | { kind: "combo-streak"; comboCount: number };
 
-const POOLS: Record<string, Reaction[]> = {
+export const POOLS: Record<string, Reaction[]> = {
   "power-suspend": [
     { text: "Zzz…", durationMs: 4000 },
     { text: "Nap time…", durationMs: 4000 },
@@ -68,7 +68,7 @@ const POOLS: Record<string, Reaction[]> = {
     { text: "Too fast!", durationMs: 3000 },
     { text: "Easy there!", durationMs: 3000 },
     { text: "Keyboard go brrr", durationMs: 3000 },
-    { text: "My paws can't keep up!", durationMs: 3500 },
+    { text: "Whew, dizzy!", durationMs: 3000 },
   ],
   "idle-long": [
     { text: "Anyone home?", durationMs: 4000 },

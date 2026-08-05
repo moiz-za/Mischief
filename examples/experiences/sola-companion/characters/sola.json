@@ -4,13 +4,41 @@
   "displayName": "Sola",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 8, "duration": 1200, "loop": true },
-    "walk": { "fps": 10, "duration": 600, "loop": true },
-    "run": { "fps": 14, "duration": 350, "loop": true },
-    "happy": { "fps": 10, "duration": 500, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 8,
+      "duration": 1200,
+      "loop": true
+    },
+    "walk": {
+      "fps": 10,
+      "duration": 600,
+      "loop": true
+    },
+    "run": {
+      "fps": 14,
+      "duration": 350,
+      "loop": true
+    },
+    "happy": {
+      "fps": 10,
+      "duration": 500,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,48 @@
     "sleepWeight": 0.02
   },
   "personality": "friendly",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["Drink some water! 💧", "Posture check! 🤸", "Sunlight mode 🌻"],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "A happy little sway!",
+      "You're my sunshine!",
+      "Petals perk up! Lovely!",
+      "A soft, sunny giggle!"
+    ],
+    "mischief-random": [
+      "I bloomed in your way!",
+      "A sneaky petal! Whoops!",
+      "I faced the sun. Then moved!",
+      "Pollen prank! Achoo!"
+    ],
+    "idle-long": [
+      "Basking toward the sun...",
+      "Slowly turning toward light.",
+      "A calm, leafy pause."
+    ],
+    "activity-burst": [
+      "So fast! My leaves flutter!",
+      "Swaying at your speed!",
+      "Sunflower zoom! Wheee!",
+      "Breezy zoomies!"
+    ],
+    "clipboard-copy": [
+      "I seeded a copy!",
+      "A petal of data, saved!",
+      "Sowed that text into my soil!"
+    ],
+    "screenshot": ["Say cheese! Bloom!", "A bright moment, captured!"],
+    "time-morning": ["Good morning, sunshine!", "The sun is up! Bloom!"],
+    "time-night": ["Curling my petals for night.", "Sweet sunflower dreams."],
+    "ide-save": ["Saved and seeded!", "Another sprout of code!"],
+    "git-commit": ["A blooming commit!", "Pushed, freshly watered."],
+    "build-green": ["Green! Growing strong!", "No wilted builds today!"],
+    "power-resume": ["Sprouted back! Hello!", "Recharged with sunshine!"],
+    "unlock-screen": ["Fresh sunlight to grow in!", "Welcome back, bright friend!"],
+    "hydrate": ["Water me! I mean, drink!", "Hydrate to keep blooming!"],
+    "on-ac": ["Charging like morning sun!", "Photosynthesizing power!"]
   }
 }

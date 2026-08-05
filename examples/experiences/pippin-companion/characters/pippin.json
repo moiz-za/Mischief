@@ -4,13 +4,41 @@
   "displayName": "Pippin",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 8, "duration": 1000, "loop": true },
-    "walk": { "fps": 12, "duration": 450, "loop": true },
-    "run": { "fps": 16, "duration": 300, "loop": true },
-    "happy": { "fps": 10, "duration": 500, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 8,
+      "duration": 1000,
+      "loop": true
+    },
+    "walk": {
+      "fps": 12,
+      "duration": 450,
+      "loop": true
+    },
+    "run": {
+      "fps": 16,
+      "duration": 300,
+      "loop": true
+    },
+    "happy": {
+      "fps": 10,
+      "duration": 500,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,44 @@
     "sleepWeight": 0.03
   },
   "personality": "energetic",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["Waddle waddle 🐧", "Belly slide time!", "Ice cold!"],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "A happy penguin honk!",
+      "Waddle waddle! I like it!",
+      "Sliiiiide of approval!",
+      "Squawk of joy!"
+    ],
+    "mischief-random": [
+      "I slid across the ice!",
+      "A snowball! Watch out!",
+      "Waddle sprint! Fast as ice!",
+      "I flipped a fish into the air!"
+    ],
+    "idle-long": ["Perched on an ice floe...", "Watching for fish.", "One very still penguin."],
+    "activity-burst": [
+      "Wheee! Full-speed waddle!",
+      "Zoom zoom! Ice skates!",
+      "Can't stop, can't stop!",
+      "Fastest bird on land!"
+    ],
+    "clipboard-copy": [
+      "A fish... I mean, file, copied!",
+      "Snagged it on the slide!",
+      "Swiped like a fish out of water!"
+    ],
+    "screenshot": ["Say cheese! Squawk!", "Frozen like an iceberg in time!"],
+    "time-morning": ["Morning! To the water!", "Bright ice and a new day!"],
+    "time-night": ["Curling up on the ice.", "Night watch for fish."],
+    "ide-save": ["Saved! Then a victory slide!", "File cached in the igloo!"],
+    "git-commit": ["Committed! Big waddle energy!", "Pushed across the ice sheet!"],
+    "build-green": ["Green! The iceberg approves!", "Solid as permafrost!"],
+    "power-resume": ["Back on the ice! Waddle!", "Recharged and slide-ready!"],
+    "unlock-screen": ["Fresh snow to explore!", "Welcome back to the colony!"],
+    "hydrate": ["Sip water, and stay cool!", "Hydrated like a penguin."],
+    "on-ac": ["Charging in the cold!", "Power stored like a snowball."]
   }
 }

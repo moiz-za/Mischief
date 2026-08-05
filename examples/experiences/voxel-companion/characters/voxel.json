@@ -4,13 +4,41 @@
   "displayName": "Voxel",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 10, "duration": 1000, "loop": true },
-    "walk": { "fps": 12, "duration": 500, "loop": true },
-    "run": { "fps": 16, "duration": 300, "loop": true },
-    "happy": { "fps": 12, "duration": 450, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 10,
+      "duration": 1000,
+      "loop": true
+    },
+    "walk": {
+      "fps": 12,
+      "duration": 500,
+      "loop": true
+    },
+    "run": {
+      "fps": 16,
+      "duration": 300,
+      "loop": true
+    },
+    "happy": {
+      "fps": 12,
+      "duration": 450,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,48 @@
     "sleepWeight": 0.03
   },
   "personality": "curious",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["Scanning codebase 🚀", "Anti-grav online!", "Holo-whiskers twitching..."],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "A mechanical purr!",
+      "Voxel approval! Beep!",
+      "Servo purr engaged!",
+      "You found my charge port. Wait, that's it."
+    ],
+    "mischief-random": [
+      "I rendered a cube in your way!",
+      "Glitch prank! Blue screen... kidding!",
+      "I voxelized your cursor!",
+      "LOD pop-in! Ta-da!"
+    ],
+    "idle-long": [
+      "Recomputing my normals...",
+      "Low-poly idle. Very still.",
+      "Optimizing... dreaming in quads."
+    ],
+    "activity-burst": [
+      "Rendering at 60fps of zoom!",
+      "Too many quads! Lag!",
+      "Voxel vortex! Wheee!",
+      "Full-res sprint!"
+    ],
+    "clipboard-copy": [
+      "A block of data, cloned!",
+      "Copied in high resolution!",
+      "Mesh copied. Beep."
+    ],
+    "screenshot": ["Say cheese! Render!", "Raytraced capture!"],
+    "time-morning": ["New day rendered in! Good morning!", "Fresh frame to render!"],
+    "time-night": ["Night shading... calm quads.", "Low-poly moonrise."],
+    "ide-save": ["Saved! Snap to grid!", "File locked in the voxel field."],
+    "git-commit": ["Committed! Merged mesh!", "Pushed a clean block!"],
+    "build-green": ["Green! Zero stray vertices!", "The build is fully lit!"],
+    "power-resume": ["Recomputed! Back online!", "Render restarted!"],
+    "unlock-screen": ["Fresh scene loaded!", "Welcome to the blocky world!"],
+    "hydrate": ["Hydrate or get low-poly!", "Water keeps you high-res!"],
+    "on-ac": ["Charging the render core!", "Shading complete. Full power!"]
   }
 }

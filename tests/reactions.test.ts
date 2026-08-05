@@ -1,5 +1,7 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { pickReaction, type Signal } from "../src/domain/reactions";
+import { POOLS, pickReaction, type Signal } from "../src/domain/reactions";
 import type { CharacterManifest } from "../src/domain/manifest";
 
 const ZEN_CHARACTER: CharacterManifest = {
@@ -104,5 +106,71 @@ describe("pickReaction", () => {
     const result = pickReaction({ kind: "clipboard-copy" }, ZEN_CHARACTER);
     expect(result.text).toBeTruthy();
     expect(result.durationMs).toBeGreaterThan(0);
+  });
+});
+
+describe("speech species-safety", () => {
+  // These tokens belong to specific species. If they appear in the *global*
+  // (fallback) pools, any companion could say a line that doesn't match its
+  // species — e.g. a ghost saying "my paw hurts" (ISS-0xx).
+  const speciesSpecificTokens = ["paw", "claw", "paws", "claws", "hoof", "beak", "snout"];
+
+  it("generic pools never contain species-specific body-part tokens", () => {
+    for (const [signal, pool] of Object.entries(POOLS) as [string, { text: string }[]][]) {
+      for (const line of pool) {
+        const lower = line.text.toLowerCase();
+        for (const token of speciesSpecificTokens) {
+          expect(lower.includes(token), `${signal} → "${line.text}" mentions "${token}"`).toBe(
+            false
+          );
+        }
+      }
+    }
+  });
+
+  it("every built-in companion has species-appropriate speech for common signals", () => {
+    const charactersDir = join(__dirname, "..", "examples", "experiences");
+    let checked = 0;
+    for (const packDir of readdirSync(charactersDir)) {
+      const charsDir = join(charactersDir, packDir, "characters");
+      const entries = (() => {
+        try {
+          return readdirSync(charsDir).filter((f) => f.endsWith(".json"));
+        } catch {
+          return [];
+        }
+      })();
+      for (const file of entries) {
+        const manifest = JSON.parse(
+          readFileSync(join(charsDir, file), "utf8")
+        ) as CharacterManifest;
+        // Each built-in companion must carry its own speech so its bubbles
+        // always match its species instead of leaking another species' lines.
+        expect(manifest.speech, `${packDir}/${file} should define speech`).toBeTruthy();
+        const species = manifest.species.toLowerCase();
+        const speech = Object.values(manifest.speech ?? {});
+        // No other-species body-part tokens leak into this companion's speech,
+        // except its own species (e.g. a cat may say "paw").
+        for (const pool of speech) {
+          for (const line of pool) {
+            const lower = line.toLowerCase();
+            for (const token of speciesSpecificTokens) {
+              if (lower.includes(token)) {
+                const ownSpeciesHasToken =
+                  /cat|canine|dog|fox|bear|otter|hedgehog|dino|dragon|capybara|raccoon/.test(
+                    species
+                  );
+                expect(
+                  ownSpeciesHasToken,
+                  `${packDir}/${file} "${line}" mentions "${token}" but species is "${species}"`
+                ).toBe(true);
+              }
+            }
+          }
+        }
+        checked++;
+      }
+    }
+    expect(checked).toBeGreaterThanOrEqual(19);
   });
 });

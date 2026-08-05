@@ -4,13 +4,41 @@
   "displayName": "Zen",
   "author": "Mischief Contributors",
   "animations": {
-    "idle": { "fps": 8, "duration": 1200, "loop": true },
-    "walk": { "fps": 10, "duration": 600, "loop": true },
-    "run": { "fps": 12, "duration": 400, "loop": true },
-    "happy": { "fps": 10, "duration": 500, "loop": true },
-    "sad": { "fps": 6, "duration": 1000, "loop": true },
-    "sleep": { "fps": 4, "duration": 1500, "loop": true },
-    "yawn": { "fps": 8, "duration": 800, "loop": false }
+    "idle": {
+      "fps": 8,
+      "duration": 1200,
+      "loop": true
+    },
+    "walk": {
+      "fps": 10,
+      "duration": 600,
+      "loop": true
+    },
+    "run": {
+      "fps": 12,
+      "duration": 400,
+      "loop": true
+    },
+    "happy": {
+      "fps": 10,
+      "duration": 500,
+      "loop": true
+    },
+    "sad": {
+      "fps": 6,
+      "duration": 1000,
+      "loop": true
+    },
+    "sleep": {
+      "fps": 4,
+      "duration": 1500,
+      "loop": true
+    },
+    "yawn": {
+      "fps": 8,
+      "duration": 800,
+      "loop": false
+    }
   },
   "behavior": {
     "weightedDecision": true,
@@ -22,18 +50,44 @@
     "sleepWeight": 0.05
   },
   "personality": "lazy",
-  "voice": { "enabled": false },
+  "voice": {
+    "enabled": false
+  },
   "sounds": [],
   "speech": {
-    "pet": ["Pffft!", "Hehe!", "More!", "Nice.", "Hehe~"],
-    "mischief-random": ["Hehe.", "Sneaky.", "Oops.", "Hehe~", "Nudge nudge.", "Wink."],
-    "idle-long": ["Anyone home?", "Hello?", "Still there?", "Psst…"],
-    "power-suspend": ["Zzz…", "Nap time…", "Sleeping…"],
-    "power-resume": ["I'm back!", "Wake up!", "Alive again."],
-    "lock-screen": ["Who locked me in?", "Let me out!", "Hello? Anyone?"],
-    "unlock-screen": ["Hi again!", "Welcome back.", "Good to see you."],
-    "hydrate": ["Drink some water! 💧", "Time to drink water! 💧", "Stay hydrated! 🥤"],
-    "posture-check": ["Stretch those shoulders! 🤸", "Posture check! 🤸", "Sit up straight!"],
-    "combo-streak": ["Combo x2! 🎉", "Combo x3! 🎉", "Super happy!", "More pets!"]
+    "pet": [
+      "A soft, deep purr...",
+      "Mmm. Content. Very content.",
+      "You've found the calm spot.",
+      "Red panda bliss."
+    ],
+    "mischief-random": [
+      "A lazy stretch. In your way.",
+      "I sat on your keyboard. On purpose.",
+      "A very slow, gentle heist.",
+      "Quiet mischief: a tea leaf moved."
+    ],
+    "idle-long": [
+      "Balanced on a bamboo branch...",
+      "Zen meditation. Shhh.",
+      "Half-awake, half-fluff."
+    ],
+    "activity-burst": [
+      "So much motion... I'll observe.",
+      "Peaceful zoomies? I'll pass.",
+      "You go fast. I drink tea.",
+      "Whew. Time for stillness."
+    ],
+    "clipboard-copy": ["A calm copy. Sip.", "I saved that with intent.", "A gentle pinch of data."],
+    "screenshot": ["Smile... after a slow blink.", "A tranquil moment captured."],
+    "time-morning": ["Morning tea. Slowly.", "A new, quiet day."],
+    "time-night": ["Moonlight and bamboo.", "Time to unwind fully."],
+    "ide-save": ["Saved with a quiet breath.", "Another leaf on the branch."],
+    "git-commit": ["A centered commit.", "Pushed with calm. Good."],
+    "build-green": ["Green. All is balanced.", "A harmonious build."],
+    "power-resume": ["Awake... gently. Hello.", "Recharged, now at peace."],
+    "unlock-screen": ["Ah. You're here. Balance restored.", "A familiar, calm space."],
+    "hydrate": ["Sip water, like tea.", "Stay centered. Hydrate."],
+    "on-ac": ["Charging by the warm window.", "Stillness, powered."]
   }
 }
