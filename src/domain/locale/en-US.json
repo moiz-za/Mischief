@@ -1,0 +1,15 @@
+{
+  "app.name": "Mischief",
+  "tray.show": "Show Mischief",
+  "tray.followCursor": "Follow cursor",
+  "tray.interactive": "Interactive (pet me)",
+  "tray.captureMoment": "Capture moment (GIF)",
+  "tray.captureSnapshot": "Capture snapshot (PNG)",
+  "tray.settings": "Settings...",
+  "tray.quit": "Quit Mischief",
+  "tray.tooltip": "{name} ({species}) - Mischief",
+  "window.importCompanion": "Import Companion",
+  "window.settings": "Mischief Settings",
+  "dialog.chooseCompanionImage": "Choose a companion image",
+  "dialog.imagesFilter": "Images"
+}
